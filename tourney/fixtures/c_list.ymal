@@ -1,0 +1,1490 @@
+- model: tourney.Player
+  pk: 1
+  fields:
+    rfid: 
+    first_name: Howard
+    last_name: Dircks
+    gender: M
+    email: repodart@hotmail.com
+    phone: 7328870468
+
+- model: tourney.Player
+  pk: 2
+  fields:
+    rfid: 
+    first_name: Anthony
+    last_name: Rohlfing
+    gender: M
+    email: tjr233@gmail.com
+    phone: 6197460356
+
+- model: tourney.Player
+  pk: 3
+  fields:
+    rfid: 
+    first_name: Douglas
+    last_name: Besh
+    gender: M
+    email: dbhoudini@iwon.com
+    phone: 2153532503
+
+- model: tourney.Player
+  pk: 4
+  fields:
+    rfid: 
+    first_name: Michael
+    last_name: Lagana
+    gender: M
+    email: mllharley@aol.com
+    phone: 4439391441
+
+- model: tourney.Player
+  pk: 5
+  fields:
+    rfid: 
+    first_name: Bob
+    last_name: Walton
+    gender: M
+    email: bwalton80@verizon.net
+    phone: 4129525172
+
+- model: tourney.Player
+  pk: 6
+  fields:
+    rfid: 
+    first_name: Chandre
+    last_name: Grove
+    gender: F
+    email: chandre@comcast.net
+    phone: 2156924312
+
+- model: tourney.Player
+  pk: 7
+  fields:
+    rfid: 
+    first_name: John
+    last_name: Newsome
+    gender: M
+    email: carolinakid@verizon.net
+    phone: 3022904461
+
+- model: tourney.Player
+  pk: 8
+  fields:
+    rfid: 
+    first_name: Stephen
+    last_name: Keller
+    gender: M
+    email: kellersheroes@yahoo.com
+    phone: 2676402448
+
+- model: tourney.Player
+  pk: 9
+  fields:
+    rfid: 
+    first_name: Francine
+    last_name: Ginder
+    gender: F
+    email: ceceben2@aol.com
+    phone: 4848929116
+
+- model: tourney.Player
+  pk: 10
+  fields:
+    rfid: 
+    first_name: Ken
+    last_name: Sr
+    gender: M
+    email: hosler2005@aol.com
+    phone: 7174183972
+
+- model: tourney.Player
+  pk: 11
+  fields:
+    rfid: 
+    first_name: Ray
+    last_name: Sultzbach
+    gender: M
+    email: rs74598@aol.com
+    phone: 2155886231
+
+- model: tourney.Player
+  pk: 12
+  fields:
+    rfid: 
+    first_name: Connie
+    last_name: Sroka
+    gender: F
+    email: conniesroka@yahoo.com
+    phone: 2674243615
+
+- model: tourney.Player
+  pk: 13
+  fields:
+    rfid: 
+    first_name: James
+    last_name: Detwiter
+    gender: M
+    email: jamesdet@gmail.com
+    phone: 2673713144
+
+- model: tourney.Player
+  pk: 14
+  fields:
+    rfid: 
+    first_name: Daniel
+    last_name: Detwiter
+    gender: M
+    email: netrnl32@gmail.com
+    phone: 2677338040
+
+- model: tourney.Player
+  pk: 15
+  fields:
+    rfid: 
+    first_name: Paulie
+    last_name: Jaeger
+    gender: M
+    email: mojographics@live.com
+    phone: 5854144585
+
+- model: tourney.Player
+  pk: 16
+  fields:
+    rfid: 
+    first_name: Beth
+    last_name: Jaeger
+    gender: F
+    email: bjaeger87@gmail.com
+    phone: 8145048615
+
+- model: tourney.Player
+  pk: 17
+  fields:
+    rfid: 
+    first_name: Vet
+    last_name: La
+    gender: M
+    email: n/a
+    phone: 7173275653
+
+- model: tourney.Player
+  pk: 18
+  fields:
+    rfid: 
+    first_name: Mark
+    last_name: Fair
+    gender: M
+    email: markf543@gmail.com
+    phone: 7175857302
+
+- model: tourney.Player
+  pk: 19
+  fields:
+    rfid: 
+    first_name: Lynelle
+    last_name: Wagner
+    gender: F
+    email: nellygirl719@yahoo.com
+    phone: 7177126583
+
+- model: tourney.Player
+  pk: 20
+  fields:
+    rfid: 
+    first_name: Eddie
+    last_name: Millisack
+    gender: M
+    email: edward.millisocky@gmail.com
+    phone: 7122017632
+
+- model: tourney.Player
+  pk: 21
+  fields:
+    rfid: 
+    first_name: Pat
+    last_name: Velenger
+    gender: M
+    email: pvelenger@aol.com
+    phone: 2158021811
+
+- model: tourney.Player
+  pk: 22
+  fields:
+    rfid: 
+    first_name: Anthony
+    last_name: Mock
+    gender: M
+    email: anthony_mock@hotmail.com
+    phone: 7139620427
+
+- model: tourney.Player
+  pk: 23
+  fields:
+    rfid: 
+    first_name: Anna
+    last_name: Secka
+    gender: F
+    email: annasecka@msn.com
+    phone: 4128552667
+
+- model: tourney.Player
+  pk: 24
+  fields:
+    rfid: 
+    first_name: Michael
+    last_name: Gensch
+    gender: M
+    email: joepeteamz@yahoo.com
+    phone: 2153604732
+
+- model: tourney.Player
+  pk: 25
+  fields:
+    rfid: 
+    first_name: Brenda
+    last_name: Fiorani
+    gender: F
+    email: bfiorani1@hotmail.com
+    phone: 5704016610
+
+- model: tourney.Player
+  pk: 26
+  fields:
+    rfid: 
+    first_name: Andy
+    last_name: Mcmaster
+    gender: M
+    email: sc2drivertvr@yahoo.com
+    phone: 7174656635
+
+- model: tourney.Player
+  pk: 27
+  fields:
+    rfid: 
+    first_name: Alan
+    last_name: Congstreet
+    gender: M
+    email: 
+    phone: 6099771497
+
+- model: tourney.Player
+  pk: 28
+  fields:
+    rfid: 
+    first_name: John
+    last_name: Williams
+    gender: M
+    email: mrwilliams410@yahoo.com
+    phone: 2675289703
+
+- model: tourney.Player
+  pk: 29
+  fields:
+    rfid: 
+    first_name: Bud
+    last_name: Leonard
+    gender: M
+    email: budlyn@comcast.net
+    phone: 2152053871
+
+- model: tourney.Player
+  pk: 30
+  fields:
+    rfid: 
+    first_name: Kim
+    last_name: Godshall
+    gender: F
+    email: phillygirl716@yahoo.com
+    phone: 2679337620
+
+- model: tourney.Player
+  pk: 31
+  fields:
+    rfid: 
+    first_name: Stephanie
+    last_name: Haas
+    gender: F
+    email: stephanie.haas@blackbox.com
+    phone: 2672599403
+
+- model: tourney.Player
+  pk: 32
+  fields:
+    rfid: 
+    first_name: E.R.
+    last_name: Salanga
+    gender: M
+    email: smatdydynamics@gmail.com
+    phone: 7329796490
+
+- model: tourney.Player
+  pk: 33
+  fields:
+    rfid: 
+    first_name: Lynda
+    last_name: Leonard
+    gender: F
+    email: lyndaleonard28@yahoo.com
+    phone: 2678854358
+
+- model: tourney.Player
+  pk: 34
+  fields:
+    rfid: 
+    first_name: Janice
+    last_name: Mccurdy
+    gender: F
+    email: bobbymacngrace@aol.com
+    phone: 7174432439
+
+- model: tourney.Player
+  pk: 35
+  fields:
+    rfid: 
+    first_name: Robert
+    last_name: Mccurdy
+    gender: M
+    email: bobbymac976@gmail.com
+    phone: 7175541856
+
+- model: tourney.Player
+  pk: 36
+  fields:
+    rfid: 
+    first_name: Jerry
+    last_name: Demas
+    gender: M
+    email: jerrydemas@verizon.net
+    phone: 
+
+- model: tourney.Player
+  pk: 37
+  fields:
+    rfid: 
+    first_name: John
+    last_name: Robinson
+    gender: M
+    email: johnjrobinson@live.com
+    phone: 2676705843
+
+- model: tourney.Player
+  pk: 38
+  fields:
+    rfid: 
+    first_name: Victor
+    last_name: Cakanaro
+    gender: M
+    email: vcalamaro@comcast.net
+    phone: 2672611070
+
+- model: tourney.Player
+  pk: 39
+  fields:
+    rfid: 
+    first_name: Kevin
+    last_name: Buschmann
+    gender: M
+    email: kbuschmann@verizon.net
+    phone: 6106376922
+
+- model: tourney.Player
+  pk: 40
+  fields:
+    rfid: 
+    first_name: Matthew
+    last_name: Onuschak
+    gender: M
+    email: billo@ptd.net
+    phone: 5705994296
+
+- model: tourney.Player
+  pk: 41
+  fields:
+    rfid: 
+    first_name: Leah
+    last_name: Amato
+    gender: F
+    email: chihuahuachick85@yahoo.com
+    phone: 5705994767
+
+- model: tourney.Player
+  pk: 42
+  fields:
+    rfid: 
+    first_name: Tom
+    last_name: Williamson
+    gender: M
+    email: twilliamson2580@gmail.com
+    phone: 5709269458
+
+- model: tourney.Player
+  pk: 43
+  fields:
+    rfid: 
+    first_name: Joseph
+    last_name: Johason
+    gender: M
+    email: bigdaddy6427@yahoo.com
+    phone: 5704019987
+
+- model: tourney.Player
+  pk: 44
+  fields:
+    rfid: 
+    first_name: Ed
+    last_name: Shoepe
+    gender: M
+    email: ebconst@ata.net
+    phone: 5709560267
+
+- model: tourney.Player
+  pk: 45
+  fields:
+    rfid: 
+    first_name: Rick
+    last_name: Crawford
+    gender: M
+    email: rickcrawford88@gmail.com
+    phone: 5858020502
+
+- model: tourney.Player
+  pk: 46
+  fields:
+    rfid: 
+    first_name: Sean
+    last_name: Arnold
+    gender: M
+    email: jrarnold05@gmail.com
+    phone: 9373056260
+
+- model: tourney.Player
+  pk: 47
+  fields:
+    rfid: 
+    first_name: Michael
+    last_name: Deleonibus
+    gender: M
+    email: m_deleonibus@yahoo.com
+    phone: 7249636631
+
+- model: tourney.Player
+  pk: 48
+  fields:
+    rfid: 
+    first_name: Justin
+    last_name: Dennison
+    gender: M
+    email: justin.dennison@wendys.com
+    phone: 567 9785346
+
+- model: tourney.Player
+  pk: 49
+  fields:
+    rfid: 
+    first_name: Courtney
+    last_name: Irwin
+    gender: F
+    email: xginealachbbx@aol.com
+    phone: 2018893105
+
+- model: tourney.Player
+  pk: 50
+  fields:
+    rfid: 
+    first_name: Rachel
+    last_name: Walton
+    gender: F
+    email: rbaby69xx@yahoo.com
+    phone: 7175176590
+
+- model: tourney.Player
+  pk: 51
+  fields:
+    rfid: 
+    first_name: Jonathan
+    last_name: Walton
+    gender: M
+    email: dartmaster4mup@yahoo.com
+    phone: 7175171140
+
+- model: tourney.Player
+  pk: 52
+  fields:
+    rfid: 
+    first_name: Ryan
+    last_name: Wile
+    gender: M
+    email: rlwevo8@yahoo.com
+    phone: 7176156542
+
+- model: tourney.Player
+  pk: 53
+  fields:
+    rfid: 
+    first_name: Melanie
+    last_name: Prodorutti
+    gender: F
+    email: mbsg376@gmail.com
+    phone: 2152870087
+
+- model: tourney.Player
+  pk: 54
+  fields:
+    rfid: 
+    first_name: Kim
+    last_name: Gomez
+    gender: F
+    email: k.cleaning023@gmail.com
+    phone: 2676880242
+
+- model: tourney.Player
+  pk: 55
+  fields:
+    rfid: 
+    first_name: Michelle
+    last_name: Parks
+    gender: F
+    email: shelbug15pa@yahoo.com
+    phone: 2152908561
+
+- model: tourney.Player
+  pk: 56
+  fields:
+    rfid: 
+    first_name: Kate
+    last_name: Albright
+    gender: F
+    email: kalbright@4netconnex.com
+    phone: 2153537400
+
+- model: tourney.Player
+  pk: 57
+  fields:
+    rfid: 
+    first_name: Ray
+    last_name: Prodorutti
+    gender: M
+    email: rpweldpro@gmail.com
+    phone: 2675757492
+
+- model: tourney.Player
+  pk: 58
+  fields:
+    rfid: 
+    first_name: Tim
+    last_name: Persun
+    gender: M
+    email: milkmantim74@aol.com
+    phone: 
+
+- model: tourney.Player
+  pk: 59
+  fields:
+    rfid: 
+    first_name: Dave
+    last_name: Byer
+    gender: M
+    email: davebyer@gmail.com
+    phone: 2676149508
+
+- model: tourney.Player
+  pk: 60
+  fields:
+    rfid: 
+    first_name: Bill
+    last_name: Kinee
+    gender: M
+    email: billkinee@verizon.net
+    phone: 
+
+- model: tourney.Player
+  pk: 61
+  fields:
+    rfid: 
+    first_name: Dan
+    last_name: Benner
+    gender: M
+    email: dbenner310@yahoo.com
+    phone: 
+
+- model: tourney.Player
+  pk: 62
+  fields:
+    rfid: 
+    first_name: James
+    last_name: Kinee
+    gender: M
+    email: jim.kinee@hotmail.com
+    phone: 2157403509
+
+- model: tourney.Player
+  pk: 63
+  fields:
+    rfid: 
+    first_name: Ed
+    last_name: Bennett
+    gender: M
+    email: d202guy@gmail.com
+    phone: 2153611960
+
+- model: tourney.Player
+  pk: 64
+  fields:
+    rfid: 
+    first_name: Michael
+    last_name: Caltabiano
+    gender: M
+    email: mikecey@hotmail.com
+    phone: 2676645205
+
+- model: tourney.Player
+  pk: 65
+  fields:
+    rfid: 
+    first_name: Scott
+    last_name: Weiss
+    gender: M
+    email: kingoftrees@verizon.net
+    phone: 2152409962
+
+- model: tourney.Player
+  pk: 66
+  fields:
+    rfid: 
+    first_name: Matt
+    last_name: Parker
+    gender: M
+    email: parker@obriensys.com
+    phone: 2672186169
+
+- model: tourney.Player
+  pk: 67
+  fields:
+    rfid: 
+    first_name: Noname
+    last_name: 
+    gender: M
+    email: terchekinpa@yahoo.com
+    phone: 2676446022
+
+- model: tourney.Player
+  pk: 68
+  fields:
+    rfid: 
+    first_name: Ryan
+    last_name: Lutz
+    gender: M
+    email: ryanlutz28@yahoo.com
+    phone: 2679017926
+
+- model: tourney.Player
+  pk: 69
+  fields:
+    rfid: 
+    first_name: Rob
+    last_name: Chernuka
+    gender: M
+    email: chernuka81@gmail.com
+    phone: 2158968337
+
+- model: tourney.Player
+  pk: 70
+  fields:
+    rfid: 
+    first_name: Laura
+    last_name: Capozzi
+    gender: F
+    email: lauramcapozzi@gmail.com
+    phone: 2676445914
+
+- model: tourney.Player
+  pk: 71
+  fields:
+    rfid: 
+    first_name: Andrew
+    last_name: Bolak
+    gender: M
+    email: jmp414@yahoo.com
+    phone: n/a
+
+- model: tourney.Player
+  pk: 72
+  fields:
+    rfid: 
+    first_name: Jennifer
+    last_name: Pastore
+    gender: F
+    email: jmp41484@yahoo.com
+    phone: 2677702436
+
+- model: tourney.Player
+  pk: 73
+  fields:
+    rfid: 
+    first_name: Tom
+    last_name: Blake
+    gender: M
+    email: milkmanton@comcast.net
+    phone: 2677182994
+
+- model: tourney.Player
+  pk: 74
+  fields:
+    rfid: 
+    first_name: Luke
+    last_name: Lee
+    gender: M
+    email: lukecolt2276@hotmail.com
+    phone: 7244256754
+
+- model: tourney.Player
+  pk: 75
+  fields:
+    rfid: 
+    first_name: "Donald
+    last_name: Reeser"
+    gender: M
+    email: dreeser@ptd.net
+    phone: 7179791116
+
+- model: tourney.Player
+  pk: 76
+  fields:
+    rfid: 
+    first_name: Ashley
+    last_name: Talbot
+    gender: F
+    email: crash1031@gmail.com
+    phone: 7178245308
+
+- model: tourney.Player
+  pk: 77
+  fields:
+    rfid: 
+    first_name: Arnold
+    last_name: Schultz
+    gender: M
+    email: schultzlock@yahoo.com
+    phone: 7165143616
+
+- model: tourney.Player
+  pk: 78
+  fields:
+    rfid: 
+    first_name: Megan
+    last_name: Dolbin
+    gender: F
+    email: fangs1107@hotmail.com
+    phone: 5705165060
+
+- model: tourney.Player
+  pk: 79
+  fields:
+    rfid: 
+    first_name: Jeff
+    last_name: Croft
+    gender: M
+    email: yamblaster200@yahoo.com
+    phone: 7178233884
+
+- model: tourney.Player
+  pk: 80
+  fields:
+    rfid: 
+    first_name: Mark
+    last_name: Koldesko
+    gender: M
+    email: n/a
+    phone: 5705793432
+
+- model: tourney.Player
+  pk: 81
+  fields:
+    rfid: 
+    first_name: Josh
+    last_name: Meyer
+    gender: M
+    email: jmeyer_03@hotmail.com
+    phone: 4125377322
+
+- model: tourney.Player
+  pk: 82
+  fields:
+    rfid: 
+    first_name: Kelley
+    last_name: (Zelda)
+    gender: F
+    email: kelleysimpson@gmail.com
+    phone: 7178567671
+
+- model: tourney.Player
+  pk: 83
+  fields:
+    rfid: 
+    first_name: Bill
+    last_name: Dye
+    gender: M
+    email: wed190@verizon.net
+    phone: 7175541476
+
+- model: tourney.Player
+  pk: 84
+  fields:
+    rfid: 
+    first_name: Michael
+    last_name: Kostura
+    gender: M
+    email: mkostura14@yahoo.com
+    phone: 5705275739
+
+- model: tourney.Player
+  pk: 85
+  fields:
+    rfid: 
+    first_name: Christopher
+    last_name: Douthat
+    gender: M
+    email: cdouthat@pa.metrocast.net
+    phone: 5705924920
+
+- model: tourney.Player
+  pk: 86
+  fields:
+    rfid: 
+    first_name: Daniel
+    last_name: Dankovich
+    gender: M
+    email: danka93@aol.com
+    phone: 72449407917
+
+- model: tourney.Player
+  pk: 87
+  fields:
+    rfid: 
+    first_name: Mark
+    last_name: Jr
+    gender: M
+    email: ixnay1039@yahoo.com
+    phone: 7173427653
+
+- model: tourney.Player
+  pk: 88
+  fields:
+    rfid: 
+    first_name: Allen
+    last_name: Johnson
+    gender: M
+    email: 
+    phone: 5702042682
+
+- model: tourney.Player
+  pk: 89
+  fields:
+    rfid: 
+    first_name: Todd
+    last_name: Witman
+    gender: M
+    email: silent_tdw@yahoo.com
+    phone: 7174334377
+
+- model: tourney.Player
+  pk: 90
+  fields:
+    rfid: 
+    first_name: Jeff
+    last_name: Griggs
+    gender: M
+    email: igottaguy46@gmail.com
+    phone: 7174610280
+
+- model: tourney.Player
+  pk: 91
+  fields:
+    rfid: 
+    first_name: Ryan
+    last_name: Davis
+    gender: M
+    email: ryan_camron_davis@yahoo.com
+    phone: 7174213468
+
+- model: tourney.Player
+  pk: 92
+  fields:
+    rfid: 
+    first_name: Joshua
+    last_name: Perez
+    gender: M
+    email: jayperez@yahoo.com
+    phone: 7177995388
+
+- model: tourney.Player
+  pk: 93
+  fields:
+    rfid: 
+    first_name: Michael
+    last_name: Kutz
+    gender: M
+    email: michaelkutz@rocketmail.com
+    phone: 5705737894
+
+- model: tourney.Player
+  pk: 94
+  fields:
+    rfid: 
+    first_name: Bill
+    last_name: East
+    gender: M
+    email: billeast@hotmail.com
+    phone: 7245548037
+
+- model: tourney.Player
+  pk: 95
+  fields:
+    rfid: 
+    first_name: Hal
+    last_name: Reinhardt
+    gender: M
+    email: halannem@rochester.rr.com
+    phone: 5857496608
+
+- model: tourney.Player
+  pk: 96
+  fields:
+    rfid: 
+    first_name: Jim
+    last_name: Graton
+    gender: M
+    email: gratonjames@yahoo.com
+    phone: 7164259550
+
+- model: tourney.Player
+  pk: 97
+  fields:
+    rfid: 
+    first_name: Doug
+    last_name: Farrar
+    gender: M
+    email: dlsf9@verizon.net
+    phone: 
+
+- model: tourney.Player
+  pk: 98
+  fields:
+    rfid: 
+    first_name: Brett
+    last_name: Allebach
+    gender: M
+    email: dballebach@yahoo.com
+    phone: 2156053528
+
+- model: tourney.Player
+  pk: 99
+  fields:
+    rfid: 
+    first_name: Bob
+    last_name: Blake
+    gender: M
+    email: bqa1998@yahoo.com
+    phone: Bob Terchek
+
+- model: tourney.Player
+  pk: 100
+  fields:
+    rfid: 
+    first_name: Frank
+    last_name: Bentz
+    gender: M
+    email: fjb15425@gmail.com
+    phone: 7243237006
+
+- model: tourney.Player
+  pk: 101
+  fields:
+    rfid: 
+    first_name: John
+    last_name: Daddio
+    gender: M
+    email: jd.61362@gmail.com
+    phone: 9084720506
+
+- model: tourney.Player
+  pk: 102
+  fields:
+    rfid: 
+    first_name: Shawnee
+    last_name: Cuthbert
+    gender: F
+    email: lacdl@msn.com
+    phone: 2158080899
+
+- model: tourney.Player
+  pk: 103
+  fields:
+    rfid: 
+    first_name: Todd
+    last_name: Allebach
+    gender: M
+    email: ktallebach@mail.widener.edu
+    phone: 2159323470
+
+- model: tourney.Player
+  pk: 104
+  fields:
+    rfid: 
+    first_name: Dan
+    last_name: Goetter
+    gender: M
+    email: dgoetter@hotmail.com
+    phone: n/a
+
+- model: tourney.Player
+  pk: 105
+  fields:
+    rfid: 
+    first_name: Robbie
+    last_name: Olhanoski
+    gender: M
+    email: rolhanoski@hotmail.com
+    phone: 5708565686
+
+- model: tourney.Player
+  pk: 106
+  fields:
+    rfid: 
+    first_name: Michelle
+    last_name: Septak
+    gender: F
+    email: angeleyes1272@cs.com
+    phone: 4129560687
+
+- model: tourney.Player
+  pk: 107
+  fields:
+    rfid: 
+    first_name: Micki
+    last_name: (Michelle)
+    gender: F
+    email: micki.hughes@gmail.com
+    phone: 4127160308
+
+- model: tourney.Player
+  pk: 108
+  fields:
+    rfid: 
+    first_name: Skinny
+    last_name: 
+    gender: M
+    email: skinnysss@yahoo.com
+    phone: 4124302557
+
+- model: tourney.Player
+  pk: 109
+  fields:
+    rfid: 
+    first_name: David
+    last_name: Hickman
+    gender: M
+    email: hitmanshellb00@yahoo.com ?
+    phone: 4124035437
+
+- model: tourney.Player
+  pk: 110
+  fields:
+    rfid: 
+    first_name: Mike
+    last_name: Sankey
+    gender: M
+    email: mk_sankey@yahoo.com
+    phone: 4125809332
+
+- model: tourney.Player
+  pk: 111
+  fields:
+    rfid: 
+    first_name: J
+    last_name: Jamriska
+    gender: M
+    email: 
+    phone: 7247195506
+
+- model: tourney.Player
+  pk: 112
+  fields:
+    rfid: 
+    first_name: Bill
+    last_name: Hughes
+    gender: M
+    email: bill.hughes.jr@gmail.com
+    phone: 4122156112
+
+- model: tourney.Player
+  pk: 113
+  fields:
+    rfid: 
+    first_name: Jim
+    last_name: Watkins
+    gender: M
+    email: jimmiewatts82@yahoo.com
+    phone: 5706174362
+
+- model: tourney.Player
+  pk: 114
+  fields:
+    rfid: 
+    first_name: William
+    last_name: Verhosh
+    gender: M
+    email: bill99osirich@yahoo.com
+    phone: 5702923795
+
+- model: tourney.Player
+  pk: 115
+  fields:
+    rfid: 
+    first_name: Robert
+    last_name: Yanni
+    gender: M
+    email: yannirob@yahoo.com
+    phone: 5706405977
+
+- model: tourney.Player
+  pk: 116
+  fields:
+    rfid: 
+    first_name: Phil
+    last_name: Sroka
+    gender: M
+    email: philsroka@yahoo.com
+    phone: 
+
+- model: tourney.Player
+  pk: 117
+  fields:
+    rfid: 
+    first_name: Mylinda
+    last_name: Mannion
+    gender: F
+    email: mylindamannion@gmail.com
+    phone: 6102032664
+
+- model: tourney.Player
+  pk: 118
+  fields:
+    rfid: 
+    first_name: Ben
+    last_name: Clark
+    gender: M
+    email: bjamin18@yahoo.com
+    phone: 2155995970
+
+- model: tourney.Player
+  pk: 119
+  fields:
+    rfid: 
+    first_name: James
+    last_name: Gaiewski
+    gender: M
+    email: shockwave74@msn.com
+    phone: 6107633590
+
+- model: tourney.Player
+  pk: 120
+  fields:
+    rfid: 
+    first_name: Chuck
+    last_name: Anthony
+    gender: M
+    email: blaze0927@verizon.net
+    phone: 6107415235
+
+- model: tourney.Player
+  pk: 121
+  fields:
+    rfid: 
+    first_name: Christopher
+    last_name: Miller
+    gender: M
+    email: eliminator1123@aol.com
+    phone: 4843366173
+
+- model: tourney.Player
+  pk: 122
+  fields:
+    rfid: 
+    first_name: Jimmy
+    last_name: O'Connell
+    gender: M
+    email: n/a
+    phone: 2016022618
+
+- model: tourney.Player
+  pk: 123
+  fields:
+    rfid: 
+    first_name: Christina
+    last_name: Mangos
+    gender: F
+    email: cmcguire1215@yahoo.com
+    phone: 5874743807
+
+- model: tourney.Player
+  pk: 124
+  fields:
+    rfid: 
+    first_name: Mike
+    last_name: Falconer
+    gender: M
+    email: mikey5403@yahoo.com
+    phone: 5856159570
+
+- model: tourney.Player
+  pk: 125
+  fields:
+    rfid: 
+    first_name: Justin
+    last_name: Burdett
+    gender: M
+    email: jburdett@rochester.rr.com
+    phone: 5856135512
+
+- model: tourney.Player
+  pk: 126
+  fields:
+    rfid: 
+    first_name: John
+    last_name: Isaac
+    gender: M
+    email: jpidarts180@gmail.com
+    phone: 5853010990
+
+- model: tourney.Player
+  pk: 127
+  fields:
+    rfid: 
+    first_name: Kailey
+    last_name: Noble
+    gender: F
+    email: knobl972@gmail.com
+    phone: 2676143044
+
+- model: tourney.Player
+  pk: 128
+  fields:
+    rfid: 
+    first_name: Hayley
+    last_name: Bauer
+    gender: F
+    email: hayleybauer@gmail.com
+    phone: 4126284531
+
+- model: tourney.Player
+  pk: 129
+  fields:
+    rfid: 
+    first_name: Jason
+    last_name: Bedio
+    gender: M
+    email: n/a
+    phone: 5708612716
+
+- model: tourney.Player
+  pk: 130
+  fields:
+    rfid: 
+    first_name: Mark
+    last_name: Mensiger
+    gender: M
+    email: turner_roxanne@yahoo.com
+    phone: 5702251991
+
+- model: tourney.Player
+  pk: 131
+  fields:
+    rfid: 
+    first_name: Colin
+    last_name: Rath
+    gender: M
+    email: rifrath@gmail.com
+    phone: 2677842080
+
+- model: tourney.Player
+  pk: 132
+  fields:
+    rfid: 
+    first_name: David
+    last_name: Landes
+    gender: M
+    email: limoasincservices@comcast.net
+    phone: 2677189750
+
+- model: tourney.Player
+  pk: 133
+  fields:
+    rfid: 
+    first_name: Eric
+    last_name: Gillespie
+    gender: M
+    email: egillespie666@gmail.com
+    phone: 2672185974
+
+- model: tourney.Player
+  pk: 134
+  fields:
+    rfid: 
+    first_name: Jeff
+    last_name: Skrzat
+    gender: M
+    email: jeff.skrzat@gmail.com
+    phone: 2152373959
+
+- model: tourney.Player
+  pk: 135
+  fields:
+    rfid: 
+    first_name: Bobby
+    last_name: Barndt
+    gender: M
+    email: n/a
+    phone: 2676401111
+
+- model: tourney.Player
+  pk: 136
+  fields:
+    rfid: 
+    first_name: Matthew
+    last_name: Famularo
+    gender: M
+    email: n/a
+    phone: 2152372300
+
+- model: tourney.Player
+  pk: 137
+  fields:
+    rfid: 
+    first_name: Mike
+    last_name: Skrazat
+    gender: M
+    email: mjskrzat913@yahoo.com
+    phone: 2157680563
+
+- model: tourney.Player
+  pk: 138
+  fields:
+    rfid: 
+    first_name: Bill
+    last_name: Jamieson
+    gender: M
+    email: bill.j73@hotmail.com
+    phone: 5704015414
+
+- model: tourney.Player
+  pk: 139
+  fields:
+    rfid: 
+    first_name: Robert
+    last_name: Rohlfing
+    gender: M
+    email: robroh@ptd.net
+    phone: 5702499693
+
+- model: tourney.Player
+  pk: 140
+  fields:
+    rfid: 
+    first_name: Blair
+    last_name: Schilling
+    gender: M
+    email: blairschilling@gmail.com
+    phone: 2672181282
+
+- model: tourney.Player
+  pk: 141
+  fields:
+    rfid: 
+    first_name: Chris
+    last_name: Guire
+    gender: M
+    email: guire 18969@yahoo.com
+    phone: 2672213942
+
+- model: tourney.Player
+  pk: 142
+  fields:
+    rfid: 
+    first_name: Brian
+    last_name: Tulish
+    gender: M
+    email: briantulish@ymail.com
+    phone: 2676449379
+
+- model: tourney.Player
+  pk: 143
+  fields:
+    rfid: 
+    first_name: Billy
+    last_name: Jamieson
+    gender: M
+    email: n/a
+    phone: 2158165044
+
+- model: tourney.Player
+  pk: 144
+  fields:
+    rfid: 
+    first_name: Ambrogio
+    last_name: Campanella
+    gender: M
+    email: solodart@yahoo.com
+    phone: 9735171882
+
+- model: tourney.Player
+  pk: 145
+  fields:
+    rfid: 
+    first_name: Sidney
+    last_name: Vaughn
+    gender: M
+    email: sirrdd180@gmail.com
+    phone: 7243283210
+
+- model: tourney.Player
+  pk: 146
+  fields:
+    rfid: 
+    first_name: Lillian
+    last_name: Starr
+    gender: F
+    email: lstarr@yahoo.com
+    phone: 7164259551
+
+- model: tourney.Player
+  pk: 147
+  fields:
+    rfid: 
+    first_name: Jamie
+    last_name: Shorette
+    gender: F
+    email: sjamies477@yahoo.com
+    phone: 5704015283
+
+- model: tourney.Player
+  pk: 148
+  fields:
+    rfid: 
+    first_name: Curtis
+    last_name: Shorette
+    gender: M
+    email: sheppton@yahoo.com
+    phone: 5704019985
+
+- model: tourney.Player
+  pk: 149
+  fields:
+    rfid: 
+    first_name: John
+    last_name: Kuczynski
+    gender: M
+    email: johnnyk180@hotmail.com
+    phone: 5709563228
+

@@ -1,0 +1,12 @@
+{% extends 'include/base.html' %}
+{% block body %}
+<div class="page-header">
+    <h3>Registration</h3>
+</div>
+    {{ msg }}
+    {% if player %}
+        {{ player.full_name }}
+    {% endif %}
+<!-- Body -->
+  
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'include/base.html' %}
+{% block body %}
+<div class="page-header">
+    <h3>Registration</h3>
+</div>
+<!-- Body -->
+    <form action="{% url 22k:register %}" method="post">
+        <fieldset>
+            <!--legend>Membership Registration</legend-->
+            {% csrf_token %}
+            <label for="id_cardno">Card No</label>
+            <input type="text" id="id_cardno" name="cardno" placeholder="Phoenix Player Card Number">
+
+            <label for="id_first_name">First Name</label>
+            <input type="text" id="id_first_name" name="first_name" placeholder="First Name">
+
+            <label for="id_last_name">Last Name</label>
+            <input type="text" id="id_last_name" name="last_name" placeholder="Last Name">
+
+            <label for="id_gender">Gender</label>
+            <select name="gender">
+                <option value="M">Man</option>
+                <option value="F">Lady</option>
+            </select>
+
+            <label for="id_phone">Phone</label>
+             <input type="text" id="id_phone" name="phone" placeholder="Cell Phone Number">
+
+            <!--label for="id_email">email</label>
+             <input type="text" id="id_email" name="email" placeholder="Email Address"-->
+            <label></label>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </fieldset>
+    </form>
+{% endblock %}

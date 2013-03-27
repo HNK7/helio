@@ -1,0 +1,54 @@
+{% extends 'include/base.html' %}
+{% load url from future %}
+{% load humanize %}
+{% block body %}
+<div class="page-header">
+    <h3>Entry - {{ tournament.title }}</h3> <span class="label label-info">TOTAL: {{ entry_total|intcomma }}</span>
+</div>
+{% if entry %}
+    <table class="table table-condensed  table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th></th>
+                <th>Name</th>
+                <th></th>
+                <th>Card</th>
+                <th>Phone</th>
+                <th>Rank/Stat</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for player in entry %}
+        <tr{% if not player.cardno %} class="error" {% endif %}>
+            <td class="muted">{{ forloop.counter }}</td>
+            <td>
+            {% if not player.is_profile_valid %}
+                <span class="label label-warning">info</span>
+            {% endif %}
+            {% if not player.cardno %}
+                <span class="label label-important">card</span>
+            {% endif %}
+            </td>
+            <td><a href="{% url '22k:profile' player.id %}">{{ player.full_name }}</a></td>
+            <td class="muted">{{ player.gender }}</td>
+            <td class="muted">{{ player.card_number }}</td>
+            <td class="muted">{{ player.phone_number }}</td>
+            <td class="muted">
+                <span class="badge">3.29</span><span class="badge"> 29.30</span>
+                <span class="badge badge-inverse">2.29</span><span class="badge badge-inverse">24.03</span>
+            </td>
+            <td>
+            {% if player.is_profile_valid and tournament.is_over %}
+                <a href="#" class="btn btn-mini btn-primary">Entry</a>
+            {% else %}
+                <small><a href="{% url '22k:profile' player.id %}"><i class="icon-edit"></i> Edit</a></small>
+            {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endblock body %}

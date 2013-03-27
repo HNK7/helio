@@ -1,0 +1,6 @@
+<h2>{{ tournament.title }}</h2>
+<ul>
+{% for event in tournament.event_set.all %}
+     <li>{{ event.title }}</li>
+{% endfor %}
+</ul>
