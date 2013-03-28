@@ -1,5 +1,6 @@
-from django.db import models
+from django.db import models, connections
 from datetime import datetime
+from django.contrib.localflavor.us.models import USStateField
 
 
 class Tournament(models.Model):
@@ -59,43 +60,79 @@ class Team(models.Model):
         return self.name
 
 
-class Player(models.Model):
+class Address(models.Model):
+    street_line1 = models.CharField(max_length=100, blank=True, null=True)
+    street_line2 = models.CharField(max_length=100, blank=True, null=True)
+    zipcode = models.CharField(max_length=5, blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    # state = models.CharField(max_length=100, null=True)
+    state = USStateField(blank=True, null=True)
+    country = models.CharField(max_length=100, blank=True, null=True, default='US')
+
+    class Meta:
+        abstract = True
+
+
+class Player(Address):
     gender_choices = (
-        ('M', 'M'),
-        ('F', 'F'),
+        ('M', 'Man'),
+        ('F', 'Lady'),
     )
     cardno = models.CharField(max_length=16, null=True)
     rfid = models.CharField(max_length=64, null=True, editable=False)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
     gender = models.CharField(max_length=1, choices=gender_choices, null=True)
-    email = models.EmailField(max_length=255, null=True)
+    email = models.EmailField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=40, null=True)
-    street_line1 = models.CharField(max_length=100, null=True)
-    street_line2 = models.CharField(max_length=100, null=True)
-    zipcode = models.CharField(max_length=5, null=True)
-    city = models.CharField(max_length=100, null=True)
-    state = models.CharField(max_length=100, null=True)
-    country = models.CharField(max_length=100, null=True, default='US')
+    ranking_mpr = models.DecimalField(max_digits=3, decimal_places=2, default=0.00, null=True)
+    ranking_ppd = models.DecimalField(max_digits=5, decimal_places=2, default=0.00, null=True)
     # registered_at = models.DateTimeField(auto_now_add=True)
     # updated_at = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return self.full_name()
+        return self.full_name
 
+    @property
     def full_name(self):
-
         return '%s %s' % (self.first_name, self.last_name)
 
+    @property
     def phone_number(self):
         return '(%s%s%s) %s%s%s-%s%s%s%s' % tuple(self.phone)
 
+    @property
     def card_number(self):
-        # return '%s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s' % tuple(self.cardno) if self.cardno else None
-        return self.cardno
+        return '%s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s' % tuple(self.cardno) if self.cardno else None
+        # return self.cardno
 
     def is_profile_valid(self):
         return True if self.cardno and self.phone and self.email and self.gender else False
+
+    def userid(self):
+        cursor = connections['hi'].cursor()
+        cursor.execute("SELECT m_id FROM members where rfid = %s", [self.rfid])
+        r = cursor.fetchone()
+        return r[0]
+
+    def is_web_member(self):
+        cursor = connections['hi'].cursor()
+        cursor.execute("SELECT rfid FROM members where rfid = %s", [self.rfid])
+        r = cursor.fetchone()
+        return True if r else False
+
+    def casual_stat(self):
+        cursor = connections['hi'].cursor()
+        cursor.execute("SELECT ppd_ta2, mpr_ta2 FROM useravg where rfid = %s", [self.rfid])
+        r = cursor.fetchone()
+        return {'PPD': r[0], 'MPR': r[1]}
+
+    def ranking(self):
+        cursor = connections['hi'].cursor()
+        cursor.execute("SELECT m_id FROM members where rfid = %s", [self.rfid])
+        r = cursor.fetchone()
+        ranking = Ranking.objects.get(pk=r[0])
+        return {'PPD': ranking.ppd, 'MPR': ranking.mpr}
 
 
 class Entry(models.Model):
@@ -115,6 +152,7 @@ class EventStat(models.Model):
 
 
 class Ranking(models.Model):
+    userid = models.CharField(max_length=64, editable=False, primary_key=True)
+    rfid = models.CharField(max_length=64, null=True, editable=False, unique=True)
     mpr = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
     ppd = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
-    player = models.ForeignKey(Player)

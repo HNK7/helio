@@ -1,8 +1,9 @@
 from django.db import connections
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from tourney.models import Tournament, Player
-from tourney.forms import RegisterForm
+from tourney.forms import RegisterForm, ProfileForm
 
 
 def index(request):
@@ -41,8 +42,40 @@ def entry(request, t_id):
 def profile(request, p_id):
     context = dict()
     context['tournament_list'] = Tournament.objects.all()
-    context['player'] = Player.objects.get(id=p_id)
+    player = Player.objects.get(id=p_id)
+    casual_stat = player.casual_stat()
+    ranking_stat = player.ranking()
+
+    context['player'] = player
+    context['ppd_casual'] = casual_stat['PPD']
+    context['mpr_casual'] = casual_stat['MPR']
+    context['ppd_ranking'] = ranking_stat['PPD']
+    context['mpr_ranking'] = ranking_stat['MPR']
     return render(request, 'tourney/profile.html', context)
+
+
+def profile_edit(request, p_id):
+    context = dict()
+    context['tournament_list'] = Tournament.objects.all()
+    player = get_object_or_404(Player, id=p_id)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=player)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('22k:profile', args=(p_id,)))
+
+    else:
+        form = ProfileForm(instance=player)
+    context['form'] = form
+    context['player'] = player
+    return render(request, 'tourney/profile_edit.html', context)
+
+
+def _is_new_card(rfid):
+    cursor = connections['hi'].cursor()
+    cursor.execute("SELECT utime FROM checkrfid where rfid = %s", [rfid])
+    r = cursor.fetchone()
+    return True if not r else False
 
 
 def register(request):
@@ -61,17 +94,10 @@ def register(request):
     return render(request, 'tourney/register.html', context)
 
 
-def is_blank_card(rfid):
-    cursor = connections['hi'].cursor()
-    cursor.execute("SELECT utime FROM checkrfid where rfid = %s", [rfid])
-    r = cursor.fetchone()
-    return True if not r else False
-
-
 def card(request, rfid_id):
     # check card valid
     context = dict()
-    if is_blank_card(rfid_id):
+    if _is_new_card(rfid_id):
         msg = 'blank card'
     else:
         try:

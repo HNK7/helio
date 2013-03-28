@@ -16,8 +16,8 @@ DATABASES = {
         'NAME': 'djangostack',
         'HOST': '/Applications/djangostack-1.4.5-0/postgresql',
         'PORT': '5432',
-        'USER': 'bitnami',
-        'PASSWORD': 'bbbe740a47'
+        'USER': 'postgres',
+        'PASSWORD': 'tnvkfdl2'
     },
     'hi': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',

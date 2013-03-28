@@ -1,0 +1,13 @@
+{% extends 'include/base.html' %}
+{% block body %}
+<div class="page-header">
+    <h3>Profile Edit - {{ player.full_name }}</h3>
+</div>
+<!-- Body -->
+<form action="{% url 22k:profile_edit player.id %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_table }}
+    <label></label>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+{% endblock %}

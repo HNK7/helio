@@ -15,7 +15,6 @@
                 <th></th>
                 <th>Card</th>
                 <th>Phone</th>
-                <th>Email</th>
                 <th></th>
             </tr>
         </thead>
@@ -35,9 +34,8 @@
             <td class="muted">{{ player.gender }}</td>
             <td class="muted">{{ player.card_number }}</td>
             <td class="muted">{{ player.phone_number }}</td>
-            <td class="muted">{{ player.email }}</td>
             <td>
-                <small><a href="{% url '22k:profile' player.id %}"><i class="icon-edit"></i> Edit</a></small>
+                <small><a href="{% url '22k:profile_edit' player.id %}"><i class="icon-edit"></i> Edit</a></small>
             </td>
         </tr>
     {% endfor %}
