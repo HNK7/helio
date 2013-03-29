@@ -71,11 +71,13 @@ def profile_edit(request, p_id):
     return render(request, 'tourney/profile_edit.html', context)
 
 
-def _is_new_card(rfid):
+def _get_card_info(rfid):
     cursor = connections['hi'].cursor()
-    cursor.execute("SELECT utime FROM checkrfid where rfid = %s", [rfid])
+    cursor.execute("""SELECT a.name, b.rfid, b.utime FROM userinfo a
+        RIGHT JOIN checkrfid b ON a.rfid= b.rfid
+        WHERE b.rfid=%s""", [rfid])
     r = cursor.fetchone()
-    return True if not r else False
+    return r
 
 
 def register(request):
@@ -97,15 +99,35 @@ def register(request):
 def card(request, rfid_id):
     # check card valid
     context = dict()
-    if _is_new_card(rfid_id):
-        msg = 'blank card'
+    card_info = _get_card_info(rfid_id)
+
+    if not card_info:
+        msg = 'invalid card no'
     else:
+        [name, rfid, utime] = list(card_info)
+
+        if rfid and utime and name:
+            msg = 'signed up card'
+        elif name and not utime:
+            msg = 'temp card'
+        else:
+            msg = 'blank card'
+
         try:
             player = Player.objects.get(rfid=rfid_id)
             msg = 'tournament card'
             context['player'] = player
         except Player.DoesNotExist:
-            msg = 'casual card'
+            pass
+    # if _is_new_card(rfid_id):
+    #     msg = 'new card'
+    # else:
+    #     try:
+    #         player = Player.objects.get(rfid=rfid_id)
+    #         msg = 'tournament card'
+    #         context['player'] = player
+    #     except Player.DoesNotExist:
+    #         msg = 'casual card'
 
     context['msg'] = msg
     return render(request, 'tourney/card.html', context)
