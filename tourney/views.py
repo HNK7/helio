@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from tourney.models import Tournament, Player
-from tourney.forms import RegisterForm, ProfileForm
+from tourney.forms import RegisterForm, ProfileForm, EntryForm
 
 
 def index(request):
@@ -116,13 +116,17 @@ def card(request, rfid_id):
             msg = 'temp card'
         else:
             msg = 'blank card'
+    form = EntryForm()
 
-        try:
-            player = Player.objects.get(rfid=rfid_id)
-            msg = 'tournament card'
-            context['player'] = player
-        except Player.DoesNotExist:
-            pass
+        # try:
+        #     player = Player.objects.get(rfid=rfid_id)
+        #     if player:
+        #         form = EntryForm(instance=player)
+            # if form.is_valid():
+            # form.save()
+            # return HttpResponseRedirect(reverse('22k:player', args=(p_id,)))            context['player'] = player
+        # except Player.DoesNotExist:
+        #     pass
     # if _is_new_card(rfid_id):
     #     msg = 'new card'
     # else:
@@ -134,4 +138,5 @@ def card(request, rfid_id):
     #         msg = 'casual card'
 
     context['msg'] = msg
+    context['form'] = form
     return render(request, 'tourney/card.html', context)
