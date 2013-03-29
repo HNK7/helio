@@ -75,7 +75,7 @@ def _get_card_info(rfid):
     cursor = connections['hi'].cursor()
     cursor.execute("""SELECT a.name, b.rfid, b.utime FROM userinfo a
         RIGHT JOIN checkrfid b ON a.rfid= b.rfid
-        WHERE b.rfid=%s""", [rfid])
+        WHERE b.rfid=getorigrfid2(%s)""", [rfid, ])
     r = cursor.fetchone()
     return r
 
@@ -100,14 +100,18 @@ def card(request, rfid_id):
     # check card valid
     context = dict()
     card_info = _get_card_info(rfid_id)
-
+    msg = ''
     if not card_info:
         msg = 'invalid card no'
     else:
         [name, rfid, utime] = list(card_info)
 
         if rfid and utime and name:
-            msg = 'signed up card'
+            if str(rfid) == rfid_id:
+                msg = 'signed up card'
+            else:
+                msg = 'copied card'
+
         elif name and not utime:
             msg = 'temp card'
         else:
