@@ -109,30 +109,34 @@ class Player(Address):
     def is_profile_valid(self):
         return True if self.cardno and self.phone and self.email and self.gender else False
 
+    @property
     def userid(self):
         cursor = connections['hi'].cursor()
-        cursor.execute("SELECT m_id FROM members where rfid = %s", [self.rfid])
+        cursor.execute("SELECT m_id FROM members where rfid = getorigrfid2(%s)", [self.rfid])
         r = cursor.fetchone()
         return r[0]
 
     def is_web_member(self):
-        cursor = connections['hi'].cursor()
-        cursor.execute("SELECT rfid FROM members where rfid = %s", [self.rfid])
-        r = cursor.fetchone()
-        return True if r else False
+
+        return True if self.userid else False
 
     def casual_stat(self):
         cursor = connections['hi'].cursor()
-        cursor.execute("SELECT ppd_ta2, mpr_ta2 FROM useravg where rfid = %s", [self.rfid])
+        cursor.execute("SELECT ppd_ta2, mpr_ta2 FROM useravg where rfid = getorigrfid2(%s)", [self.rfid])
         r = cursor.fetchone()
         return {'PPD': r[0], 'MPR': r[1]}
 
     def ranking(self):
-        cursor = connections['hi'].cursor()
-        cursor.execute("SELECT m_id FROM members where rfid = %s", [self.rfid])
-        r = cursor.fetchone()
-        ranking = Ranking.objects.get(pk=r[0])
+        # cursor = connections['hi'].cursor()
+        # cursor.execute("SELECT m_id FROM members where rfid = %s", [self.rfid])
+        # r = cursor.fetchone()
+        # ranking = Ranking.objects.get(pk=r[0])
+        ranking = Ranking.objects.get(pk=self.userid)
         return {'PPD': ranking.ppd, 'MPR': ranking.mpr}
+
+    def event_stat(self):
+        event_stat = EventStat.objects.get(pk=self.userid)
+        return {'PPD': event_stat.ppd, 'MPR': event_stat.mpr}
 
 
 class Entry(models.Model):
@@ -145,10 +149,10 @@ class Entry(models.Model):
 
 
 class EventStat(models.Model):
+    userid = models.CharField(max_length=64, editable=False, primary_key=True)
+    rfid = models.CharField(max_length=64, null=True, editable=False, unique=True)
     mpr = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
     ppd = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
-    player = models.ForeignKey(Player)
-    event = models.ForeignKey(Event)
 
 
 class Ranking(models.Model):

@@ -4,11 +4,7 @@
                 <h3>{{ player.full_name }}  <small>( {{ player.userid }} ) <a href="{% url 22k:profile_edit player.id %}"><i class="icon-edit"></i> Edit</a></small></h3>
             </div>
 
-            <ul class="media-list">
-                <li class="media">
-                    <img class="img-polaroid media-object pull-left" src="http://dartoo.com/headshot.png" width="240">
-                <div class="media-body">
-                     <div class="span4">
+            <div class="span4">
                         <h4 class="muted">Basic Info</h4>
                         <table class="table table-condensed">
                             <thead>
@@ -40,8 +36,8 @@
                                             <tbody>
                                                 <tr>
                                                     <td><span class="label label-important">tourney</span></td>
-                                                    <td><span class="badge badge-important">2.96</span></td>
-                                                    <td><span class="badge badge-important">28.38</span></td>
+                                                    <td><span class="badge badge-important">{{ mpr_event }}</span></td>
+                                                    <td><span class="badge badge-important">{{ ppd_event }}</span></td>
                                                 </tr>
                                                 <tr>
                                                     <td><span class="label label-info">ranking</span></td>
@@ -81,34 +77,4 @@
                         </table>
                     </div>
 
-                </div>
-                </li>
-            </ul>
-
-            <!--div class="span10">
-                <table class="table table-striped">
-                    <thead class="muted">
-                        <th>Stats</th>
-                        <th>MPR</th>
-                        <th>PPD</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="label label-important">tournament</span></td>
-                            <td><span class="badge badge-important">2.96</span></td>
-                            <td><span class="badge badge-important">28.38</span></td>
-                        </tr>
-                        <tr>
-                            <td><span class="label label-info">ranking</span></td>
-                            <td><span class="badge badge-info">3.24</span></td>
-                            <td><span class="badge badge-info">29.12</span></td>
-                        </tr>
-                        <tr>
-                            <td><span class="label">casual</span></td>
-                            <td><span class="badge">{{ mpr_casual }}</span></td>
-                            <td><span class="badge">{{ ppd_casual }}</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div-->
 {% endblock %}

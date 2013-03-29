@@ -45,12 +45,15 @@ def profile(request, p_id):
     player = Player.objects.get(id=p_id)
     casual_stat = player.casual_stat()
     ranking_stat = player.ranking()
+    event_stat = player.event_stat()
 
     context['player'] = player
     context['ppd_casual'] = casual_stat['PPD']
     context['mpr_casual'] = casual_stat['MPR']
     context['ppd_ranking'] = ranking_stat['PPD']
     context['mpr_ranking'] = ranking_stat['MPR']
+    context['ppd_event'] = event_stat['PPD']
+    context['mpr_event'] = event_stat['MPR']
     return render(request, 'tourney/profile.html', context)
 
 
