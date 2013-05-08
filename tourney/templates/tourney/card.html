@@ -4,9 +4,11 @@
     <h3>Registration - {{ msg }}</h3>
 </div>
 <!-- Body -->
-<form action="{% url 22k:register %}" method="POST">
+<form action="{% url 22k:card card.cardno %}" method="POST">
     {% csrf_token %}
     {{ form.as_table }}
+    <input type="hidden" name="rfid" value="{{ card.rfid }}">
+    <input type="hidden" name="cardno" value="{{ card.cardno }}">
     <label></label>
     <button class="btn btn-primary" type="submit">Submit</button>
 </form>

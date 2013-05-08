@@ -78,8 +78,6 @@ class Player(Address):
         ('M', 'Man'),
         ('F', 'Lady'),
     )
-    cardno = models.CharField(max_length=16, null=True)
-    rfid = models.CharField(max_length=64, null=True, editable=False)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
     gender = models.CharField(max_length=1, choices=gender_choices, null=True)
@@ -103,26 +101,29 @@ class Player(Address):
 
     @property
     def card_number(self):
-        return '%s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s' % tuple(self.cardno) if self.cardno else None
+        return Card.objects.get(owned_id=self.id)
         # return self.cardno
 
+    @property
+    def rfid(self):
+        return Card.objects.get(owned_id=self.id).rfid
+
     def is_profile_valid(self):
-        return True if self.cardno and self.phone and self.email and self.gender else False
+        return True if self.card_number and self.phone and self.email and self.gender else False
 
     @property
     def userid(self):
         cursor = connections['hi'].cursor()
-        cursor.execute("SELECT m_id FROM members where rfid = getorigrfid2(%s)", [self.rfid])
+        cursor.execute("SELECT m_id FROM members where rfid = getorigrfid2(%s)", [self.rfid,])
         r = cursor.fetchone()
         return r[0]
 
     def is_web_member(self):
-
         return True if self.userid else False
 
     def casual_stat(self):
         cursor = connections['hi'].cursor()
-        cursor.execute("SELECT ppd_ta2, mpr_ta2 FROM useravg where rfid = getorigrfid2(%s)", [self.rfid])
+        cursor.execute("SELECT ppd_ta2, mpr_ta2 FROM useravg where rfid = getorigrfid2(%s)", [self.rfid,])
         r = cursor.fetchone()
         return {'PPD': r[0], 'MPR': r[1]}
 
@@ -139,13 +140,37 @@ class Player(Address):
         return {'PPD': event_stat.ppd, 'MPR': event_stat.mpr}
 
 
+class Card(models.Model):
+    rfid = models.CharField(max_length=255, editable=False, unique=True)
+    cardno = models.CharField(max_length=16, editable=False, unique=True)
+    # used = models.DateTimeField(null=True)
+    owned = models.ForeignKey(Player, null=True)
+
+    def __unicode__(self):
+        return '%s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s' % tuple(self.cardno)
+
+    def orginal_rfid(self):
+        cursor = connections['hi'].cursor()
+        cursor.execute("SELECT getorigrfid2(%s)", [self.rfid])
+        r = cursor.fetchone()
+        return r[0]
+
+
 class Entry(models.Model):
     tournament = models.ForeignKey(Tournament)
     player = models.ForeignKey(Player)
-    registered_at = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(editable=False)
+
+    class Meta:
+        unique_together = ('tournament', 'player')
 
     def __unicode__(self):
-        return self.player.full_name()
+        return "%s plays %s" % (self.player.full_name, self.tournament.title)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.created = datetime.now()
+        super(Entry, self).save(*args, **kwargs)
 
 
 class EventStat(models.Model):
