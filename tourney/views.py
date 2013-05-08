@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from tourney.models import Tournament, Player, Entry, Card
 from tourney.forms import RegisterForm, ProfileForm, EntryForm
-import gdata.spreadsheet.service
+# import gdata.spreadsheet.service
 
 
 def index(request):
