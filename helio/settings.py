@@ -10,24 +10,24 @@ ADMINS = (
 MANAGERS = ADMINS
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'djangostack',
-        'HOST': '/Applications/djangostack-1.4.5-0/postgresql',
-        'PORT': '5432',
-        'USER': 'postgres',
-        'PASSWORD': 'tnvkfdl2'
-    },
-    'hi': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'phoenix',
-        'HOST': 'localhost',
-        'PORT': '5400',
-        'USER': 'pxprogram',
-        'PASSWORD': 'vlslrtm'
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'djangostack',
+#         'HOST': '/Applications/djangostack-1.4.5-0/postgresql',
+#         'PORT': '5432',
+#         'USER': 'postgres',
+#         'PASSWORD': 'tnvkfdl2'
+#     },
+#     'hi': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'phoenix',
+#         'HOST': 'localhost',
+#         'PORT': '5400',
+#         'USER': 'pxprogram',
+#         'PASSWORD': 'vlslrtm'
+#     }
+# }
 
 EXAMPLE_DATABASES = {
     'default': {
@@ -176,3 +176,8 @@ LOGGING = {
         },
     }
 }
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
