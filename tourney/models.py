@@ -1,12 +1,12 @@
 from django.db import models, connections
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.localflavor.us.models import USStateField
 
 
 class Tournament(models.Model):
     title = models.CharField(max_length=255)
-    start_at = models.DateTimeField()
-    end_at = models.DateTimeField()
+    start_at = models.DateField()
+    end_at = models.DateField()
     players = models.ManyToManyField('Player', through='Entry')
 
     def __unicode__(self):
@@ -14,6 +14,12 @@ class Tournament(models.Model):
 
     def is_over(self):
         return (datetime.now() > self.end_at)
+
+    def total_entry(self):
+        return len(self.players.all())
+
+    def remaining_entry(self):
+        return 500 - self.total_entry()
 
 
 class Event(models.Model):
@@ -28,6 +34,7 @@ class Event(models.Model):
         ('S', 'Silver'),
         ('B', 'Bronze'),
         ('X', 'Mixed'),
+        ('O', 'Open'),
     )
     division = models.CharField(max_length=1, choices=division_choices, default='M')
     format_choices = (
@@ -37,16 +44,16 @@ class Event(models.Model):
     )
     format = models.CharField(max_length=1, choices=format_choices, default='S')
     draw_choies = (
-        ('D', 'Division'),
         ('L', 'Luck of Draw'),
+        ('D', 'Division'),
     )
     draw = models.CharField(max_length=1, choices=draw_choies, default='D')
     game_choies = (
+        ('CR', 'Cricket'),
         ('501', '501'),
         ('701', '701'),
-        ('CR', 'Cricket'),
     )
-    game = models.CharField(max_length=3, choices=game_choies)
+    game = models.CharField(max_length=3, choices=game_choies, default='CR')
 
     def __unicode__(self):
         return self.title
@@ -63,7 +70,7 @@ class Team(models.Model):
 class Address(models.Model):
     street_line1 = models.CharField(max_length=100, blank=True, null=True)
     street_line2 = models.CharField(max_length=100, blank=True, null=True)
-    zipcode = models.CharField(max_length=5, blank=True, null=True)
+    zipcode = models.CharField(max_length=5)
     city = models.CharField(max_length=100, blank=True, null=True)
     # state = models.CharField(max_length=100, null=True)
     state = USStateField(blank=True, null=True)
@@ -78,30 +85,26 @@ class Player(Address):
         ('M', 'Man'),
         ('F', 'Lady'),
     )
-    first_name = models.CharField(max_length=255, null=True)
-    last_name = models.CharField(max_length=255, null=True)
-    gender = models.CharField(max_length=1, choices=gender_choices, null=True)
-    email = models.EmailField(max_length=255, blank=True, null=True)
-    phone = models.CharField(max_length=40, null=True)
-    ranking_mpr = models.DecimalField(max_digits=3, decimal_places=2, default=0.00, null=True)
-    ranking_ppd = models.DecimalField(max_digits=5, decimal_places=2, default=0.00, null=True)
-    # registered_at = models.DateTimeField(auto_now_add=True)
-    # updated_at = models.DateTimeField(auto_now=True)
+    user_id = models.CharField(max_length=255, blank=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    gender = models.CharField(max_length=1, choices=gender_choices)
+    email = models.EmailField(max_length=255)
+    phone = models.CharField(max_length=40)
+    balance = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    registered_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.full_name
 
     @property
     def full_name(self):
-        return '%s %s' % (self.first_name, self.last_name)
-
-    @property
-    def phone_number(self):
-        return '(%s%s%s) %s%s%s-%s%s%s%s' % tuple(self.phone)
+        return '%s %s' % (self.first_name.title(), self.last_name.title())
 
     @property
     def card_number(self):
-        return Card.objects.get(owned_id=self.id)
+        return Card.objects.get(owned_id=self.id).cardno
         # return self.cardno
 
     @property
@@ -111,19 +114,12 @@ class Player(Address):
     def is_profile_valid(self):
         return True if self.card_number and self.phone and self.email and self.gender else False
 
-    @property
-    def userid(self):
-        cursor = connections['hi'].cursor()
-        cursor.execute("SELECT m_id FROM members where rfid = getorigrfid2(%s)", [self.rfid,])
-        r = cursor.fetchone()
-        return r[0]
-
     def is_web_member(self):
         return True if self.userid else False
 
     def casual_stat(self):
         cursor = connections['hi'].cursor()
-        cursor.execute("SELECT ppd_ta2, mpr_ta2 FROM useravg where rfid = getorigrfid2(%s)", [self.rfid,])
+        cursor.execute("SELECT ppd_ta2, mpr_ta2 FROM useravg where rfid = getorigrfid2(%s)", [self.rfid])
         r = cursor.fetchone()
         return {'PPD': r[0], 'MPR': r[1]}
 
@@ -132,12 +128,27 @@ class Player(Address):
         # cursor.execute("SELECT m_id FROM members where rfid = %s", [self.rfid])
         # r = cursor.fetchone()
         # ranking = Ranking.objects.get(pk=r[0])
-        ranking = Ranking.objects.get(pk=self.userid)
+        ranking = Ranking.objects.get(pk=self.user_id)
         return {'PPD': ranking.ppd, 'MPR': ranking.mpr}
 
     def event_stat(self):
-        event_stat = EventStat.objects.get(pk=self.userid)
+        try:
+            event_stat = EventStat.objects.get(pk=self.user_id)
+        except:
+            return {'PPD': None, 'MPR': None}
         return {'PPD': event_stat.ppd, 'MPR': event_stat.mpr}
+
+    def is_membership_valid(self):
+        latest_entry = self.entry_set.latest('created')
+        exp_date = latest_entry.created + timedelta(days=90)
+        if datetime.now() > exp_date:
+            return False
+        return True
+
+    def membership_expire_at(self):
+        latest_entry = self.entry_set.latest('created')
+        exp_date = latest_entry.created + timedelta(days=90)
+        return exp_date
 
 
 class Card(models.Model):
@@ -147,13 +158,22 @@ class Card(models.Model):
     owned = models.ForeignKey(Player, null=True)
 
     def __unicode__(self):
-        return '%s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s' % tuple(self.cardno)
+        return self.cardno
 
     def orginal_rfid(self):
         cursor = connections['hi'].cursor()
         cursor.execute("SELECT getorigrfid2(%s)", [self.rfid])
         r = cursor.fetchone()
         return r[0]
+
+    def is_new(self):
+        cursor = connections['hi'].cursor()
+        cursor.execute("SELECT utime FROM checkrfid WHERE rfid=%s", [self.rfid])
+        r = cursor.fetchone()
+        if r[0]:
+            return False
+        else:
+            return True
 
 
 class Entry(models.Model):
@@ -162,7 +182,7 @@ class Entry(models.Model):
     created = models.DateTimeField(editable=False)
 
     class Meta:
-        unique_together = ('tournament', 'player')
+        unique_together = (('tournament', 'player'))
 
     def __unicode__(self):
         return "%s plays %s" % (self.player.full_name, self.tournament.title)

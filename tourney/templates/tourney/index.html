@@ -1,52 +1,52 @@
 {% extends 'include/base.html' %}
-{% load url from future %}
 {% load humanize %}
-
 {% block body %}
-<h3>Dashboard</h3>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/admin.css" />
+<div class="btn-toolbar pull-right">
+    <a href="{% url 22k:tourney_create %}" class="btn btn-success"><i class="icon-plus icon-white"></i> Create a new tournament</a>
+</div>
+<h2>Dashboard</h2>
 <hr>
-<a href="#" class="btn btn-success">
-    <i class="icon-plus icon-white"></i> Create a new tournament</a>
-<hr>
-<h4>Tournaments</h4>
 <table class="table table-striped">
         <thead>
             <tr>
-                <th width="20%">Event</th>
-                <th width="1%">Tickets sold</th>
+                <th width="20%">Tournament</th>
+                <th width="1%">Entry sold</th>
                 <th width="1%">Sales</th>
                 <th width="10%">&nbsp;</th>
             </tr>
         </thead>
         <tbody>
-
+                {% for tournament in tournament_list %}
                 <tr>
                     <td>
-                        <b><a href="/organizer/event-dashboard/158/">Phoniex Cup 22K in Tampa, FL</a></b>
+                        <b><a href="{% url 22k:tourney_dashboard tournament.id %}" {% if tournament.is_over %} class="muted"{% endif %}>{{ tournament.title|title }}</a></b>
+                        {% if not tournament.is_over %}
+                            <span class="minor">{{ tournament.start_at|timeuntil }}</span>
+                        {% else %}
+                            <span class="minor">Completed</span>
+                        {% endif %}
 
                     </td>
                     <td class="progressbar">
-
-                            <div class="progress"></div>
-                            <span class="minor">
-
-                                    500 remaining
-
-                            </span>
-
+                            <div class="progress">
+                                {% if tournament.total_entry %}
+                                    <div class="bar" style="width: {% widthratio tournament.total_entry 500 100 %}%"></div>
+                                {% endif %}
+                            </div>
+                            <span class="minor">{{ tournament.total_entry }} sold, {{ tournament.remaining_entry }} remaining</span>
                     </td>
                     <td class="nowrap figures">
                         —
                     </td>
                     <td class="nowrap">
                         <div class="btn-group pull-right">
-                            <a href="/organizer/event-dashboard/158/bookings/" class="btn btn-mini"><i class="icon-book"></i> Bookings</a>
-                            <a href="/organizer/event-dashboard/158/" class="btn btn-mini"><i class="icon-wrench"></i> Event setup</a>
-                            <a href="/158/phoniex-cup-22k-in-tampa-fl/" class="btn btn-mini" target="_blank"><i class="icon-eye-open"></i> Booking page</a>
+                            <a href="{% url 22k:entry tournament.id %}" class="btn btn-mini"><i class="icon-book"></i> Entry</a>
+                            <a href="{% url 22k:tourney_dashboard tournament.id %}" class="btn btn-mini"><i class="icon-wrench"></i> Setup</a>
                         </div>
                     </td>
                 </tr>
-
+                {% endfor %}
         </tbody>
     </table>
 {% endblock %}

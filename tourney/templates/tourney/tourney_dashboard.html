@@ -1,0 +1,46 @@
+{% extends 'include/base.html' %}
+{% load humanize %}
+{% block body %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/admin.css" />
+<div class="btn-toolbar pull-right">
+    <a href="{% url 22k:event_create tournament.id%}" class="btn btn-success"><i class="icon-plus icon-white"></i> Create a new event</a>
+</div>
+<h2>{{ tournament.title }}</h2>
+<hr>
+<div class="row">
+    <div class="span3">
+        {% include 'include/left_menu.html' %}
+    </div>
+    <div class="span9">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Event</th>
+                    <th>Division</th>
+                    <th>Format</th>
+                    <th>Game</th>
+                    <!--th>Draw</th-->
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for event in events %}
+            <tr>
+                <td>{{ event.start_at|date:"D h:i a" }}<span class="minor">{{ event.start_at|timeuntil }}</span></td>
+                <td>{{ event.title }}</td>
+                <td>{{ event.get_division_display }}</td>
+                <td>{{ event.get_format_display }}</td>
+                <td>{{ event.get_game_display }}</td>
+                <!--td>{{ event.get_draw_display }}</td-->
+                <td class="nowrap">
+                    <div class="btn-group pull-right">
+                        <a href="{% url 22k:event_edit event.id %}" class="btn btn-mini"><i class="icon-wrench"></i> Setup</a>
+                        <a href="{% url 22k:event_signup event.id %}" class="btn btn-mini"><i class="icon-eye-open"></i> Signup</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+    </div>
+</div>
+{% endblock %}

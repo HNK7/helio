@@ -1,53 +1,67 @@
 {% extends 'include/base.html' %}
+{% load app_filters %}
 {% block body %}            <!-- Body -->
-            <div class="page-header">
-                <h3>{{ player.full_name }}  <small>( {{ player.userid }} ) <a href="{% url 22k:profile_edit player.id %}"><i class="icon-edit"></i> Edit</a></small></h3>
+            <div class="btn-toolbar pull-right">
+                <a href="{% url 22k:profile_edit player.id %}" class="btn btn-info"><i class="icon-edit icon-white"></i> Edit {{ player.full_name }}'s Profile</a>
             </div>
-
-            <div class="span4">
-                        <h4 class="muted">Basic Info</h4>
-                        <table class="table table-condensed">
+            <div class="span7">
+                {% if not player.is_membership_valid %}
+                    <div class="alert alert-error">
+                    <!--button type="button" class="close" data-dismiss="alert">&times;</button-->
+                    <h4>Membership Expired on {{ player.membership_expire_at|date }}</h4>
+                    </div>
+                {% endif %}
+                    <h4 class="lead">Basic Info </h4>
+                        <table class="table lead">
                             <thead>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td class="muted">Name</td>
-                                    <td>{{ player.full_name }}</td>
+                                    <td class="lead"><h2>{{ player.full_name|title }}</h2></td>
                                 </tr>
                                 <tr>
-                                    <td class="muted">Gender</td>
-                                    <td>{{ player.gender }}</td>
-                                </tr>
-                                 <tr>
-                                    <td class="muted">Card</td>
-                                    <td>{{ player.card_number }}
+                                    <td class="muted">Card No</td>
+                                    <td>{{ player.card_number|format_card_number }}
                                         {% if not player.is_web_member %}
                                         <i class="icon-exclamation-sign"></i>
                                         {% else %}
                                         <i class="icon-ok-sign"></i>
                                         {% endif %}
-                                        <small style="color:white">{{ player.rfid }}</small>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="muted">User ID</td>
+                                    <td class="lead">{{ player.user_id }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="muted">Gender</td>
+                                    <td>{{ player.get_gender_display|title }}</td>
+                                </tr>
+                                 <tr>
+                                    <td class="muted">Stat</td>
+                                    <td>
                                         <table class="table table-condensed">
                                             <thead class="muted">
                                                 <th></th>
-                                                <th>MPR</th>
-                                                <th>PPD</th>
+                                                <th><small>MPR</small></th>
+                                                <th><small>PPD</small></th>
                                             </thead>
                                             <tbody>
                                                 <tr>
                                                     <td><span class="label label-important">tourney</span></td>
-                                                    <td><span class="badge badge-important">{{ mpr_event }}</span></td>
-                                                    <td><span class="badge badge-important">{{ ppd_event }}</span></td>
+                                                    <td>{% if mpr_event == None %}<small>N/A</small>{% else %}{{ mpr_event }}{% endif %}</td>
+                                                    <td>{% if ppd_event == None %}<small>N/A</small>{% else %}{{ ppd_event }}{% endif %}</td>
                                                 </tr>
-                                                <tr>
+                                                <!--tr>
                                                     <td><span class="label label-info">ranking</span></td>
-                                                    <td><span class="badge badge-info">{{ mpr_ranking }}</span></td>
-                                                    <td><span class="badge badge-info">{{ ppd_ranking }}</span></td>
-                                                </tr>
+                                                    <td>{{ mpr_ranking }}</td>
+                                                    <td>{{ ppd_ranking }}</td>
+                                                </tr-->
                                                 <tr>
-                                                    <td><span class="label">casual</span></td>
-                                                    <td><span class="badge">{{ mpr_casual }}</span></td>
-                                                    <td><span class="badge">{{ ppd_casual }}</span></td>
+                                                    <td><span class="label">casual&nbsp;&nbsp;</span></td>
+                                                    <td>{% if mpr_casual == None %}<small>N/A</small>{% else %}{{ mpr_casual }}{% endif %}</td>
+                                                    <td>{% if ppd_casual == None %}<small>N/A</small>{% else %}{{ ppd_casual }}{% endif %}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -55,11 +69,11 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <h4 class="muted">Contact Info</h4>
-                        <table class="table table-condensed">
+                        <h4 class="lead">Contact Info</h4>
+                        <table class="table">
                             <tr>
                                 <td class="muted">Phone</td>
-                                <td>{{ player.phone_number }}</td>
+                                <td>{{ player.phone|format_phone_number }}</td>
                             </tr>
                             <tr>
                                 <td class="muted">Email</td>
@@ -75,6 +89,7 @@
                                 </td>
                             </tr>
                         </table>
+                        <p style="color:white">{{ player.rfid }}</p>
                     </div>
 
 {% endblock %}

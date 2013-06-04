@@ -1,0 +1,39 @@
+{% extends 'include/base.html' %}
+{% load humanize %}
+{% block body %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/admin.css" />
+<h2>{{ tournament.title }}</h2>
+<hr>
+<div class="row">
+    <div class="span3">
+        {% include 'include/left_menu.html' %}
+    </div>
+    <div class="span9">
+        <!--div class="page-header">
+        <span class="label label-info">TOTAL: {{ entry_total|intcomma }}</span>
+        </div-->
+        {% if teams %}
+            <table class="table table-condensed  table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+            {% for team in teams %}
+                <tr{% if not player.cardno %} class="error" {% endif %}>
+                    <td class="muted">{{ forloop.counter }}</td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock body %}

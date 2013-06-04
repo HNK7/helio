@@ -1,0 +1,27 @@
+{% extends 'include/base.html' %}
+{% load humanize %}
+{% block body %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/admin.css" />
+<h2>{{ tournament.title }}</h2>
+<hr>
+<div class="row">
+    <div class="span3">
+        {% include 'include/left_menu.html' %}
+    </div>
+    <div class="span9">
+       <!--div class="page-header">
+            <h3>Event Edit</h3>
+        </div-->
+        <!-- Body -->
+        <form action="{% url 22k:event_edit event.id %}" method="POST">
+            {% csrf_token %}
+            <table class="table">
+                {{ form.as_table }}
+            </table>
+            <label></label>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

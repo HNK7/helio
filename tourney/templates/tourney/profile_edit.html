@@ -6,8 +6,10 @@
 <!-- Body -->
 <form action="{% url 22k:profile_edit player.id %}" method="POST">
     {% csrf_token %}
-    {{ form.as_table }}
-    <label></label>
-    <button class="btn btn-primary" type="submit">Submit</button>
+    <table class="table">
+        {{ form.as_table }}
+    </table>
+        <label></label>
+        <button class="btn btn-primary" type="submit">Submit</button>
 </form>
 {% endblock %}

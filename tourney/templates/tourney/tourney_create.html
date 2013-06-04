@@ -1,0 +1,38 @@
+{% extends 'include/base.html' %}
+{% block body %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}datepicker/css/datepicker.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}datepicker/js/bootstrap-datepicker.js"></script>
+<div class="page-header">
+    <h3>Create a new tournament</h3>
+</div>
+<!-- Body -->
+    <form action="{% url 22k:tourney_create %}" method="post">
+        {{ form.non_field_errors }}
+        <fieldset>
+            <!--legend>Membership Registration</legend-->
+            {% csrf_token %}
+            <label for="title">Title</label>
+            <input class="input-xxlarge" type="text" id="id_title" name="title" placeholder="Phoenix Cup 22K in Los Angels, CA" />
+            <span class="help-inline">{{ form.title.errors }}</span>
+            <label for="start_date">Start Date</label>
+            <div class="input-append date" id="datepicker1" data-date="dateValue: Tourney.start_date" data-date-format="yyyy-mm-dd">
+                <span class="add-on"><i class="icon-calendar"></i></span>
+                <input class="span2" size="16" type="text" name="start_at" data-bind="value: Tourney.start_date" readonly="readonly" />
+                <span class="help-inline">{{ form.start_at.errors }}</span>
+            </div>
+            <label for="end_date">End Date</label>
+            <div class="input-append date" id="datepicker2" data-date="dateValue: Tourney.end_date" data-date-format="yyyy-mm-dd">
+                <span class="add-on"><i class="icon-calendar"></i></span>
+                <input class="span2" size="16" type="text" name="end_at" data-bind="value: Tourney.end_date" readonly="readonly" />
+                <span class="help-inline">{{ form.end_at.errors }}</span>
+            </div>
+            <label></label>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </fieldset>
+    </form>
+<script>
+$('#datepicker1').datepicker();
+$('#datepicker2').datepicker();
+</script>
+{% endblock %}
