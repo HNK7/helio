@@ -1,1 +1,14 @@
-h1,h2,h3,h4,h5,.bookit-tag,.btn,legend,.add-on{font-family:"ff-meta-web-pro","Helvetica Neue",Helvetica,Arial}.scrolling_content_box h1,.scrolling_content_box h2,.scrolling_content_box h3,.scrolling_content_box h4,.scrolling_content_box h5{font-family:"Helvetica Neue",Helvetica,Arial}.scrolling_content_box h1{font-size:1.2em;line-height:1.2em;padding:0;margin:1em 0 .5em 0}.scrolling_content_box h1:first-child{margin-top:0}.scrolling_content_box h2,.scrolling_content_box h3,.scrolling_content_box h4,.scrolling_content_box h5,.scrolling_content_box h6{font-size:1em;line-height:1em;padding:0;margin:1em 0 .5em 0}.scrolling_content_box h2:first-child,.scrolling_content_box h3:first-child,.scrolling_content_box h4:first-child,.scrolling_content_box h5:first-child,.scrolling_content_box h6:first-child{margin-top:0}.footer-nav{list-style-type:none;margin:0;padding:0}.footer-nav li{display:inline;margin-right:1em}.homepage_logo{margin:30px 0}.btn-huge{margin:30px 0 75px 0;padding:25px 0;width:100%;font-size:3em;line-height:1em}.central{margin-bottom:100px}.central form{text-align:center}.central form input{text-align:center}.central form ul{list-style-type:none;margin:0}.central h1,.central h2,.central h3,.central h4,.central p{text-align:center}.scrolling_content_box{height:150px;overflow:auto;border:1px solid #ddd;padding:.5em;margin:.5em 0}.edit-form input[type="text"],.edit-form input[type="password"],.edit-form select{width:25em}.big-form input[type="text"],.big-form input[type="password"],.big-form select{font-size:1.3em;width:560px}.big-form label{width:568px}.date-field{width:7em!important}.datepicker .dow{float:none}.bootstrap-timepicker a{text-decoration:none}.time-field{width:5em!important}#div_id_event_starts .controls{margin-bottom:18px!important}.big-form .help-text{font-size:.9em;color:#999;line-height:1.2em;float:right}
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+}
+.register input[type="text"] {
+    display: block;
+    padding: 8px 10px;
+    height: auto;
+    width: 380px;
+    margin: -6px 0 16px;
+    font-size: 24px;
+    line-height: 24px;
+    font-weight: 300;
+    font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+}

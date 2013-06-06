@@ -1,119 +1,23 @@
 {% extends 'include/base.html' %}
-{% load app_filters %}
+{% load humanize %}
 {% block body %}
-<h3>Registration > <span class="muted">Event Signup > Payment</span></h3>
-
-{% if card_type == None %}
-        <div class="alert alert-error alert-block">
-            <p class="lead"><strong>Invalid Card!</strong></p>
-        </div>
-{% else %}
-    {% if form.errors %}
-        <div class="alert alert-error alert-block">
-                <p class="lead">Please correct the error{{ form.errors|pluralize }} below.</p>
-        </div>
-    {% else %}
-
-            {% if card_type == 'new' %}
-             <div class="alert alert-error alert-block">
-                <p class="lead"><strong>New Card!</strong></p>
-            </div>
-            {% else %}
-                {% if player.id and player.is_membership_valid %}
-            <div class="alert alert-block">
-                <p class="lead"><strong>Membership Valid.</strong><br>
-                Proceed registration.
-                </p>
-            </div>
-                {% elif player.id %}
-            <div class="alert alert-error alert-block">
-                <p class="lead"><strong>Membership Expired!</strong></p>
-            </div>
-                {% else %}
-            <div class="alert alert-block">
-                <p class="lead"><strong>No Membership yet!</strong></p>
-            </div>
-                {% endif %}
-            {% endif %}
-    {% endif %}
-
-    {% if not form.errors and card_type != 'new' %}
-        <div class="span7">
-            <h4 class="lead">Basic Info</h4>
-            <table class="table lead">
-                <thead>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="muted">Name</td>
-                        <td class="lead"><h2>{{ player.full_name|title }}</h2></td>
-                    </tr>
-                    <tr>
-                        <td class="muted">Membership:</td>
-                        <td class="lead">
-                            {% if player.id and player.is_membership_valid %}
-                                <strong>Valid</strong> <small>until {{ player.membership_expire_at|date }}</small>
-                            {% elif player.id %}
-                                <strong>Expired</strong> <small>on {{ player.membership_expire_at|date }}</small>
-                            {% else %}
-                                <strong>No</strong>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="muted">Card No <small class="muted">(Type)</small></td>
-                        <td>{{ card.cardno|format_card_number }} <small class="muted">({{ card_type }})</small>
-                        </td>
-                    </tr>
-                    {% if card_type != 'new' %}
-                    <tr>
-                        <td class="muted">User ID <small class="muted">(Nick Name)</small></td>
-                        <td class="lead">{{ player.user_id }} <small class="muted">({{ screen_name }})</small></td>
-                    </tr>
-                    {% endif %}
-                    <tr>
-                        <td class="muted">Gender</td>
-                        <td>{{ player.get_gender_display|title }}</td>
-                    </tr>
-                     <tr>
-                        <td class="muted">Stat</td>
-                        <td>
-                            <table class="table table-condensed">
-                                <thead class="muted">
-                                    <th></th>
-                                    <th><small>MPR</small></th>
-                                    <th><small>PPD</small></th>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><span class="label label-important">tourney</span></td>
-                                        <td>{% if event_stat.MPR == None %}<small>N/A</small>{% else %}{{ event_stat.MPR }}{% endif %}</td>
-                                        <td>{% if event_stat.PPD == None %}<small>N/A</small>{% else %}{{ event_stat.PPD }}{% endif %}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><span class="label">casual&nbsp;&nbsp;</span></td>
-                                        <td>{% if casual_stat.MPR == None %}<small>N/A</small>{% else %}{{ casual_stat.MPR }}{% endif %}</td>
-                                        <td>{% if casual_stat.PPD == None %}<small>N/A</small>{% else %}{{ casual_stat.PPD }}{% endif %}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-    {% endif %}
-            <h4 class="lead">{% if card_type == 'new' %}Registration{% else %}Update Info{% endif %}</h4>
-            <form action="{% url 22k:card card.rfid %}" method="post">
-                {% csrf_token %}
-                <table class="table">
-                    {{ form.as_table }}
-                </table>
-                <input type="hidden" name="card_type" value="{{ card_type }}">
-                <input type="hidden" name="cardno" value="{{ card.cardno }}">
-                <label></label>
+<h3>REGISTRATION <span class="muted">> EVENT SIGNUP > PAYMENT</span></h3>
+<div class="hero-unit">
+    <h2>Scan a card!</h2>
+    <p></p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="register">
+                <input type="text" name="rfid_id" id="rfid_id" autocomplete="off" required>
                 <button class="btn btn-primary btn-large" type="submit">Submit</button>
-            </form>
-        </div>
-    </div>
-{% endif %}
+            </div>
+        </form>
+</div>
+<script type="text/javascript">
+ function FocusOnInput()
+ {
+    document.getElementById("rfid_id").focus();
+ }
+ FocusOnInput();
+ </script>
 {% endblock %}

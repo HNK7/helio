@@ -4,9 +4,33 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
-from tourney.models import Tournament, Event, Player, Entry, Card
+from tourney.models import Tournament, Event, Player, Entry, Card, Team
 from tourney.forms import TournamentForm, EventForm, RegisterForm, ProfileForm, EntryForm
 # import gdata.spreadsheet.service
+from twilio.rest import TwilioRestClient
+from phonenumbers import parse, format_number, PhoneNumberFormat
+
+
+def convert_to_e164(raw_phone):
+
+    if not raw_phone:
+        return
+
+    if raw_phone[0] == '+':
+        # Phone number may already be in E.164 format.
+        parse_type = None
+    else:
+        # If no country code information present, assume it's a US number
+        parse_type = "US"
+
+    phone_representation = parse(raw_phone, parse_type)
+    return format_number(phone_representation, PhoneNumberFormat.E164)
+
+
+def send_sms(to_phone, msg):
+    client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+    message = client.sms.messages.create(to=convert_to_e164(to_phone), from_="+12622932782", body=msg)
+    return message
 
 
 def index(request):
@@ -69,21 +93,6 @@ def event_edit(request, e_id):
     return render(request, 'tourney/event_edit.html', context)
 
 
-def event_signup(request, e_id):
-    context = dict()
-    event = get_object_or_404(Event, id=e_id)
-
-    context['tournament'] = event.tournament
-    context['event'] = event
-    context['teams'] = event.teams.all()
-    return render(request, 'tourney/event_signup.html', context)
-
-
-def detail(request, t_id):
-    tournament = get_object_or_404(Tournament, pk=t_id)
-    return render(request, 'tourney/view.html', {'tournament': tournament})
-
-
 def player(request):
     context = dict()
     context['tournament_list'] = Tournament.objects.all()
@@ -100,29 +109,23 @@ def entry(request, t_id):
     tourney = get_object_or_404(Tournament, pk=t_id)
     context['tournament'] = tourney
 
-    entry = tourney.players.all()
+    entry = Entry.objects.filter(tournament=tourney)
     context['entry'] = entry
-    context['entry_total'] = len(entry)
     return render(request, 'tourney/entry.html', context)
 
 
 def profile(request, p_id):
     context = dict()
-    context['tournament_list'] = Tournament.objects.all()
+    # context['tournament_list'] = Tournament.objects.all()
     player = Player.objects.get(id=p_id)
     casual_stat = player.casual_stat()
-    # ranking_stat = player.ranking()
     event_stat = player.event_stat()
-    entries = player.entry_set.all()
+    # entries = player.entry_set.all()
 
     context['player'] = player
-    context['entries'] = entries
-    context['ppd_casual'] = casual_stat['PPD']
-    context['mpr_casual'] = casual_stat['MPR']
-    # context['ppd_ranking'] = ranking_stat['PPD']
-    # context['mpr_ranking'] = ranking_stat['MPR']
-    context['ppd_event'] = event_stat['PPD']
-    context['mpr_event'] = event_stat['MPR']
+    # context['entries'] = entries
+    context['casual_stat'] = casual_stat
+    context['event_stat'] = event_stat
     return render(request, 'tourney/profile.html', context)
 
 
@@ -141,22 +144,6 @@ def profile_edit(request, p_id):
     context['form'] = form
     context['player'] = player
     return render(request, 'tourney/profile_edit.html', context)
-
-
-def register(request):
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        # if form.is_valid():
-            # form.save()
-            # return HttpResponseRedirect('/')
-        return HttpResponseRedirect('/22k')
-    else:
-        form = RegisterForm()
-
-    context = dict()
-    context['tournament_list'] = Tournament.objects.all()
-    context['form'] = form
-    return render(request, 'tourney/register.html', context)
 
 
 def _insert_google_doc(row):
@@ -334,8 +321,42 @@ def update_temp_card(full_name, rfid):
     transaction.commit_unless_managed(using='hi')
 
 
-def card(request, rfid_id):
+def payment(request, t_id, rfid_id):
+    tourney = get_object_or_404(Tournament, id=t_id)
+    card = get_object_or_404(Card, rfid=rfid_id)
+    entry = Entry.objects.get(tournament=tourney, player=card.owned)
+
+    if request.method == 'POST':
+        entry.balance = 0
+        entry.save()
+        return HttpResponseRedirect(reverse('22k:entry', args=[t_id]))
+
     context = dict()
+    context['tournament'] = tourney
+    context['entry'] = entry
+    return render(request, 'tourney/payment.html', context)
+
+
+def card(request, t_id):
+    context = dict()
+    tourney = get_object_or_404(Tournament, id=t_id)
+
+    if request.method == 'POST':
+            try:
+                Card.objects.get(rfid=request.POST['rfid_id'])
+            except ObjectDoesNotExist:
+                return HttpResponseRedirect(reverse('22k:register', args=[t_id, request.POST['rfid_id']]))
+            return HttpResponseRedirect(reverse('22k:entry', args=[t_id]))
+
+    context['tournament'] = tourney
+    return render(request, 'tourney/card.html', context)
+
+
+def register(request, t_id, rfid_id):
+    context = dict()
+    tourney = get_object_or_404(Tournament, id=t_id)
+    context['tournament'] = tourney
+
     if request.method == 'POST':
         card_posted = {'type': request.POST['card_type'], 'cardno': request.POST['cardno']}
 
@@ -355,14 +376,13 @@ def card(request, rfid_id):
             card.owned = player_22k
             card.save()
 
-            tourney = Tournament.objects.latest('start_at')
             entry, created = Entry.objects.get_or_create(tournament=tourney, player=player_22k)
             membership_fee = settings.FEES['MEMBERSHIP'] if created else 0
             card_fee = settings.FEES['CARD'] if created and card_posted['type'] == 'new' else 0
 
             # update balance
-            player_22k.balance = player_22k.balance + membership_fee + card_fee
-            player_22k.save()
+            entry.balance = entry.balance + membership_fee + card_fee
+            entry.save()
 
             #register new card and update temp card nickname
             if card_posted['type'] == 'new':
@@ -370,19 +390,32 @@ def card(request, rfid_id):
             elif card_posted['type'] == 'temporary':
                 update_temp_card(player_22k.full_name, rfid_id)
 
-            return HttpResponseRedirect('/22k')
+            # text welcome message
+            sms_body = """Hi, %s.
+Welcome to Phoenix Cup 22K.
+            """ % player_22k.first_name
+            if created:
+                try:
+                    send_sms(player_22k.phone, sms_body)
+                except:
+                    pass
+            return HttpResponseRedirect(reverse('22k:entry', args=(t_id,)))
 
         context['card_type'] = card_posted['type']
         context['card'] = card
         context['form'] = form
-        return render(request, 'tourney/card.html', context)
+        return render(request, 'tourney/register.html', context)
 
     else:
+        if len(rfid_id) < 20:
+            context['card_type'] = None
+            return render(request, 'tourney/register.html', context)
+
         card_info = _card_info(rfid_id)
         if not card_info:
         # invalid card scanned
             context['card_type'] = None
-            return render(request, 'tourney/card.html', context)
+            return render(request, 'tourney/register.html', context)
         else:
         # valid card scanned. get card info from maindb
             (card_type, rfid, cardno, old_cardno, old_rfid, userinfo_rfid, members_rfid, name,
@@ -418,7 +451,6 @@ def card(request, rfid_id):
                                     zipcode=m_zip
                                     )
                     card.owned = player
-
             context['card'] = card
             context['card_type'] = card_type
             context['screen_name'] = name
@@ -426,4 +458,27 @@ def card(request, rfid_id):
             context['form'] = RegisterForm(instance=player)
             context['event_stat'] = player.event_stat()
             context['casual_stat'] = {'MPR': mpr, 'PPD': ppd}
-        return render(request, 'tourney/card.html', context)
+        return render(request, 'tourney/register.html', context)
+
+
+def event_signup(request, e_id):
+    context = dict()
+    event = get_object_or_404(Event, id=e_id)
+
+    if request.method == 'POST':
+        card1 = request.POST.get('card1')
+        card2 = request.POST.get('card2')
+        card3 = request.POST.get('card3')
+        cards = [card1, card2, card3]
+
+        team = Team.objects.create()
+        for card in cards:
+            player = Card.objects.get(rfid=card1).owned
+            team.players.add(player)
+        event.teams.add(team)
+        context['cards'] = cards
+
+    context['tournament'] = event.tournament
+    context['event'] = event
+    context['teams'] = event.teams.all()
+    return render(request, 'tourney/event_signup.html', context)

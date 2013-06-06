@@ -2,7 +2,7 @@
 {% load app_filters %}
 {% block body %}            <!-- Body -->
             <div class="btn-toolbar pull-right">
-                <a href="{% url 22k:profile_edit player.id %}" class="btn btn-info"><i class="icon-edit icon-white"></i> Edit {{ player.full_name }}'s Profile</a>
+                <a href="{% url 22k:profile_edit player.id %}" class="btn btn-info"><i class="icon-edit icon-white"></i> Edit {{ player.full_name|title }}'s Profile</a>
             </div>
             <div class="span7">
                 {% if not player.is_membership_valid %}
@@ -22,12 +22,7 @@
                                 </tr>
                                 <tr>
                                     <td class="muted">Card No</td>
-                                    <td>{{ player.card_number|format_card_number }}
-                                        {% if not player.is_web_member %}
-                                        <i class="icon-exclamation-sign"></i>
-                                        {% else %}
-                                        <i class="icon-ok-sign"></i>
-                                        {% endif %}
+                                    <td>{{ player.card_number|format_card_number }} <small class="muted">({{ player.rfid }})</small>
                                     </td>
                                 </tr>
                                 <tr>
@@ -49,19 +44,14 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td><span class="label label-important">tourney</span></td>
-                                                    <td>{% if mpr_event == None %}<small>N/A</small>{% else %}{{ mpr_event }}{% endif %}</td>
-                                                    <td>{% if ppd_event == None %}<small>N/A</small>{% else %}{{ ppd_event }}{% endif %}</td>
+                                                    <td><span class="label label-important">TN</span></td>
+                                                    <td>{% if event_stat.MPR == None %}<small>N/A</small>{% else %}{{ event_stat.MPR }}{% endif %}</td>
+                                                    <td>{% if event_stat.PPD == None %}<small>N/A</small>{% else %}{{ event_stat.PPD }}{% endif %}</td>
                                                 </tr>
-                                                <!--tr>
-                                                    <td><span class="label label-info">ranking</span></td>
-                                                    <td>{{ mpr_ranking }}</td>
-                                                    <td>{{ ppd_ranking }}</td>
-                                                </tr-->
                                                 <tr>
-                                                    <td><span class="label">casual&nbsp;&nbsp;</span></td>
-                                                    <td>{% if mpr_casual == None %}<small>N/A</small>{% else %}{{ mpr_casual }}{% endif %}</td>
-                                                    <td>{% if ppd_casual == None %}<small>N/A</small>{% else %}{{ ppd_casual }}{% endif %}</td>
+                                                    <td><span class="label">CA</span></td>
+                                                    <td>{% if casual_stat.MPR == None %}<small>N/A</small>{% else %}{{ casual_stat.MPR }}{% endif %}</td>
+                                                    <td>{% if casual_stat.PPD == None %}<small>N/A</small>{% else %}{{ casual_stat.PPD }}{% endif %}</td>
                                                 </tr>
                                             </tbody>
                                         </table>

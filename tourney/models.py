@@ -58,13 +58,13 @@ class Event(models.Model):
     def __unicode__(self):
         return self.title
 
+    def total_signup(self):
+        len(self.teams.all)
+
 
 class Team(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True)
     players = models.ManyToManyField('Player')
-
-    def __unicode__(self):
-        return self.name
 
 
 class Address(models.Model):
@@ -91,7 +91,6 @@ class Player(Address):
     gender = models.CharField(max_length=1, choices=gender_choices)
     email = models.EmailField(max_length=255)
     phone = models.CharField(max_length=40)
-    balance = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     registered_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -115,7 +114,7 @@ class Player(Address):
         return True if self.card_number and self.phone and self.email and self.gender else False
 
     def is_web_member(self):
-        return True if self.userid else False
+        return True if self.user_id else False
 
     def casual_stat(self):
         cursor = connections['hi'].cursor()
@@ -179,6 +178,7 @@ class Card(models.Model):
 class Entry(models.Model):
     tournament = models.ForeignKey(Tournament)
     player = models.ForeignKey(Player)
+    balance = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     created = models.DateTimeField(editable=False)
 
     class Meta:

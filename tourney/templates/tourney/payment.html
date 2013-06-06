@@ -1,0 +1,16 @@
+{% extends 'include/base.html' %}
+{% load humanize %}
+{% block body %}
+<h3><span class="muted">REGISTRATION > EVENT SIGNUP ></span> PAYMENT</h3>
+<div class="hero-unit">
+    <p class="alert lead">Collect amount due and click sbumit!</p>
+    <h1><span class="lead">Amount Due:</span> ${{ entry.balance }}</h1>
+    <p>&nbsp;</p>
+    <p>
+        <form method="post">
+            {% csrf_token %}
+            <button class="btn btn-primary btn-large" type="submit">Submit</button>
+        </form>
+</p>
+</div>
+{% endblock %}
