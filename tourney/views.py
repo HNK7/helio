@@ -476,6 +476,15 @@ def event_signup(request, e_id):
             player = Card.objects.get(rfid=card1).owned
             team.players.add(player)
         event.teams.add(team)
+        
+        sms_msg = """%s,
+You have signed up for %s.
+Good Luck!""" % (player.first_name, event.title)
+        try:
+            send_sms(player.phone, sms_msg)
+        except:
+            pass
+
         context['cards'] = cards
 
     context['tournament'] = event.tournament

@@ -56,6 +56,8 @@ class Event(models.Model):
     game = models.CharField(max_length=3, choices=game_choies, default='CR')
 
     def __unicode__(self):
+        # return "%s/ %s / %s / %s" % (self.title, self.division_choices[self.division], 
+                                     # self.format_choices[self.format], self.game_choies[self.game])
         return self.title
 
     def total_signup(self):

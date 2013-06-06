@@ -1,13 +1,17 @@
 {% extends 'include/base.html' %}
 {% load app_filters %}
 {% block body %}
-<h3>REGISTRATION > <span class="muted">EVENT SIGNUP > PAYMENT</span></h3>
-
+<div class="container">
+    <div class="page-header">
+        <p>REGISTRATION <span class="muted">> EVENT SIGNUP > PAYMENT</span></p>
+    </div>
 {% if card_type == None %}
+    <div class="hero-unit">
         <div class="alert alert-error alert-block">
             <p class="lead"><strong>Invalid Card!</strong></p>
-            <p><a href="{% url 22k:card tournament.id %}" class="btn btn-danger">Try again!</a></p>
         </div>
+        <p><a href="{% url 22k:card tournament.id %}" class="btn btn-large btn-danger">Try again!</a></p>
+    </div>
 {% else %}
     {% if form.errors %}
         <div class="alert alert-error alert-block">

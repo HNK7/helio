@@ -1,17 +1,22 @@
 {% extends 'include/base.html' %}
 {% load humanize %}
 {% block body %}
-<h3>REGISTRATION <span class="muted">> EVENT SIGNUP > PAYMENT</span></h3>
-<div class="hero-unit">
-    <h2>Scan a card!</h2>
-    <p></p>
-        <form method="post">
-            {% csrf_token %}
-            <div class="register">
-                <input type="text" name="rfid_id" id="rfid_id" autocomplete="off" required>
-                <button class="btn btn-primary btn-large" type="submit">Submit</button>
-            </div>
-        </form>
+<div class="container">
+    <div class="page-header">
+        <p>REGISTRATION <span class="muted">> EVENT SIGNUP > PAYMENT</span></p>
+    </div>
+    
+    <div class="hero-unit">
+        <h2>Scan a card!</h2>
+        <p></p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="register">
+                    <input type="text" name="rfid_id" id="rfid_id" autocomplete="off" required>
+                    <button class="btn btn-primary btn-large" type="submit">Submit</button>
+                </div>
+            </form>
+    </div>
 </div>
 <script type="text/javascript">
  function FocusOnInput()

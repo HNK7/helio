@@ -1,52 +1,58 @@
 {% extends 'include/base.html' %}
 {% load humanize %}
 {% block body %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/admin.css" />
-<div class="btn-toolbar pull-right">
-    <a href="{% url 22k:tourney_create %}" class="btn btn-success"><i class="icon-plus icon-white"></i> Create a new tournament</a>
-</div>
-<h2>Dashboard</h2>
-<hr>
-<table class="table table-striped">
-        <thead>
-            <tr>
-                <th width="20%">Tournament</th>
-                <th width="1%">Entry sold</th>
-                <th width="1%">Sales</th>
-                <th width="10%">&nbsp;</th>
-            </tr>
-        </thead>
-        <tbody>
-                {% for tournament in tournament_list %}
-                <tr>
-                    <td>
-                        <b><a href="{% url 22k:tourney_dashboard tournament.id %}" {% if tournament.is_over %} class="muted"{% endif %}>{{ tournament.title|title }}</a></b>
-                        {% if not tournament.is_over %}
-                            <span class="minor">{{ tournament.start_at|timeuntil }}</span>
-                        {% else %}
-                            <span class="minor">Completed</span>
-                        {% endif %}
+<div class="container">
+    <div class="row">
+        <div class="span12">
+            <div class="page-header">
+                <p>Dashboard</p>
+            </div>
+            <div class="btn-toolbar pull-right">
+                    <a href="{% url 22k:tourney_create %}" class="btn btn-success"><i class="icon-plus icon-white"></i> Create a new tournament</a>
+            </div>
+            <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th width="20%">Tournament</th>
+                            <th width="1%">Entry sold</th>
+                            <th width="1%">Sales</th>
+                            <th width="10%">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            {% for tournament in tournament_list %}
+                            <tr>
+                                <td>
+                                    <b><a href="{% url 22k:tourney_dashboard tournament.id %}" {% if tournament.is_over %} class="muted"{% endif %}>{{ tournament.title|title }}</a></b>
+                                    {% if not tournament.is_over %}
+                                        <span class="minor">{{ tournament.start_at|timeuntil }}</span>
+                                    {% else %}
+                                        <span class="minor">Completed</span>
+                                    {% endif %}
 
-                    </td>
-                    <td class="progressbar">
-                            <div class="progress">
-                                {% if tournament.total_entry %}
-                                    <div class="bar" style="width: {% widthratio tournament.total_entry 500 100 %}%"></div>
-                                {% endif %}
-                            </div>
-                            <span class="minor">{{ tournament.total_entry }} sold, {{ tournament.remaining_entry }} remaining</span>
-                    </td>
-                    <td class="nowrap figures">
-                        —
-                    </td>
-                    <td class="nowrap">
-                        <div class="btn-group pull-right">
-                            <a href="{% url 22k:entry tournament.id %}" class="btn btn-mini"><i class="icon-book"></i> Entry</a>
-                            <a href="{% url 22k:tourney_dashboard tournament.id %}" class="btn btn-mini"><i class="icon-wrench"></i> Setup</a>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-        </tbody>
-    </table>
+                                </td>
+                                <td class="progressbar">
+                                        <div class="progress">
+                                            {% if tournament.total_entry %}
+                                                <div class="bar" style="width: {% widthratio tournament.total_entry 500 100 %}%"></div>
+                                            {% endif %}
+                                        </div>
+                                        <span class="minor">{{ tournament.total_entry }} sold, {{ tournament.remaining_entry }} remaining</span>
+                                </td>
+                                <td class="nowrap figures">
+                                    —
+                                </td>
+                                <td class="nowrap">
+                                    <div class="btn-group pull-right">
+                                        <a href="{% url 22k:entry tournament.id %}" class="btn btn-mini"><i class="icon-book"></i> Entry</a>
+                                        <a href="{% url 22k:tourney_dashboard tournament.id %}" class="btn btn-mini"><i class="icon-wrench"></i> Setup</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}

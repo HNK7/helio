@@ -1,26 +1,31 @@
 {% extends 'include/base.html' %}
 {% load humanize %}
 {% block body %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/admin.css" />
-<div class="btn-toolbar pull-right">
-    <a href="{% url 22k:event_create tournament.id%}" class="btn btn-success"><i class="icon-plus icon-white"></i> Create a new event</a>
-</div>
-<h2>{{ tournament.title }}</h2>
-<hr>
-<div class="row">
-    <div class="span3">
-        {% include 'include/left_menu.html' %}
+<div class="container">
+    <div class="page-header">
+        <p>{{ tournament.title }} - Create a event</p>
     </div>
-    <div class="span9">
-        <legend>Create a new event</legend>
-        <!-- Body -->
-        <form action="{% url 22k:event_create tournament.id %}" method="POST">
-            {% csrf_token %}
-            {{ form.as_table }}
-            <label></label>
-            <button class="btn btn-primary" type="submit">Submit</button>
-        </form>
-    </div>
-</div>
+    <!-- <div class="btn-toolbar pull-right">
+        <a href="{% url 22k:event_create tournament.id%}" class="btn btn-success"><i class="icon-plus icon-white"></i> Create a new event</a>
+    </div> -->
 
+    <div class="row">
+        <div class="span3">
+            {% include 'include/left_menu.html' %}
+        </div>
+        <div class="span9">
+           <!--  <legend>Create a new event</legend> -->
+            <!-- Body -->
+            <div class="span5">
+                <form action="{% url 22k:event_create tournament.id %}" method="POST">
+                    {% csrf_token %}
+                    {{ form.as_table }}
+                    <label></label>
+                    <br>
+                    <button class="btn btn-large btn-primary" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
