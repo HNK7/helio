@@ -5,14 +5,15 @@
     <div class="page-header">
         <p>REGISTRATION <span class="muted">> EVENT SIGNUP > PAYMENT</span></p>
     </div>
-    
+
     <div class="hero-unit">
-        <h2>Scan a card!</h2>
-        <p></p>
+        <p><h2>{{ tournament.title }}</h2></p>
+        <p><div class="alert alert-info"><i class="icon-tags"></i> Scan a card to register</div></p>
             <form method="post">
                 {% csrf_token %}
                 <div class="register">
                     <input type="text" name="rfid_id" id="rfid_id" autocomplete="off" required>
+                    <label></label>
                     <button class="btn btn-primary btn-large" type="submit">Submit</button>
                 </div>
             </form>

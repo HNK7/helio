@@ -14,5 +14,6 @@ urlpatterns = patterns('',
     url(r'^s/(?P<e_id>\d+)/$', views.event_signup, name='event_signup'),
     url(r'^r/(?P<t_id>\d+)/$', views.card, name='card'),
     url(r'^r/(?P<t_id>\d+)/(?P<rfid_id>\d+)/$', views.register, name='register'),
+    url(r'^m/(?P<t_id>\d+)/$', views.payment, name='payment'),
     url(r'^m/(?P<t_id>\d+)/(?P<rfid_id>\d+)/$', views.payment, name='payment'),
 )

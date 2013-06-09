@@ -4,43 +4,80 @@
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <p>{{ event.start_at|date:"D"|upper }} / {{ event.title }} / {{ event.get_division_display }} - Singups</p>
+        <p>{{ event.start_at|date:"D"|upper }} / {{ event.title }} / {{ event.get_division_display }} - Signup</p>
     </div>
     <div class="row">
         <div class="span3">
             {% include 'include/left_menu.html' %}
         </div>
         <div class="span9">
-            {% if cards %}
-            <div class="alert alert-error">
-                {% for card in cards %}{{ card }} {% endfor %}</div>
-            {% else %}
-            <div class="alert alert-info"><i class="icon-tags"></i> Scan card to signup</div>
-            {% endif %}
-            <form method="post" class="form-inline">
-                {% csrf_token %}
-                {% if event.draw == 'L' or event.format == 'S' %}
-                <label>Card</label>
-                <input class="span2" type="text" name="card1" required>
-                {% elif event.draw != 'L' and event.format == 'D' %}
-                <label>Card 1</label>
-                <input class="span2" type="text" name="card1" required>
-                <label>Card 2</label>
-                <input class="span2" type="text" name="card2" required>
-                {% elif event.draw != 'L' and event.format == 'T' %}
-                <label>Card 1</label>
-                <input class="span2" type="text" name="card1" required>
-                <label>Card 2</label>
-                <input class="span2" type="text" name="card2" required>
-                <label>Card 3</label>
-                <input class="span2" type="text" name="card3" required>
+            <div class="well">
+                {% if error_msg %}
+                <div class="alert alert-error"><i class="icon-exclamation-sign"></i> {{ error_msg }}</div>
+                {% elif success_msg %}
+                <div class="alert alert-success"><i class="icon-ok"></i> {{ success_msg }}</div>
+                {% else %}
+                <div class="alert alert-info"><i class="icon-tags"></i> Scan cards to signup</div>
                 {% endif %}
-                <button class="btn btn-primary" type="submit">Submit</button>
-            </form>
+                <form method="post" class="form-horizontal">
+                    {% csrf_token %}
+                    {% if event.draw == 'L' or event.format == 'S' %}
+                    <div class="control-group">
+                        <label class="control-label">Card</label>
+                        <div class="controls">
+                            <input type="text" name="card1" required>
+                        </div>
+                    </div>
+                    {% elif event.draw != 'L' and event.format == 'D' %}
+                    <div class="control-group">
+                        <label class="control-label">Card 1</label>
+                        <div class="controls">
+                            <input type="text" name="card1" required>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Card 2</label>
+                        <div class="controls">
+                            <input type="text" name="card2" required>
+                        </div>
+                    </div>
+                    {% elif event.draw != 'L' and event.format == 'T' %}
+                    <div class="control-group">
+                        <label class="control-label">Team Name</label>
+                        <div class="controls">
+                            <input class="span2" type="text" name="teamname" required>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Card 1</label>
+                        <div class="controls">
+                            <input class="span2" type="text" name="card1" required>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Card 2</label>
+                        <div class="controls">
+                            <input class="span2" type="text" name="card2" required>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Card 3</label>
+                        <div class="controls">
+                            <input class="span2" type="text" name="card3" required>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="control-group">
+                        <div class="controls">
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
             <hr>
             {% if teams %}
-                <div class="lead pull-right">Total: {{ teams.count|intcomma }}</div>
-                <table class="table table-condensed  table-hover">
+                <span class="label label-info pull-right">TOTAL : {{ teams.count }}</span>
+                <table class="table table-condensed">
                     <thead>
                         <tr>
                             <th>#</th>

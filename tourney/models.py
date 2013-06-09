@@ -26,7 +26,7 @@ class Event(models.Model):
     title = models.CharField(max_length=255)
     start_at = models.DateTimeField('starts at')
     tournament = models.ForeignKey('Tournament')
-    teams = models.ManyToManyField('Team')
+
     division_choices = (
         ('M', 'Men'),
         ('F', 'Ladies'),
@@ -56,7 +56,7 @@ class Event(models.Model):
     game = models.CharField(max_length=3, choices=game_choies, default='CR')
 
     def __unicode__(self):
-        # return "%s/ %s / %s / %s" % (self.title, self.division_choices[self.division], 
+        # return "%s/ %s / %s / %s" % (self.title, self.division_choices[self.division],
                                      # self.format_choices[self.format], self.game_choies[self.game])
         return self.title
 
@@ -67,6 +67,16 @@ class Event(models.Model):
 class Team(models.Model):
     name = models.CharField(max_length=255, null=True)
     players = models.ManyToManyField('Player')
+    event = models.ForeignKey(Event)
+
+    def __unicode__(self):
+        if self.name:
+            team_name = self.name
+        else:
+            player_list = self.players.all()
+            team_name = ','.join(player.last_name.title() for player in player_list) \
+                        if len(player_list) > 1 else player_list[0].full_name.title()
+        return team_name
 
 
 class Address(models.Model):
@@ -105,12 +115,12 @@ class Player(Address):
 
     @property
     def card_number(self):
-        return Card.objects.get(owned_id=self.id).cardno
+        return Card.objects.get(player=self).cardno
         # return self.cardno
 
     @property
     def rfid(self):
-        return Card.objects.get(owned_id=self.id).rfid
+        return Card.objects.get(player=self).rfid
 
     def is_profile_valid(self):
         return True if self.card_number and self.phone and self.email and self.gender else False
@@ -156,7 +166,7 @@ class Card(models.Model):
     rfid = models.CharField(max_length=255, editable=False, unique=True)
     cardno = models.CharField(max_length=16, editable=False, unique=True)
     # used = models.DateTimeField(null=True)
-    owned = models.ForeignKey(Player, null=True)
+    player = models.ForeignKey(Player)
 
     def __unicode__(self):
         return self.cardno
@@ -181,7 +191,7 @@ class Entry(models.Model):
     tournament = models.ForeignKey(Tournament)
     player = models.ForeignKey(Player)
     balance = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
-    created = models.DateTimeField(editable=False)
+    created_at = models.DateTimeField(editable=False)
 
     class Meta:
         unique_together = (('tournament', 'player'))
@@ -190,8 +200,8 @@ class Entry(models.Model):
         return "%s plays %s" % (self.player.full_name, self.tournament.title)
 
     def save(self, *args, **kwargs):
-        if not self.id:
-            self.created = datetime.now()
+        if not self.pk:
+            self.created_at = datetime.now()
         super(Entry, self).save(*args, **kwargs)
 
 
@@ -207,3 +217,31 @@ class Ranking(models.Model):
     rfid = models.CharField(max_length=64, null=True, editable=False, unique=True)
     mpr = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
     ppd = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+
+
+class Console(models.Model):
+    no = models.CharField(max_length=16, primary_key=True)
+    serial = models.CharField(max_length=64, unique=True)
+    mac_address = models.CharField(max_length=12, unique=True)
+    ip_address = models.IPAddressField(unique=True)
+
+    def __unicode__(self):
+        return self.no
+
+
+class Match(models.Model):
+    event = models.ForeignKey(Event)
+    team1 = models.ForeignKey(Team, related_name='team1')
+    team2 = models.ForeignKey(Team, related_name='team2')
+    winner = models.ForeignKey(Team, related_name='winned_by', null=True)
+    console = models.ForeignKey(Console, related_name='played_with', null=True)
+    created_at = models.DateTimeField('created at', editable=False, null=True)
+    ended_at = models.DateTimeField('ended at', editable=False, null=True)
+
+    def __unicode__(self):
+        return '%s:%s vs %s' % (self.event, self.team1, self.team2)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.created_at = datetime.now()
+        super(Match, self).save(*args, **kwargs)

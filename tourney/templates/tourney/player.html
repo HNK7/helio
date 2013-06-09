@@ -1,45 +1,45 @@
 {% extends 'include/base.html' %}
-{% load url from future %}
 {% load humanize %}
+{% load app_filters %}
 {% block body %}
-<div class="page-header">
-    <h3>Players Directory <small><a href="{% url '22k:register' %}"><i class="icon-plus"></i> Register</a></small></h3> <span class="label label-info">TOTAL: {{ player_total|intcomma }}</span>
-</div>
-{% if players %}
-    <table class="table table-condensed  table-hover">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th></th>
-                <th>Name</th>
-                <th></th>
-                <th>Card</th>
-                <th>Phone</th>
-                <th></th>
+<div class="container">
+    <div class="page-header">
+        <p>Players Directory</p>
+    </div>
+    {% if players %}
+        <span class="lead pull-right">Total: {{ players.count }}</span>
+        <table class="table table-condensed  table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th></th>
+                    <th>Name</th>
+                    <th></th>
+                    <th>Card</th>
+                    <th>Phone</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for player in players %}
+            <tr{% if not player.card_number %} class="error" {% endif %}>
+                <td class="muted">{{ forloop.counter }}</td>
+                <td>
+                {% if not player.card_number %}
+                    <span class="label label-important">card</span>
+                {% endif %}
+                </td>
+                <td><a href="{% url 22k:profile player.id %}">{{ player.full_name }}</a></td>
+                <td class="muted">{{ player.gender }}</td>
+                <td class="muted">{{ player.card_number|format_card_number }}</td>
+                <td class="muted">{{ player.phone|format_phone_number }}</td>
+                <td>
+                    <small><a href="{% url 22k:profile_edit player.id %}"><i class="icon-edit"></i> Edit</a></small>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-    {% for player in players %}
-        <tr{% if not player.cardno %} class="error" {% endif %}>
-            <td class="muted">{{ forloop.counter }}</td>
-            <td>
-            {% if not player.is_profile_valid %}
-                <span class="label label-warning">info</span>
-            {% endif %}
-            {% if not player.card_number %}
-                <span class="label label-important">card</span>
-            {% endif %}
-            </td>
-            <td><a href="{% url '22k:profile' player.id %}">{{ player.full_name }}</a></td>
-            <td class="muted">{{ player.gender }}</td>
-            <td class="muted">{{ player.card_number }}</td>
-            <td class="muted">{{ player.phone_number }}</td>
-            <td>
-                <small><a href="{% url '22k:profile_edit' player.id %}"><i class="icon-edit"></i> Edit</a></small>
-            </td>
-        </tr>
-    {% endfor %}
-        </tbody>
-    </table>
+        {% endfor %}
+            </tbody>
+        </table>
+</div>
 {% endif %}
 {% endblock body %}

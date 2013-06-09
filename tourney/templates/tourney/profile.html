@@ -1,6 +1,8 @@
 {% extends 'include/base.html' %}
 {% load app_filters %}
-{% block body %}            <!-- Body -->
+{% block body %}
+<div class="container">
+          <!-- Body -->
             <div class="btn-toolbar pull-right">
                 <a href="{% url 22k:profile_edit player.id %}" class="btn btn-info"><i class="icon-edit icon-white"></i> Edit {{ player.full_name|title }}'s Profile</a>
             </div>
@@ -81,5 +83,6 @@
                         </table>
                         <p style="color:white">{{ player.rfid }}</p>
                     </div>
+</div>
 
 {% endblock %}

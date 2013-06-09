@@ -7,9 +7,9 @@
             <div class="page-header">
                 <p>Dashboard</p>
             </div>
-            <div class="btn-toolbar pull-right">
+            <!-- <div class="btn-toolbar pull-right">
                     <a href="{% url 22k:tourney_create %}" class="btn btn-success"><i class="icon-plus icon-white"></i> Create a new tournament</a>
-            </div>
+            </div> -->
             <table class="table table-striped">
                     <thead>
                         <tr>
@@ -23,7 +23,7 @@
                             {% for tournament in tournament_list %}
                             <tr>
                                 <td>
-                                    <b><a href="{% url 22k:tourney_dashboard tournament.id %}" {% if tournament.is_over %} class="muted"{% endif %}>{{ tournament.title|title }}</a></b>
+                                    <b><a href="{% url 22k:tourney_dashboard tournament.id %}" {% if tournament.is_over %} class="muted"{% endif %}>{{ tournament.title}}</a></b>
                                     {% if not tournament.is_over %}
                                         <span class="minor">{{ tournament.start_at|timeuntil }}</span>
                                     {% else %}
@@ -44,8 +44,9 @@
                                 </td>
                                 <td class="nowrap">
                                     <div class="btn-group pull-right">
+                                        <a href="{% url 22k:card tournament.id %}" class="btn btn-mini"><i class="icon-user"></i> Register</a>
                                         <a href="{% url 22k:entry tournament.id %}" class="btn btn-mini"><i class="icon-book"></i> Entry</a>
-                                        <a href="{% url 22k:tourney_dashboard tournament.id %}" class="btn btn-mini"><i class="icon-wrench"></i> Setup</a>
+                                        <a href="{% url 22k:tourney_dashboard tournament.id %}" class="btn btn-mini"><i class="icon-wrench"></i> Dashboard</a>
                                     </div>
                                 </td>
                             </tr>

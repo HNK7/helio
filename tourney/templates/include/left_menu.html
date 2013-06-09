@@ -1,13 +1,27 @@
 <!--a href="/22k" class="btn btn-info "><i class="icon icon-chevron-left icon-white"></i> Back to Dashboard</a>
     <hr-->
+
     <ul class="nav nav-list well">
         <li class="nav-header">Tournament</li>
+            <li>
+                <a href="{% url 22k:card tournament.id %}" rel="tooltip" data-original-title="Registration">
+                    <i class="icon-user"></i> Register</a>
+            </li>
+            <li>
+                <a href="{% url 22k:tourney_dashboard tournament.id %}" rel="tooltip" data-original-title="Tournament Dashboard">
+                    <i class="icon-star"></i> Events</a>
+            </li>
+            <li>
+                <a href="{% url 22k:entry tournament.id %}" rel="tooltip" data-original-title="Registred Players">
+                    <i class="icon-book"></i> Entry</a>
+            </li>
+            <li>
+                <a href="{% url 22k:payment tournament.id %}" rel="tooltip" data-original-title="Collect Payment">
+                    <i class="icon-shopping-cart"></i> Payment</a>
+            </li>
+        <li class="nav-header">Player</li>
         <li>
-            <a href="{% url 22k:tourney_dashboard tournament.id %}" rel="tooltip" data-original-title="Tournament Dashboard">
-                <i class="icon-star"></i> Events</a>
-        </li>
-        <li>
-            <a href="{% url 22k:entry tournament.id %}" rel="tooltip" data-original-title="List Registred Players">
-                <i class="icon-book"></i> Entry</a>
+            <a href="{% url 22k:directory %}" rel="tooltip" data-original-title="Player Directory">
+                <i class="icon-folder-open"></i> Directory</a>
         </li>
     </ul>

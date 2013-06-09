@@ -1,5 +1,5 @@
 from django.forms import ModelForm, RadioSelect, HiddenInput
-from tourney.models import Tournament, Player, Event
+from tourney.models import Tournament, Player, Event, Match, Card
 from django.utils.safestring import mark_safe
 
 
@@ -43,3 +43,13 @@ class EntryForm(ModelForm):
     class Meta:
         model = Player
         fields = ('first_name', 'last_name', 'gender', 'phone')
+
+
+class MatchForm(ModelForm):
+    class Meta:
+        model = Match
+
+
+class CardForm(ModelForm):
+    class Meta:
+        model = Card

@@ -6,7 +6,9 @@
         <p><span class="muted">REGISTRATION > EVENT SIGNUP ></span> PAYMENT</p>
     </div>
 	<div class="hero-unit">
-	    <p class="alert alert-info lead">Collect amount due and click sbumit!</p>
+	    <p><h2>{{ tournament.title }}</h2></p>
+        {% if entry %}
+        <p class="alert alert-info lead">{{ entry.player.full_name|title }}<br>Collect amount due and click sbumit!</p>
 	    <h1><span class="lead">Amount Due:</span> ${{ entry.balance }}</h1>
 	    <p>&nbsp;</p>
 	    <p>
@@ -14,7 +16,18 @@
 	            {% csrf_token %}
 	            <button class="btn btn-primary btn-large" type="submit">Submit</button>
 	        </form>
-	</p>
+    	</p>
+        {% else %}
+        <p><div class="alert alert-info"><i class="icon-tags"></i> Scan a card to collect payment.</div></p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="register">
+                    <input type="text" name="rfid_id" id="rfid_id" autocomplete="off" required>
+                    <label></label>
+                    <button class="btn btn-primary btn-large" type="submit">Submit</button>
+                </div>
+            </form>
+        {% endif %}
 	</div>
 </div>
 {% endblock %}

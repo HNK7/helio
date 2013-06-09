@@ -6,7 +6,7 @@ body { padding-top: 40px; }
 .page-header p {
     margin-top: 50px;
     margin-bottom: 10px;
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 400;
     line-height: 30px
 }
@@ -21,4 +21,15 @@ body { padding-top: 40px; }
     line-height: 24px;
     font-weight: 300;
     font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+
+.singup input[type="text"] {
+    display: block;
+    height: auto;
+    width: 150px;
+    font-size: 8px;
+}
+
+.table th {
+background-color: #f5f5f5
 }
