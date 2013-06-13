@@ -1,0 +1,53 @@
+{% extends 'include/base.html' %}
+{% load humanize %}
+{% load app_filters %}
+{% block body %}
+<div class="container">
+    <div class="page-header"><p>{{ tournament.title }} - Pre Registered Players
+    <span class="label label-info pull-right">TOTAL : {{ players.count }}</span></P>
+    </div>
+    <div class="row">
+        <div class="span2">
+            {% include 'include/left_menu.html' %}
+        </div>
+        <div class="span10">
+{% if players %}
+            <table class="table table-condensed  table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th></th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Credit</th>
+                        <th>Note</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+        {% for player in players %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ player.full_name }}</a></td>
+                    <td>{{ player.gender }}</td>
+                    <td>{{ player.email }}</td>
+                    <td>{{ player.phone|format_phone_number }}</td>
+                    <td>{{ player.credit }}</a></td>
+                    <td>{{ player.note }}</td>
+                    <td>
+                    {% if player.is_registered %}
+                       <i class="icon-ok"></i>
+                    {% else %}
+                        <a href="{% url 22k:pre_register t_id=tournament.id,p_id=player.id %}" class="btn btn-mini"><i class="icon-user"></i> Register</a>
+                    {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock body %}

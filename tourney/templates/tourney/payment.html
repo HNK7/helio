@@ -1,33 +1,61 @@
 {% extends 'include/base.html' %}
 {% load humanize %}
+{% load app_filters %}
 {% block body %}
 <div class="container">
     <div class="page-header">
         <p><span class="muted">REGISTRATION > EVENT SIGNUP ></span> PAYMENT</p>
     </div>
 	<div class="hero-unit">
-	    <p><h2>{{ tournament.title }}</h2></p>
-        {% if entry %}
-        <p class="alert alert-info lead">{{ entry.player.full_name|title }}<br>Collect amount due and click sbumit!</p>
-	    <h1><span class="lead">Amount Due:</span> ${{ entry.balance }}</h1>
-	    <p>&nbsp;</p>
+	    <p><h2 class="muted">{{ tournament.title }}</h2></p>
+{% if entry %}
+        <p><h1>{{ entry.player.full_name|title }}</h1></p>
+        <p>&nbsp</p>
+        {% if due_amount > 0 %}
+        <p class="alert alert-info lead">Collect amount due and click sbumit!</p>
+        {% endif %}
+
+        <div class="well"><h1><span class="lead">Amount Due:</span> {{ due_amount|currency }}</h1></div>
+	    <br>
+        <p>
+            <ul class="lead">
+            <li>Card Fee: {{ entry.balance_card }}</li>
+            <li>Membership Fee: {{ entry.balance_membership }}</li>
+            <li>Sign Up Fee: {{ entry.balance_signup}}</li>
+        </ul>
+    </p>
 	    <p>
-	        <form method="post">
+	        {% if due_amount > 0 %}
+            <form method="post">
 	            {% csrf_token %}
+                <input type="hidden" name="card_fee" value="{{ card_fee }}">
+                <input type="hidden" name="membership_fee" value="{{ membership_fee }}">
+                <input type="hidden" name="signup_fee" value="{{ signup_fee }}">
 	            <button class="btn btn-primary btn-large" type="submit">Submit</button>
 	        </form>
+            {% else %}
+             <p><a href="{% url 22k:payment tournament.id %}" class="btn btn-large btn-primary">Back</a></p>
+             {% endif %}
     	</p>
-        {% else %}
+{% else %}
         <p><div class="alert alert-info"><i class="icon-tags"></i> Scan a card to collect payment.</div></p>
             <form method="post">
                 {% csrf_token %}
                 <div class="register">
                     <input type="text" name="rfid_id" id="rfid_id" autocomplete="off" required>
+
                     <label></label>
                     <button class="btn btn-primary btn-large" type="submit">Submit</button>
                 </div>
             </form>
-        {% endif %}
+            <script type="text/javascript">
+ function FocusOnInput()
+ {
+    document.getElementById("rfid_id").focus();
+ }
+ FocusOnInput();
+ </script>
+{% endif %}
 	</div>
 </div>
 {% endblock %}

@@ -1,0 +1,62 @@
+[
+  {"model": "tourney.Tournament",
+    "pk": 1,
+    "fields": {
+      "title": "Phoenix Cup 22K in Lansdale, PA",
+      "start_at": "2013-01-25",
+      "end_at": "2013-01-27"
+    }
+  },
+  {"model": "tourney.Tournament",
+    "pk": 2,
+    "fields": {
+      "title": "Phoenix Cup 22K in Pittsburgh, PA",
+      "start_at": "2013-03-29",
+      "end_at": "2013-03-31"
+    }
+  },
+   {"model": "tourney.Tournament",
+    "pk": 3,
+    "fields": {
+      "title": "Phoenix Cup 22K in Tampa, FL",
+      "start_at": "2013-06-14",
+      "end_at": "2013-06-17"
+    }
+  },
+  {"model": "tourney.Event",
+    "pk": 1,
+    "fields": {
+      "title": "Dummy",
+      "start_at": "2013-03-29 19:00",
+      "tournament": 2,
+      "division": "M",
+      "format": "D",
+      "draw": "L",
+      "game": "CR"
+    }
+  },
+  {"model": "tourney.Event",
+    "pk": 2,
+    "fields": {
+      "title": "FRI - Luck of Draw (Men)",
+      "start_at": "2013-06-14 19:00",
+      "tournament": 3,
+      "division": "M",
+      "format": "D",
+      "draw": "L",
+      "game": "CR"
+    }
+  },
+  {"model": "tourney.Event",
+    "pk": 3,
+    "fields": {
+      "title": "FRI - Luck of Draw (Ladies)",
+      "start_at": "2013-06-14 19:30",
+      "tournament": 3,
+      "division": "F",
+      "format": "D",
+      "draw": "L",
+      "game": "CR"
+    }
+  }
+]

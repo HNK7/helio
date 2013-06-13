@@ -37,8 +37,14 @@ FEES = {
 TWILIO_ACCOUNT_SID = 'AC23c0e5f6e7a76d5a3680f3669f6e2d1a'
 TWILIO_AUTH_TOKEN = '6d32191bbb9f19664bfe72e0771b5961'
 
+
+SMS = {
+    'LIVE': False,
+}
+
 SMS_MSG = {
     'REGISTRATION': 'Hi, $name.\nWelcome to $tournament_title.',
     'SIGNUP': '$name,\nYou signed up for $event_title event. It starts at $start_at. Good Luck!',
     'PAYMENT': '$name,\nYou have paid $$$amount. Thank you!',
+    'DRAW': '$name,\nYour partner for $event_title has been picked.\nName: $partner\nStat: $stat\nGood Luck!'
 }

@@ -1,6 +1,7 @@
 from django.db import models, connections
 from datetime import datetime, timedelta
 from django.contrib.localflavor.us.models import USStateField
+from decimal import Decimal
 
 
 class Tournament(models.Model):
@@ -13,7 +14,7 @@ class Tournament(models.Model):
         return self.title
 
     def is_over(self):
-        return (datetime.now() > self.end_at)
+        return (datetime.now().date() > self.end_at)
 
     def total_entry(self):
         return len(self.players.all())
@@ -63,11 +64,29 @@ class Event(models.Model):
     def total_signup(self):
         len(self.teams.all)
 
+    def is_lotd(self):
+        return True if self.draw == 'L' else False
+
+    def is_drawn(self):
+        if self.draw != 'L':
+            return True
+        if Team.objects.filter(event=self).count():
+            return True
+        else:
+            return False
+
+    def draw_sms_sent(self):
+        return SMSLog.objects.filter(event=self).exists()
+
 
 class Team(models.Model):
     name = models.CharField(max_length=255, null=True)
     players = models.ManyToManyField('Player')
     event = models.ForeignKey(Event)
+    mpr_rank = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    ppd_rank = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    mpr_event = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    ppd_event = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
     def __unicode__(self):
         if self.name:
@@ -75,8 +94,19 @@ class Team(models.Model):
         else:
             player_list = self.players.all()
             team_name = ','.join(player.last_name.title() for player in player_list) \
-                        if len(player_list) > 1 else player_list[0].full_name.title()
+                        if len(player_list) > 1 else player_list[0].full_name
         return team_name
+
+
+class DrawEntry(models.Model):
+    event = models.ForeignKey(Event)
+    player = models.ForeignKey('Player')
+
+    def __unicode__(self):
+        return self.player.full_name
+
+    class Meta:
+        unique_together = (('event', 'player'))
 
 
 class Address(models.Model):
@@ -109,6 +139,10 @@ class Player(Address):
     def __unicode__(self):
         return self.full_name
 
+    def save(self, *args, **kwargs):
+        self.phone = ''.join(e for e in self.phone if e.isalnum())
+        super(Player, self).save(*args, **kwargs)
+
     @property
     def full_name(self):
         return '%s %s' % (self.first_name.title(), self.last_name.title())
@@ -132,15 +166,11 @@ class Player(Address):
         cursor = connections['hi'].cursor()
         cursor.execute("SELECT ppd_ta2, mpr_ta2 FROM useravg where rfid = getorigrfid2(%s)", [self.rfid])
         r = cursor.fetchone()
-        return {'PPD': r[0], 'MPR': r[1]}
+        return {'PPD': r[0], 'MPR': r[1]} if r else {'PPD': None, 'MPR': None}
 
-    def ranking(self):
-        # cursor = connections['hi'].cursor()
-        # cursor.execute("SELECT m_id FROM members where rfid = %s", [self.rfid])
-        # r = cursor.fetchone()
-        # ranking = Ranking.objects.get(pk=r[0])
-        ranking = Ranking.objects.get(pk=self.user_id)
-        return {'PPD': ranking.ppd, 'MPR': ranking.mpr}
+    def stat_rank(self, tournament):
+        entry = Entry.objects.get(tournament=tournament, player=self)
+        return {'PPD': entry.ppd_rank, 'MPR': entry.mpr_rank}
 
     def event_stat(self):
         try:
@@ -150,23 +180,29 @@ class Player(Address):
         return {'PPD': event_stat.ppd, 'MPR': event_stat.mpr}
 
     def is_membership_valid(self):
-        latest_entry = self.entry_set.latest('created')
-        exp_date = latest_entry.created + timedelta(days=90)
-        if datetime.now() > exp_date:
+        try:
+            latest_entry = self.entry_set.latest('created_at')
+            exp_date = latest_entry.created_at + timedelta(days=90)
+            return True if datetime.now() <= exp_date else False
+        except:
             return False
-        return True
+
 
     def membership_expire_at(self):
-        latest_entry = self.entry_set.latest('created')
-        exp_date = latest_entry.created + timedelta(days=90)
+        latest_entry = self.entry_set.latest('created_at')
+        exp_date = latest_entry.created_at + timedelta(days=90)
         return exp_date
+
+    def is_pre_registered(self):
+        return PreRegPlayer.objects.filter(player_ptr=self).exists()
+        # return hasattr(self, 'credit')
 
 
 class Card(models.Model):
     rfid = models.CharField(max_length=255, editable=False, unique=True)
     cardno = models.CharField(max_length=16, editable=False, unique=True)
     # used = models.DateTimeField(null=True)
-    player = models.ForeignKey(Player)
+    player = models.OneToOneField(Player)
 
     def __unicode__(self):
         return self.cardno
@@ -181,16 +217,22 @@ class Card(models.Model):
         cursor = connections['hi'].cursor()
         cursor.execute("SELECT utime FROM checkrfid WHERE rfid=%s", [self.rfid])
         r = cursor.fetchone()
-        if r[0]:
-            return False
-        else:
-            return True
+        return False if r[0] else True
 
 
 class Entry(models.Model):
     tournament = models.ForeignKey(Tournament)
     player = models.ForeignKey(Player)
-    balance = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    # casual stat is copied over as rank stat on registration
+    mpr_rank = models.DecimalField(max_digits=3, decimal_places=2, default=9.0)
+    ppd_rank = models.DecimalField(max_digits=5, decimal_places=2, default=60)
+    # event stat
+    mpr_event = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    ppd_event = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    balance_membership = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    balance_signup = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    balance_card = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+
     created_at = models.DateTimeField(editable=False)
 
     class Meta:
@@ -200,9 +242,12 @@ class Entry(models.Model):
         return "%s plays %s" % (self.player.full_name, self.tournament.title)
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            self.created_at = datetime.now()
+        self.created_at = datetime.now() if not self.pk else self.created_at
         super(Entry, self).save(*args, **kwargs)
+
+    @property
+    def balance(self):
+        return Decimal(self.balance_membership + self.balance_signup + self.balance_card)
 
 
 class EventStat(models.Model):
@@ -212,11 +257,11 @@ class EventStat(models.Model):
     ppd = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
 
 
-class Ranking(models.Model):
-    userid = models.CharField(max_length=64, editable=False, primary_key=True)
-    rfid = models.CharField(max_length=64, null=True, editable=False, unique=True)
-    mpr = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
-    ppd = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+# class Ranking(models.Model):
+#     userid = models.CharField(max_length=64, editable=False, primary_key=True)
+#     rfid = models.CharField(max_length=64, null=True, editable=False, unique=True)
+#     mpr = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
+#     ppd = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
 
 
 class Console(models.Model):
@@ -242,6 +287,27 @@ class Match(models.Model):
         return '%s:%s vs %s' % (self.event, self.team1, self.team2)
 
     def save(self, *args, **kwargs):
-        if not self.id:
-            self.created_at = datetime.now()
+        self.created_at = datetime.now() if not self.id else self.created_at
         super(Match, self).save(*args, **kwargs)
+
+    def player_list(self):
+        return [self.team1.players.all()] + [self.team2.players.all()]
+
+
+class SMSLog(models.Model):
+    event = models.ForeignKey(Event)
+    category = models.CharField(max_length=64)
+    sent_at = models.DateTimeField('created at', editable=False, null=True)
+
+    def save(self, *args, **kwargs):
+        self.sent_at = datetime.now() if not self.id else self.sent_at
+        super(SMSLog, self).save(*args, **kwargs)
+
+
+class PreRegPlayer(Player):
+    credit = models.DecimalField('credit', max_digits=8, decimal_places=2, default=0.00)
+    note = models.TextField('note', null=True)
+    is_registered = models.NullBooleanField(null=True)
+
+    def __unicode__(self):
+        return self.full_name

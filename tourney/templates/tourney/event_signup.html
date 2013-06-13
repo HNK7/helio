@@ -11,6 +11,7 @@
             {% include 'include/left_menu.html' %}
         </div>
         <div class="span9">
+{% if not event.is_lotd or not event.is_drawn %}
             <div class="well">
                 {% if error_msg %}
                 <div class="alert alert-error"><i class="icon-exclamation-sign"></i> {{ error_msg }}</div>
@@ -25,14 +26,14 @@
                     <div class="control-group">
                         <label class="control-label">Card</label>
                         <div class="controls">
-                            <input type="text" name="card1" required>
+                            <input type="text" name="card1" id="first_input" required>
                         </div>
                     </div>
                     {% elif event.draw != 'L' and event.format == 'D' %}
                     <div class="control-group">
                         <label class="control-label">Card 1</label>
                         <div class="controls">
-                            <input type="text" name="card1" required>
+                            <input type="text" name="card1" id="first_input" required>
                         </div>
                     </div>
                     <div class="control-group">
@@ -45,7 +46,7 @@
                     <div class="control-group">
                         <label class="control-label">Team Name</label>
                         <div class="controls">
-                            <input class="span2" type="text" name="teamname" required>
+                            <input class="span2" type="text" name="teamname" id="first_input" required>
                         </div>
                     </div>
                     <div class="control-group">
@@ -73,8 +74,47 @@
                         </div>
                     </div>
                 </form>
+                <script type="text/javascript">
+                function FocusOnInput() { document.getElementById("first_input").focus(); }
+                FocusOnInput();
+                </script>
             </div>
             <hr>
+{% endif %}
+{% if not event.is_drawn %}
+                {% if draw_entry %}
+                <span class="label label-info pull-right">TOTAL : {{ draw_entry.count }}</span>
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Player</th>
+                            <th>Stat</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                {% for d in draw_entry %}
+                    <tr>
+                        <td class="muted">{{ forloop.counter }}</td>
+                        <td>
+                            {{ d.player.full_name }}
+                        </td>
+                        <td>
+                            {{ d|entry_stat_player}}
+                        </td>
+                        <td>
+                            <div class="btn-group pull-right">
+                                <a href="#" class="btn btn-mini"><i class="icon-envelope"></i> SMS</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+                {% if draw_entry.count >= 8 and draw_entry.count|divisibleby:2 %}<a href="{% url 22k:draw event.id %}" class="btn btn-danger">Draw</a>{% endif %}
+{% else %}
             {% if teams %}
                 <span class="label label-info pull-right">TOTAL : {{ teams.count }}</span>
                 <table class="table table-condensed">
@@ -83,6 +123,7 @@
                             <th>#</th>
                             <th>Team</th>
                             <th>Players</th>
+                             <th>Stat: <span class="label">Team</span> / <span class="label label-important">Player</span></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -97,6 +138,9 @@
                             {{ team|players_in_team }}
                         </td>
                         <td>
+                            {{ team|entry_stat_team }}
+                        </td>
+                        <td>
                             <div class="btn-group pull-right">
                                 <a href="#" class="btn btn-mini"><i class="icon-envelope"></i> SMS</a>
                             </div>
@@ -105,7 +149,9 @@
                 {% endfor %}
                     </tbody>
                 </table>
+                {% if event.draw == 'L' and not event.draw_sms_sent %}<a href="{% url 22k:draw_sms event.id %}" class="btn btn-primary">Send SMS</a>{% endif %}
             {% endif %}
+{% endif %}
         </div>
     </div>
 </div>

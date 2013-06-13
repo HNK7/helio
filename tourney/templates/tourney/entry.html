@@ -23,14 +23,14 @@
                             <th>Name</th>
                             <th></th>
                             <th>Card</th>
-                            <th>Phone</th>
-                            <th>Due</th>
-                            <th></th>
+                            <th>Stat: <span class="label">CA</span> / <span class="label label-important">TN</span></th>
+                            <th>Balance</th>
+                            <!-- <th></th> -->
                         </tr>
                     </thead>
                     <tbody>
                 {% for e in entry %}
-                    <tr{% if e.balance > 0 %} class="error" {% endif %}>
+                    <tr{% if e.balance > 0 %} class="error" {% elif e.balance < 0 %} class="info" {% endif %}>
                         <td class="muted">{{ forloop.counter }}</td>
                         <td>
                         {% if not e.player.is_profile_valid %}
@@ -41,19 +41,22 @@
                         {% endif %}
                         </td>
                         <td><a href="{% url 22k:profile e.player.id %}">{{ e.player.full_name|title }}</a></td>
-                        <td class="muted">{{ e.player.gender }}</td>
-                        <td class="muted">{{ e.player.card_number|format_card_number }}</td>
-                        <td class="muted">{{ e.player.phone|format_phone_number }}</td>
+                        <td>{{ e.player.gender }}</td>
+                        <td>{{ e.player.card_number|format_card_number }}</td>
+                        <td>{{ e.mpr_rank }}, {{ e.ppd_rank }} / {{ e.mpr_event }}, {{ e.ppd_event }}</td>
                         <td>
-                        {% if e.balance > 0 %}
-                            {{ e.balance }} <a href="{% url 22k:payment tournament.id e.player.rfid %}" class="btn btn-mini"><i class="icon-shopping-cart"></i> Collect</a>
-                        {% endif %}
+                            {{ e.balance|currency }}
                         </td>
-                        <td>
+                        <!-- <td>
+                        {% if e.balance > 0 %}
+                            <div class="btn-group pull-right">
+                            <a href="{% url 22k:payment tournament.id e.player.rfid %}" class="btn btn-mini"><i class="icon-shopping-cart"></i> Collect</a>
+                            </div>
+                        {% endif %}
                             <div class="btn-group pull-right">
                                 <a href="#" class="btn btn-mini"><i class="icon-envelope"></i> SMS</a>
                             </div>
-                        </td>
+                        </td>-->
                     </tr>
                 {% endfor %}
                     </tbody>

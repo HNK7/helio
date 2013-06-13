@@ -7,7 +7,10 @@
     </div>
 
     <div class="hero-unit">
-        <p><h2>{{ tournament.title }}</h2></p>
+        <p><h2>{{ player.full_name }} <span class="minor">is pre-registered.</h2></p>
+        {% if err_msg %}
+        <p><div class="alert alert-error">{{ err_msg }}</div></p>
+        {% endif %}
         <p><div class="alert alert-info"><i class="icon-tags"></i> Scan a card to register</div></p>
             <form method="post">
                 {% csrf_token %}
@@ -17,9 +20,6 @@
                     <button class="btn btn-primary btn-large" type="submit">Submit</button>
                 </div>
             </form>
-            <div clas="well">
-            <a href="{% url 22k:pre_register_list tournament.id %}"><i class="icon-barcode"></i> Pre-registered ?</a></li>
-            </div>
     </div>
 </div>
 <script type="text/javascript">

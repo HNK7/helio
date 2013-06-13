@@ -1,0 +1,12 @@
+body {
+    padding-top: 10px;
+    padding-bottom: 60px;
+    /*background-color: #1a1c2b;*/
+    /*color:#00af00;*/
+}
+
+.page-wrap {
+    /*color:#00af00;*/
+    max-width: 1024px;
+    margin: 0 auto;
+}

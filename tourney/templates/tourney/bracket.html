@@ -1,0 +1,566 @@
+{% load app_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" />
+<!--     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/admin.css" />
+ -->    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/refree.css" />
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="span12">
+            <div class="text-center">
+                <h3>Bracket Management</h3><small class="pull-right muted">v 0.1</small>
+            </div>
+            <div class="text-left">
+                <h4><span class="muted">EVENT :</span> {{ event }}</h4>
+            </div>
+            <div class="text-center">
+                <h4>CONSOLES</h4>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 31|get_range:1 %}
+                    <td><div class="text-center">{{ icon_select|random|safe }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 31|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+            <table class="table table-bordered table-condensed">
+                <tr>
+                    {% for i in 61|get_range:31 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 61|get_range:31 %}
+                    <td><div class="text-center">{{ icon_select|random|safe }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+            <br>
+            <div class="text-center">
+                <h4>MATCHES</h4>
+            </div>
+            <div class="text-center">
+                <h5><span class="muted">ROUND 1</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 33|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 33|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 65|get_range:33 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+    <br>
+        <div class="text-center">
+            <h5><span class="muted">ROUND 2</span></h5>
+        </div>
+        <div class="span6" style="margin-left:0px">
+            <div class="text-center">
+                <h5><span class="muted">WINNERS</span></h5>
+            </div>
+            <table class="span6 table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 17|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 17|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 33|get_range:17 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+        <div class="span6" style="margin-left:40px">
+            <div class="text-center">
+                <h5><span class="muted">LOOSERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 17|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 17|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 33|get_range:17 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </div>
+     <div class="row">
+        <br>
+        <div class="text-center">
+            <h5><span class="muted">ROUND 3</span></h5>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">WINNERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 9|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 9|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 17|get_range:9 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">LOOSERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 17|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 17|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 33|get_range:17 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+
+    </div>
+     <div class="row">
+        <br>
+        <div class="text-center">
+            <h5><span class="muted">ROUND 4</span></h5>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">WINNERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 5|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 5|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 9|get_range:5 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">LOOSERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 9|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 9|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 17|get_range:9 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </div>
+     <div class="row">
+        <br>
+        <div class="text-center">
+            <h5><span class="muted">ROUND 5</span></h5>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">WINNERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 3|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 3|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 5|get_range:3 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">LOOSERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 9|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 9|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 17|get_range:9 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </div>
+     <div class="row">
+        <br>
+        <div class="text-center">
+            <h5><span class="muted">ROUND 6</span></h5>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">WINNDERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center muted">vs</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                </tr>
+            </table>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">LOOSERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 5|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 5|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 9|get_range:5 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <br>
+        <div class="text-center">
+            <h5><span class="muted">ROUND 7</span></h5>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <!-- <div class="text-center">
+                <h5><span class="muted">WINNDERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center muted">vs</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                </tr>
+            </table>-->
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">LOOSERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 5|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 5|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 9|get_range:5 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <br>
+        <div class="text-center">
+            <h5><span class="muted">ROUND 8</span></h5>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <!-- <div class="text-center">
+                <h5><span class="muted">WINNDERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center muted">vs</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                </tr>
+            </table>-->
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">LOOSERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 3|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 3|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 5|get_range:3 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <br>
+        <div class="text-center">
+            <h5><span class="muted">ROUND 9</span></h5>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <!-- <div class="text-center">
+                <h5><span class="muted">WINNDERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center muted">vs</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                </tr>
+            </table>-->
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">LOOSERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    {% for i in 3|get_range:1 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 3|get_range:1 %}
+                    <td><div class="text-center muted">vs</div></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for i in 5|get_range:3 %}
+                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <br>
+        <div class="text-center">
+            <h5><span class="muted">ROUND 10</span></h5>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <!-- <div class="text-center">
+                <h5><span class="muted">WINNDERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center muted">vs</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                </tr>
+            </table>-->
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">LOOSERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center muted">vs</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <br>
+        <div class="text-center">
+            <h5><span class="muted">ROUND 11</span></h5>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <!-- <div class="text-center">
+                <h5><span class="muted">WINNDERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center muted">vs</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                </tr>
+            </table>-->
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <div class="text-center">
+                <h5><span class="muted">LOOSERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center muted">vs</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <br>
+        <div class="text-center">
+            <h5><span class="muted">FINAL</span></h5>
+        </div>
+        <div class="span3" style="margin-left:20px">
+             <div class="text-center">
+                <h5><span class="muted">WINNDERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center muted">vs</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                </tr>
+            </table>
+        </div>
+        <div class="span3" style="margin-left:20px">
+            <!-- <div class="text-center">
+                <h5><span class="muted">LOOSERS</span></h5>
+            </div>
+            <table class="table table-bordered table-condensed" style="margin-bottom:3px">
+                <tr>
+                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center muted">vs</div></td>
+                </tr>
+                <tr>
+                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                </tr>
+            </table> -->
+        </div>
+    </div>
+</div>
+</body>
+</html>

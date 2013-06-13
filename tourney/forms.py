@@ -1,5 +1,5 @@
 from django.forms import ModelForm, RadioSelect, HiddenInput
-from tourney.models import Tournament, Player, Event, Match, Card
+from tourney.models import Tournament, Player, PreRegPlayer, Event, Match, Card
 from django.utils.safestring import mark_safe
 
 
@@ -30,6 +30,13 @@ class RegisterForm(ModelForm):
         widgets = {
             'user_id': HiddenInput()
         }
+
+
+class PreRegisterForm(ModelForm):
+    class Meta:
+        model = PreRegPlayer
+        fields = ('first_name', 'last_name', 'credit', 'gender', 'phone', 'email',
+                  'zipcode')
 
 
 class ProfileForm(ModelForm):

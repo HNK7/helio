@@ -35,6 +35,10 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
             ('event', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['tourney.Event'])),
+            ('mpr_rank', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=3, decimal_places=2)),
+            ('ppd_rank', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
+            ('mpr_event', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=3, decimal_places=2)),
+            ('ppd_event', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
         ))
         db.send_create_signal('tourney', ['Team'])
 
@@ -45,6 +49,17 @@ class Migration(SchemaMigration):
             ('player', models.ForeignKey(orm['tourney.player'], null=False))
         ))
         db.create_unique('tourney_team_players', ['team_id', 'player_id'])
+
+        # Adding model 'DrawEntry'
+        db.create_table('tourney_drawentry', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('event', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['tourney.Event'])),
+            ('player', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['tourney.Player'])),
+        ))
+        db.send_create_signal('tourney', ['DrawEntry'])
+
+        # Adding unique constraint on 'DrawEntry', fields ['event', 'player']
+        db.create_unique('tourney_drawentry', ['event_id', 'player_id'])
 
         # Adding model 'Player'
         db.create_table('tourney_player', (
@@ -80,6 +95,10 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('tournament', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['tourney.Tournament'])),
             ('player', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['tourney.Player'])),
+            ('mpr_rank', self.gf('django.db.models.fields.DecimalField')(default=9.0, max_digits=3, decimal_places=2)),
+            ('ppd_rank', self.gf('django.db.models.fields.DecimalField')(default=60, max_digits=5, decimal_places=2)),
+            ('mpr_event', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=3, decimal_places=2)),
+            ('ppd_event', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2)),
             ('balance', self.gf('django.db.models.fields.DecimalField')(default=0.0, max_digits=8, decimal_places=2)),
             ('created_at', self.gf('django.db.models.fields.DateTimeField')()),
         ))
@@ -96,15 +115,6 @@ class Migration(SchemaMigration):
             ('ppd', self.gf('django.db.models.fields.DecimalField')(default=0.0, max_digits=5, decimal_places=2)),
         ))
         db.send_create_signal('tourney', ['EventStat'])
-
-        # Adding model 'Ranking'
-        db.create_table('tourney_ranking', (
-            ('userid', self.gf('django.db.models.fields.CharField')(max_length=64, primary_key=True)),
-            ('rfid', self.gf('django.db.models.fields.CharField')(max_length=64, unique=True, null=True)),
-            ('mpr', self.gf('django.db.models.fields.DecimalField')(default=0.0, max_digits=3, decimal_places=2)),
-            ('ppd', self.gf('django.db.models.fields.DecimalField')(default=0.0, max_digits=5, decimal_places=2)),
-        ))
-        db.send_create_signal('tourney', ['Ranking'])
 
         # Adding model 'Console'
         db.create_table('tourney_console', (
@@ -134,6 +144,9 @@ class Migration(SchemaMigration):
         # Removing unique constraint on 'Entry', fields ['tournament', 'player']
         db.delete_unique('tourney_entry', ['tournament_id', 'player_id'])
 
+        # Removing unique constraint on 'DrawEntry', fields ['event', 'player']
+        db.delete_unique('tourney_drawentry', ['event_id', 'player_id'])
+
         # Deleting model 'Tournament'
         db.delete_table('tourney_tournament')
 
@@ -146,6 +159,9 @@ class Migration(SchemaMigration):
         # Removing M2M table for field players on 'Team'
         db.delete_table('tourney_team_players')
 
+        # Deleting model 'DrawEntry'
+        db.delete_table('tourney_drawentry')
+
         # Deleting model 'Player'
         db.delete_table('tourney_player')
 
@@ -157,9 +173,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'EventStat'
         db.delete_table('tourney_eventstat')
-
-        # Deleting model 'Ranking'
-        db.delete_table('tourney_ranking')
 
         # Deleting model 'Console'
         db.delete_table('tourney_console')
@@ -183,12 +196,22 @@ class Migration(SchemaMigration):
             'no': ('django.db.models.fields.CharField', [], {'max_length': '16', 'primary_key': 'True'}),
             'serial': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '64'})
         },
+        'tourney.drawentry': {
+            'Meta': {'unique_together': "(('event', 'player'),)", 'object_name': 'DrawEntry'},
+            'event': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tourney.Event']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'player': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tourney.Player']"})
+        },
         'tourney.entry': {
             'Meta': {'unique_together': "(('tournament', 'player'),)", 'object_name': 'Entry'},
             'balance': ('django.db.models.fields.DecimalField', [], {'default': '0.0', 'max_digits': '8', 'decimal_places': '2'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'mpr_event': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '3', 'decimal_places': '2'}),
+            'mpr_rank': ('django.db.models.fields.DecimalField', [], {'default': '9.0', 'max_digits': '3', 'decimal_places': '2'}),
             'player': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tourney.Player']"}),
+            'ppd_event': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '5', 'decimal_places': '2'}),
+            'ppd_rank': ('django.db.models.fields.DecimalField', [], {'default': '60', 'max_digits': '5', 'decimal_places': '2'}),
             'tournament': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tourney.Tournament']"})
         },
         'tourney.event': {
@@ -238,19 +261,16 @@ class Migration(SchemaMigration):
             'user_id': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'zipcode': ('django.db.models.fields.CharField', [], {'max_length': '5'})
         },
-        'tourney.ranking': {
-            'Meta': {'object_name': 'Ranking'},
-            'mpr': ('django.db.models.fields.DecimalField', [], {'default': '0.0', 'max_digits': '3', 'decimal_places': '2'}),
-            'ppd': ('django.db.models.fields.DecimalField', [], {'default': '0.0', 'max_digits': '5', 'decimal_places': '2'}),
-            'rfid': ('django.db.models.fields.CharField', [], {'max_length': '64', 'unique': 'True', 'null': 'True'}),
-            'userid': ('django.db.models.fields.CharField', [], {'max_length': '64', 'primary_key': 'True'})
-        },
         'tourney.team': {
             'Meta': {'object_name': 'Team'},
             'event': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tourney.Event']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'mpr_event': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '3', 'decimal_places': '2'}),
+            'mpr_rank': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '3', 'decimal_places': '2'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
-            'players': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['tourney.Player']", 'symmetrical': 'False'})
+            'players': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['tourney.Player']", 'symmetrical': 'False'}),
+            'ppd_event': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '5', 'decimal_places': '2'}),
+            'ppd_rank': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '5', 'decimal_places': '2'})
         },
         'tourney.tournament': {
             'Meta': {'object_name': 'Tournament'},
