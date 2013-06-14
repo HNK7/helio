@@ -729,7 +729,7 @@ def draw(request, e_id):
         team.mpr_rank = (mhigh[i].stat_rank(tourney)['MPR'] + mlow[i].stat_rank(tourney)['MPR']) / 2
         team.ppd_rank = (mhigh[i].stat_rank(tourney)['PPD'] + mlow[i].stat_rank(tourney)['PPD']) / 2
         team.save()
-    _save_gdoc(event)
+    #_save_gdoc(event)
     return HttpResponseRedirect(reverse('22k:event_signup', args=(event.id,)))
 
 
@@ -748,10 +748,10 @@ def _save_gdoc(event):
         sheet = gdrive.Sheet(settings.GOOGLE_DOC['BOOK_NAME'], settings.GOOGLE_DOC['SHEET_NAME'])
         sheet.delete_all()
 
-    for i in range(1, 33):
+    for i in range(1, len(teams)):
         for j in [0, 1]:
             id = _bracket.match[i]['teams'][j]
-            dct = { 'number': "%03d00%03d" % (i, id), 'team': teams[str(id)]}
+            dct = {'number': "%03d00%03d" % (i, id), 'team': teams[str(id)]}
             sheet.insert( dct )
 
 
