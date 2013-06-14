@@ -28,6 +28,13 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
 )
 
+SHOP_ID = 209
+
+GOOGLE_DOC = {
+    'BOOK_NAME': '22K',
+    'SHEET_NAME': 'Label'
+}
+
 FEES = {
     'CARD': 5,
     'MEMBERSHIP': 15,

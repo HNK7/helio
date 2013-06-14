@@ -32,8 +32,7 @@ def convert_to_e164(raw_phone):
 def send_sms(to_phone, msg):
     if settings.SMS['LIVE']:
         client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-        message = client.sms.messages.create(to=convert_to_e164(to_phone), from_="+12622932782", body=msg)
-        return message
+        client.sms.messages.create(to=convert_to_e164(to_phone), from_="+12622932782", body=msg)
 
 
 def send_draw_sms(request, e_id):
@@ -45,9 +44,9 @@ def send_draw_sms(request, e_id):
     for team in teams:
 
         players = team.players.all()
-        for i in range(0, len(players) - 1):
-            player = players[i] if i == 0 else players[i-1]
-            partner = players[i+1] if i == 0 else players[i+1]
+        for i in range(0, len(players)):
+            player = players[i]
+            partner = players[i+1] if i == 0 else players[i-1]
             stat_rank = partner.stat_rank(event.tournament)
             partner_stat = '%s, %s' % (stat_rank['MPR'], stat_rank['PPD'])
             sms_msg = Template(settings.SMS_MSG['DRAW'])
@@ -733,12 +732,257 @@ def draw(request, e_id):
     return HttpResponseRedirect(reverse('22k:event_signup', args=(event.id,)))
 
 
-def bracket(request, e_id):
+def refree(request, e_id):
+    import gdrive
+    import bracket
+
     context = {}
     event = get_object_or_404(Event, id=e_id)
     context['event'] = event
     context['icon_select'] = ['<i class="icon-lock" title="Stu Pae, Isaac Hans"></i>', '']
 
+    sort_order = 'mpr_rank' if event.game == 'CR' else 'ppd_rank'
+    team_ranked = event.team_set.all().order_by(sort_order)
+    teams = {}
+    for i in range(0, len(team_ranked)):
+        teams.update({str(i+1): str(team_ranked[i])})
+
+    _bracket = bracket.Bracket(teams)
+
+    # sheet = gdrive.Sheet(settings.GOOGLE_DOC['BOOK_NAME'], settings.GOOGLE_DOC['SHEET_NAME'])
+    # sheet.delete_all()
+
+    # for i in range(1, 33):
+    #     for j in [0, 1]:
+    #         id = _bracket.match[i]['teams'][j]
+    #         dct = { 'number': "%03d00%03d" % (i, id), 'team': teams[str(id)]}
+    #         sheet.insert( dct )
+
+    # for i in range(1, 49) + range(1, 33)  + range(1, 9) + range(1, 5) + range(1, 3):
+    #     _bracket.report(i)
+
+
+    matches = _bracket.match
+
+    player_pos = [None]
+
+    for i in range(1, 33):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+    for i in range(1, 33):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+
+    # Rond 2 Winners
+    for i in range(33, 49):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+            player_pos.append(None)
+    for i in range(33, 49):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+            player_pos.append(None)
+
+    # Rond 3 Winners
+    for i in range(49, 57):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+            player_pos.append(None)
+    for i in range(49, 57):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+            player_pos.append(None)
+
+    # Round 4
+    for i in range(57, 61):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+            player_pos.append(None)
+    for i in range(57, 61):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+            player_pos.append(None)
+
+    # Round 5 Winners
+    for i in range(61, 63):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+            player_pos.append(None)
+    for i in range(61, 63):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+            player_pos.append(None)
+
+    # Round 6 Winners
+    for i in range(63, 64):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+            player_pos.append(None)
+    for i in range(63, 64):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+            player_pos.append(None)
+
+    # Round 2 Loosers
+    for i in range(64, 80):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+             player_pos.append(None)
+    for i in range(64, 80):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+            player_pos.append(None)
+
+    # Round 3 Loosers
+    for i in range(80, 96):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+             player_pos.append(None)
+
+    for i in range(80, 96):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+             player_pos.append(None)
+
+    # Round 4 Loosers
+    for i in range(96, 104):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+             player_pos.append(None)
+
+    for i in range(96, 104):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+             player_pos.append(None)
+
+    # # Round 5 Loosers
+    for i in range(104, 112):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+             player_pos.append(None)
+
+    for i in range(104, 112):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+             player_pos.append(None)
+
+    for i in range(112, 116):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+             player_pos.append(None)
+
+    for i in range(112, 116):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+             player_pos.append(None)
+
+    for i in range(116, 120):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+             player_pos.append(None)
+
+    for i in range(116, 120):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+             player_pos.append(None)
+
+    for i in range(120, 122):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+             player_pos.append(None)
+
+    for i in range(120, 122):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+             player_pos.append(None)
+
+    for i in range(122, 124):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+             player_pos.append(None)
+
+    for i in range(122, 124):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+             player_pos.append(None)
+
+    for i in range(124, 125):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+             player_pos.append(None)
+
+    for i in range(124, 125):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+             player_pos.append(None)
+
+    for i in range(125, 126):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+             player_pos.append(None)
+
+    for i in range(125, 126):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+             player_pos.append(None)
+
+    for i in range(126, 127):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+             player_pos.append(None)
+
+    for i in range(126, 127):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+             player_pos.append(None)
+
+    for i in range(127, 128):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][0])
+        else:
+             player_pos.append(None)
+
+    for i in range(127, 128):
+        if matches[i]['teams']:
+            player_pos.append(matches[i]['teams'][1])
+        else:
+             player_pos.append(None)
+
+
+    context['matches'] = teams
+    context['player_pos'] = player_pos
+
+
     return render(request, 'tourney/bracket.html', context)
-
-

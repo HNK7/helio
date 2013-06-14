@@ -7,7 +7,7 @@ register = template.Library()
 @register.filter(name='format_phone_number')
 def format_phone_number(number):
     number = ''.join(e for e in number if e.isalnum())
-    return '(%s%s%s) %s%s%s-%s%s%s%s' % tuple(number) if number else None
+    return '(%s%s%s) %s%s%s-%s%s%s%s' % tuple(number) if len(number) ==10 else number
 
 
 @register.filter(name='format_card_number')
@@ -72,21 +72,10 @@ def currency(value):
 
 @register.filter
 def get_range(stop, start=0):
-    """
-    Filter - returns a list containing range made from given value
-    Usage (in template):
-
-    <ul>{% for i in 3|get_range %}
-      <li>{{ i }}. Do something</li>
-    {% endfor %}</ul>
-
-    Results with the HTML:
-    <ul>
-      <li>0. Do something</li>
-      <li>1. Do something</li>
-      <li>2. Do something</li>
-    </ul>
-
-    Instead of 3 one may use the variable set in the views
-    """
     return range(start, stop)
+
+
+@register.filter
+def get_bid(player_pos, i):
+    return player_pos[i] if player_pos[i] else ''
+

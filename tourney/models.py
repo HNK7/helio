@@ -266,9 +266,10 @@ class EventStat(models.Model):
 
 class Console(models.Model):
     no = models.CharField(max_length=16, primary_key=True)
-    serial = models.CharField(max_length=64, unique=True)
+    machid = models.CharField(max_length=16, unique=True)
+    serial = models.CharField(max_length=5, unique=True)
     mac_address = models.CharField(max_length=12, unique=True)
-    ip_address = models.IPAddressField(unique=True)
+    ip_address = models.IPAddressField(null=True)
 
     def __unicode__(self):
         return self.no

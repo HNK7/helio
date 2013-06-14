@@ -21,6 +21,6 @@ urlpatterns = patterns('',
     url(r'^m/(?P<t_id>\d+)/(?P<rfid_id>\d+)/$', views.payment, name='payment'),
     url(r'^d/(?P<e_id>\d+)/$', views.draw, name='draw'),
     url(r'^d/s/(?P<e_id>\d+)/$', views.send_draw_sms, name='draw_sms'),
-    url(r'^b/(?P<e_id>\d+)/$', views.bracket, name='bracket'),
+    url(r'^b/(?P<e_id>\d+)/$', views.refree, name='refree'),
 
 )

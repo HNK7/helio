@@ -46,6 +46,14 @@
             <br>
             <div class="text-center">
                 <h4>MATCHES</h4>
+                <pre>
+                    {% for match in matches %}
+                        {% for team in match %}
+                            {{ team  }}
+                        {% endfor %}
+                    {% endfor %}
+
+                </pre>
             </div>
             <div class="text-center">
                 <h5><span class="muted">ROUND 1</span></h5>
@@ -53,7 +61,7 @@
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
                     {% for i in 33|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -63,7 +71,7 @@
                 </tr>
                 <tr>
                     {% for i in 65|get_range:33 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -81,8 +89,8 @@
             </div>
             <table class="span6 table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    {% for i in 17|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 81|get_range:65 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -91,8 +99,8 @@
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for i in 33|get_range:17 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 97|get_range:81 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -103,8 +111,8 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    {% for i in 17|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 143|get_range:127 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -113,8 +121,8 @@
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for i in 33|get_range:17 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 159|get_range:143 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -131,8 +139,8 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    {% for i in 9|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 105|get_range:97 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -141,8 +149,8 @@
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for i in 17|get_range:9 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 113|get_range:105 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -153,8 +161,8 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    {% for i in 17|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 175|get_range:159 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -163,8 +171,8 @@
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for i in 33|get_range:17 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 191|get_range:175 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -182,8 +190,8 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    {% for i in 5|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 117|get_range:113 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -192,8 +200,8 @@
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for i in 9|get_range:5 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 121|get_range:117 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -204,8 +212,8 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    {% for i in 9|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 199|get_range:191 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -214,8 +222,8 @@
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for i in 17|get_range:9 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 207|get_range:199 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -232,8 +240,8 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    {% for i in 3|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 123|get_range:121 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i  }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -242,8 +250,8 @@
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for i in 5|get_range:3 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 125|get_range:123 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -254,8 +262,8 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    {% for i in 9|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 215|get_range:207 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -264,8 +272,8 @@
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for i in 17|get_range:9 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 223|get_range:215 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -282,13 +290,13 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                    <td><div class="text-center">{{ player_pos|get_bid:125 }}</div></td>
                 </tr>
                 <tr>
                     <td><div class="text-center muted">vs</div></td>
                 </tr>
                 <tr>
-                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                    <td><div class="text-center">{{ player_pos|get_bid:125 }}</div></td>
                 </tr>
             </table>
         </div>
@@ -298,8 +306,8 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    {% for i in 5|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 227|get_range:223 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -308,8 +316,8 @@
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for i in 9|get_range:5 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 231|get_range:227 %}
+                <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -321,7 +329,7 @@
             <h5><span class="muted">ROUND 7</span></h5>
         </div>
         <div class="span3" style="margin-left:20px">
-            <!-- <div class="text-center">
+            <!--  <div class="text-center">
                 <h5><span class="muted">WINNDERS</span></h5>
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
@@ -334,7 +342,7 @@
                 <tr>
                     <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
                 </tr>
-            </table>-->
+            </table> -->
         </div>
         <div class="span3" style="margin-left:20px">
             <div class="text-center">
@@ -342,8 +350,8 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    {% for i in 5|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 235|get_range:231 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -352,8 +360,8 @@
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for i in 9|get_range:5 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 239|get_range:235 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -386,8 +394,8 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    {% for i in 3|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 241|get_range:239 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -396,8 +404,8 @@
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for i in 5|get_range:3 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 243|get_range:241 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -430,8 +438,8 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    {% for i in 3|get_range:1 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 245|get_range:243 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
                 <tr>
@@ -440,8 +448,8 @@
                     {% endfor %}
                 </tr>
                 <tr>
-                    {% for i in 5|get_range:3 %}
-                    <td><div class="text-center">{{ i|stringformat:"02d" }}</div></td>
+                    {% for i in 247|get_range:245 %}
+                    <td><div class="text-center">{{ player_pos|get_bid:i }}</div></td>
                     {% endfor %}
                 </tr>
             </table>
@@ -474,13 +482,13 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                    <td><div class="text-center">{{ player_pos|get_bid:247 }}</div></td>
                 </tr>
                 <tr>
                     <td><div class="text-center muted">vs</div></td>
                 </tr>
                 <tr>
-                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                    <td><div class="text-center">{{ player_pos|get_bid:248 }}</div></td>
                 </tr>
             </table>
         </div>
@@ -512,13 +520,13 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                    <td><div class="text-center">{{ player_pos|get_bid:249 }}</div></td>
                 </tr>
                 <tr>
                     <td><div class="text-center muted">vs</div></td>
                 </tr>
                 <tr>
-                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                    <td><div class="text-center">{{ player_pos|get_bid:250 }}</div></td>
                 </tr>
             </table>
         </div>
@@ -534,13 +542,13 @@
             </div>
             <table class="table table-bordered table-condensed" style="margin-bottom:3px">
                 <tr>
-                    <td><div class="text-center">{{ 1|stringformat:"02d" }}</div></td>
+                    <td><div class="text-center">{{ player_pos|get_bid:251 }}</div></td>
                 </tr>
                 <tr>
                     <td><div class="text-center muted">vs</div></td>
                 </tr>
                 <tr>
-                    <td><div class="text-center">{{ 2|stringformat:"02d" }}</div></td>
+                    <td><div class="text-center">{{ player_pos|get_bid:252 }}</div></td>
                 </tr>
             </table>
         </div>
