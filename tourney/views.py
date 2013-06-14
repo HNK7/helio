@@ -729,6 +729,7 @@ def draw(request, e_id):
         team.mpr_rank = (mhigh[i].stat_rank(tourney)['MPR'] + mlow[i].stat_rank(tourney)['MPR']) / 2
         team.ppd_rank = (mhigh[i].stat_rank(tourney)['PPD'] + mlow[i].stat_rank(tourney)['PPD']) / 2
         team.save()
+    _save_gdoc(event)
     return HttpResponseRedirect(reverse('22k:event_signup', args=(event.id,)))
 
 
