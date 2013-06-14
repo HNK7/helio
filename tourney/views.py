@@ -732,8 +732,30 @@ def draw(request, e_id):
     return HttpResponseRedirect(reverse('22k:event_signup', args=(event.id,)))
 
 
-def refree(request, e_id):
+def _save_gdoc(event):
+    import bracket
     import gdrive
+
+    sort_order = 'mpr_rank' if event.game == 'CR' else 'ppd_rank'
+    team_ranked = event.team_set.all().order_by(sort_order)
+    teams = {}
+    for i in range(0, len(team_ranked)):
+        teams.update({str(i+1): str(team_ranked[i])})
+
+        _bracket = bracket.Bracket(teams)
+
+        sheet = gdrive.Sheet(settings.GOOGLE_DOC['BOOK_NAME'], settings.GOOGLE_DOC['SHEET_NAME'])
+        sheet.delete_all()
+
+    for i in range(1, 33):
+        for j in [0, 1]:
+            id = _bracket.match[i]['teams'][j]
+            dct = { 'number': "%03d00%03d" % (i, id), 'team': teams[str(id)]}
+            sheet.insert( dct )
+
+
+def refree(request, e_id):
+    # import gdrive
     import bracket
 
     context = {}
