@@ -23,92 +23,6 @@ class Tournament(models.Model):
         return 500 - self.total_entry()
 
 
-class Event(models.Model):
-    title = models.CharField(max_length=255)
-    start_at = models.DateTimeField('starts at')
-    tournament = models.ForeignKey('Tournament')
-
-    division_choices = (
-        ('M', 'Men'),
-        ('F', 'Ladies'),
-        ('G', 'Gold'),
-        ('S', 'Silver'),
-        ('B', 'Bronze'),
-        ('X', 'Mixed'),
-        ('O', 'Open'),
-    )
-    division = models.CharField(max_length=1, choices=division_choices, default='M')
-    format_choices = (
-        ('S', 'Singles'),
-        ('D', 'Doubles'),
-        ('T', 'Triples'),
-    )
-    format = models.CharField(max_length=1, choices=format_choices, default='S')
-    draw_choies = (
-        ('L', 'Luck of Draw'),
-        ('D', 'Division'),
-    )
-    draw = models.CharField(max_length=1, choices=draw_choies, default='D')
-    game_choies = (
-        ('CR', 'Cricket'),
-        ('501', '501'),
-        ('701', '701'),
-    )
-    game = models.CharField(max_length=3, choices=game_choies, default='CR')
-
-    def __unicode__(self):
-        # return "%s/ %s / %s / %s" % (self.title, self.division_choices[self.division],
-                                     # self.format_choices[self.format], self.game_choies[self.game])
-        return self.title
-
-    def total_signup(self):
-        len(self.teams.all)
-
-    def is_lotd(self):
-        return True if self.draw == 'L' else False
-
-    def is_drawn(self):
-        if self.draw != 'L':
-            return True
-        if Team.objects.filter(event=self).count():
-            return True
-        else:
-            return False
-
-    def draw_sms_sent(self):
-        return SMSLog.objects.filter(event=self).exists()
-
-
-class Team(models.Model):
-    name = models.CharField(max_length=255, null=True)
-    players = models.ManyToManyField('Player')
-    event = models.ForeignKey(Event)
-    mpr_rank = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-    ppd_rank = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    mpr_event = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-    ppd_event = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-
-    def __unicode__(self):
-        if self.name:
-            team_name = self.name
-        else:
-            player_list = self.players.all()
-            team_name = ','.join(player.last_name.title() for player in player_list) \
-                        if len(player_list) > 1 else player_list[0].full_name
-        return team_name
-
-
-class DrawEntry(models.Model):
-    event = models.ForeignKey(Event)
-    player = models.ForeignKey('Player')
-
-    def __unicode__(self):
-        return self.player.full_name
-
-    class Meta:
-        unique_together = (('event', 'player'))
-
-
 class Address(models.Model):
     street_line1 = models.CharField(max_length=100, blank=True, null=True)
     street_line2 = models.CharField(max_length=100, blank=True, null=True)
@@ -170,14 +84,17 @@ class Player(Address):
 
     def stat_rank(self, tournament):
         entry = Entry.objects.get(tournament=tournament, player=self)
-        return {'PPD': entry.ppd_rank, 'MPR': entry.mpr_rank}
+        ppd_rank = entry.ppd_event if entry.ppd_event else 60
+        mpr_rank = entry.mpr_event if entry.mpr_event else 9
+        return {'PPD': ppd_rank, 'MPR': mpr_rank}
 
     def event_stat(self):
-        try:
-            event_stat = EventStat.objects.get(pk=self.user_id)
-        except:
-            return {'PPD': None, 'MPR': None}
-        return {'PPD': event_stat.ppd, 'MPR': event_stat.mpr}
+        # try:
+        #     event_stat = EventStat.objects.get(pk=self.user_id)
+        # except:
+        #     return {'PPD': None, 'MPR': None}
+        # return {'PPD': event_stat.ppd, 'MPR': event_stat.mpr}
+        return
 
     def is_membership_valid(self):
         try:
@@ -187,7 +104,6 @@ class Player(Address):
         except:
             return False
 
-
     def membership_expire_at(self):
         latest_entry = self.entry_set.latest('created_at')
         exp_date = latest_entry.created_at + timedelta(days=90)
@@ -196,28 +112,6 @@ class Player(Address):
     def is_pre_registered(self):
         return PreRegPlayer.objects.filter(player_ptr=self).exists()
         # return hasattr(self, 'credit')
-
-
-class Card(models.Model):
-    rfid = models.CharField(max_length=255, editable=False, unique=True)
-    cardno = models.CharField(max_length=16, editable=False, unique=True)
-    # used = models.DateTimeField(null=True)
-    player = models.OneToOneField(Player)
-
-    def __unicode__(self):
-        return self.cardno
-
-    def orginal_rfid(self):
-        cursor = connections['hi'].cursor()
-        cursor.execute("SELECT getorigrfid2(%s)", [self.rfid])
-        r = cursor.fetchone()
-        return r[0]
-
-    def is_new(self):
-        cursor = connections['hi'].cursor()
-        cursor.execute("SELECT utime FROM checkrfid WHERE rfid=%s", [self.rfid])
-        r = cursor.fetchone()
-        return False if r[0] else True
 
 
 class Entry(models.Model):
@@ -250,11 +144,119 @@ class Entry(models.Model):
         return Decimal(self.balance_membership + self.balance_signup + self.balance_card)
 
 
-class EventStat(models.Model):
-    userid = models.CharField(max_length=64, editable=False, primary_key=True)
-    rfid = models.CharField(max_length=64, null=True, editable=False, unique=True)
-    mpr = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
-    ppd = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+class Event(models.Model):
+    title = models.CharField(max_length=255)
+    start_at = models.DateTimeField('starts at')
+    tournament = models.ForeignKey('Tournament')
+
+    division_choices = (
+        ('M', 'Men'),
+        ('F', 'Ladies'),
+        ('G', 'Gold'),
+        ('S', 'Silver'),
+        ('B', 'Bronze'),
+        ('X', 'Mixed'),
+        ('O', 'Open'),
+    )
+    division = models.CharField(max_length=1, choices=division_choices, default='M')
+    format_choices = (
+        ('S', 'Singles'),
+        ('D', 'Doubles'),
+        ('T', 'Triples'),
+    )
+    format = models.CharField(max_length=1, choices=format_choices, default='S')
+    draw_choies = (
+        ('L', 'Luck of Draw'),
+        ('D', 'Division'),
+    )
+    draw = models.CharField(max_length=1, choices=draw_choies, default='D')
+    game_choies = (
+        ('CR', 'Cricket'),
+        ('501', '501'),
+        ('701', '701'),
+    )
+    game = models.CharField(max_length=3, choices=game_choies, default='CR')
+
+    def __unicode__(self):
+        # return "%s/ %s / %s / %s" % (self.title, self.division_choices[self.division],
+                                     # self.format_choices[self.format], self.game_choies[self.game])
+        return self.title
+
+    def total_signup(self):
+        len(self.teams.all)
+
+    def is_lotd(self):
+        return True if self.draw == 'L' else False
+
+    def is_drawn(self):
+        if self.draw != 'L':
+            return True
+        if Team.objects.filter(event=self).count():
+            return True
+        else:
+            return False
+
+    def draw_sms_sent(self):
+        return SMSLog.objects.filter(event=self).exists()
+
+
+class DrawEntry(models.Model):
+    event = models.ForeignKey(Event)
+    player = models.ForeignKey('Player')
+
+    def __unicode__(self):
+        return self.player.full_name
+
+    class Meta:
+        unique_together = (('event', 'player'))
+
+
+class Team(models.Model):
+    name = models.CharField(max_length=255, null=True)
+    players = models.ManyToManyField('Player')
+    event = models.ForeignKey(Event)
+    mpr_rank = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    ppd_rank = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    mpr_event = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    ppd_event = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+
+    def __unicode__(self):
+        if self.name:
+            team_name = self.name
+        else:
+            player_list = self.players.all()
+            team_name = ','.join(player.last_name.title() for player in player_list) \
+                        if len(player_list) > 1 else player_list[0].full_name
+        return team_name
+
+
+class Card(models.Model):
+    rfid = models.CharField(max_length=255, editable=False, unique=True)
+    cardno = models.CharField(max_length=16, editable=False, unique=True)
+    # used = models.DateTimeField(null=True)
+    player = models.OneToOneField(Player)
+
+    def __unicode__(self):
+        return self.cardno
+
+    def orginal_rfid(self):
+        cursor = connections['hi'].cursor()
+        cursor.execute("SELECT getorigrfid2(%s)", [self.rfid])
+        r = cursor.fetchone()
+        return r[0]
+
+    def is_new(self):
+        cursor = connections['hi'].cursor()
+        cursor.execute("SELECT utime FROM checkrfid WHERE rfid=%s", [self.rfid])
+        r = cursor.fetchone()
+        return False if r[0] else True
+
+
+# class EventStat(models.Model):
+#     userid = models.CharField(max_length=64, editable=False, primary_key=True)
+#     rfid = models.CharField(max_length=64, null=True, editable=False, unique=True)
+#     mpr = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
+#     ppd = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
 
 
 # class Ranking(models.Model):

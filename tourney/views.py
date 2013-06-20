@@ -144,6 +144,17 @@ def entry(request, t_id):
     return render(request, 'tourney/entry.html', context)
 
 
+def entry_big(request, t_id):
+    context = dict()
+    context['tournament_list'] = Tournament.objects.all()
+    tourney = get_object_or_404(Tournament, pk=t_id)
+    context['tournament'] = tourney
+
+    entry = Entry.objects.filter(tournament=tourney)
+    context['entry'] = entry
+    return render(request, 'tourney/entry_big.html', context)
+
+
 def profile(request, p_id):
     context = dict()
     # context['tournament_list'] = Tournament.objects.all()
@@ -748,7 +759,7 @@ def _save_gdoc(event):
         sheet = gdrive.Sheet(settings.GOOGLE_DOC['BOOK_NAME'], settings.GOOGLE_DOC['SHEET_NAME'])
         sheet.delete_all()
 
-    for i in range(1, len(teams)):
+    for i in range(1, 33):
         for j in [0, 1]:
             id = _bracket.match[i]['teams'][j]
             dct = {'number': "%03d00%03d" % (i, id), 'team': teams[str(id)]}
