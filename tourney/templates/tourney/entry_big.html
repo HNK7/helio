@@ -1,0 +1,37 @@
+{% load app_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" />
+<!--     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/admin.css" />
+ -->    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/refree.css" />
+</head>
+<body>
+<div class="container">
+
+        <h3>Players Directory</h3>
+
+        <span class="pull-right">Total: {{ entry.count }}</span>
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th></th>
+                    <th>Card</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for e in entry %}
+            <tr>
+                <td class="muted">{{ forloop.counter }}</td>
+                <td>{{ e.player.full_name }}</td>
+                <td class="muted">{{ e.player.gender }}</td>
+                <td>{{ e.mpr_rank }}, {{ e.ppd_rank }} / {{ e.mpr_event }}, {{ e.ppd_event }}</td>
+            </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+</div>
+</body>
+</htML>

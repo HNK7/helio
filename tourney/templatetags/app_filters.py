@@ -7,12 +7,12 @@ register = template.Library()
 @register.filter(name='format_phone_number')
 def format_phone_number(number):
     number = ''.join(e for e in number if e.isalnum())
-    return '(%s%s%s) %s%s%s-%s%s%s%s' % tuple(number) if len(number) ==10 else number
+    return '(%s%s%s) %s%s%s-%s%s%s%s' % tuple(number) if len(number) == 10 else number
 
 
 @register.filter(name='format_card_number')
 def format_card_number(number):
-    return '%s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s' % tuple(number) if number else None
+    return '%s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s' % tuple(number) if len(number) == 16 else number
 
 
 @register.filter(name='players_in_team')

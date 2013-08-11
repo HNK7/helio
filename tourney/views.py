@@ -144,6 +144,17 @@ def entry(request, t_id):
     return render(request, 'tourney/entry.html', context)
 
 
+def entry_big(request, t_id):
+    context = dict()
+    context['tournament_list'] = Tournament.objects.all()
+    tourney = get_object_or_404(Tournament, pk=t_id)
+    context['tournament'] = tourney
+
+    entry = Entry.objects.filter(tournament=tourney)
+    context['entry'] = entry
+    return render(request, 'tourney/entry_big.html', context)
+
+
 def profile(request, p_id):
     context = dict()
     # context['tournament_list'] = Tournament.objects.all()
@@ -729,7 +740,7 @@ def draw(request, e_id):
         team.mpr_rank = (mhigh[i].stat_rank(tourney)['MPR'] + mlow[i].stat_rank(tourney)['MPR']) / 2
         team.ppd_rank = (mhigh[i].stat_rank(tourney)['PPD'] + mlow[i].stat_rank(tourney)['PPD']) / 2
         team.save()
-    _save_gdoc(event)
+    #_save_gdoc(event)
     return HttpResponseRedirect(reverse('22k:event_signup', args=(event.id,)))
 
 
@@ -752,7 +763,7 @@ def _save_gdoc(event):
     for i in range(1, 33):
         for j in [0, 1]:
             id = _bracket.match[i]['teams'][j]
-            dct = { 'number': "%03d00%03d" % (i, id), 'team': teams[str(id)]}
+            dct = {'number': "%03d00%03d" % (i, id), 'team': teams[str(id)]}
             sheet.insert( dct )
 
 
