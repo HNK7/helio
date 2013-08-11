@@ -174,8 +174,9 @@ class Event(models.Model):
         ('CR', 'Cricket'),
         ('501', '501'),
         ('701', '701'),
+        ('Medley', 'Medley'),
     )
-    game = models.CharField(max_length=3, choices=game_choies, default='CR')
+    game = models.CharField(max_length=12, choices=game_choies, default='CR')
 
     def __unicode__(self):
         # return "%s/ %s / %s / %s" % (self.title, self.division_choices[self.division],
