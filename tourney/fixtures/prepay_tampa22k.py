@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-sys.path.append('/Applications/djangostack-1.4.5-0/apps/django/django_projects/helio')
+sys.path.append('/home/sopae/djangostack-1.4.5-0/apps/django/django_projects/helio')
 
 from helio import settings
 from django.core.management import setup_environ

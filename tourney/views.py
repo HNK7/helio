@@ -734,6 +734,7 @@ def draw(request, e_id):
 
 
 def _save_gdoc(event):
+    return 
     import bracket
     import gdrive
 
@@ -756,7 +757,7 @@ def _save_gdoc(event):
 
 
 def refree(request, e_id):
-    # import gdrive
+    import gdrive
     import bracket
 
     context = {}
@@ -1009,3 +1010,9 @@ def refree(request, e_id):
 
 
     return render(request, 'tourney/bracket.html', context)
+
+def list_team(self, e_id):
+	event = Event.objects.get(id=e_id)
+	teams = event.team_set.all()
+	context['teams'] = teams
+	return render(request, 'tourney/team_list.html', context)
