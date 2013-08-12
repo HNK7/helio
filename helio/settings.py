@@ -146,7 +146,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'django.contrib.humanize',
     'south',
-    'tourney'
+    # 'djcelery',
+    'tourney',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -178,7 +179,12 @@ LOGGING = {
     }
 }
 
+BROKER_URL = 'redis://localhost:6379/0'
+
 try:
     from local_settings import *
 except ImportError:
     pass
+
+# import djcelery
+# djcelery.setup_loader()

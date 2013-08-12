@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from tourney.models import Tournament, Event, Player, PreRegPlayer, Entry, Card, Team, DrawEntry, SMSLog
 from tourney.forms import TournamentForm, EventForm, RegisterForm, PreRegisterForm, ProfileForm
-# import gdata.spreadsheet.service
+import gdata.spreadsheet.service
 from twilio.rest import TwilioRestClient
 from phonenumbers import parse, format_number, PhoneNumberFormat
 from string import Template
@@ -66,6 +66,7 @@ def send_draw_sms(request, e_id):
 def index(request):
     tournament_list = Tournament.objects.all().order_by('-start_at')
     context = {'tournament_list': tournament_list}
+    # _insert_google_doc('')
     return render(request, 'tourney/index.html', context)
 
 
@@ -187,37 +188,38 @@ def profile_edit(request, p_id):
     return render(request, 'tourney/profile_edit.html', context)
 
 
-# def _insert_google_doc(row):
-#     gd_client = gdata.spreadsheet.service.SpreadsheetsService()
-#     gd_client.email = 'phoenix@dartoo.com'
-#     gd_client.password = '3355dartoO'
-#     gd_client.source = '22K'
-#     gd_client.ProgrammaticLogin()
-#     spreadsheet_key = 'tVc9gCzhh-seVwvaojke4Iw'
-#     feed = gd_client.GetWorksheetsFeed(spreadsheet_key)
-#     worksheet_id = 'od6'
-#     for entry in feed.entry:
-#         if entry.title.text == 'Entry':
-#             worksheet_id = entry.id.text.rsplit('/', 1)[1]
+def _insert_google_doc(row):
+    gd_client = gdata.spreadsheet.service.SpreadsheetsService()
+    gd_client.email = 'phoenix@dartoo.com'
+    gd_client.password = '3355dartoO'
+    gd_client.source = '22K'
+    gd_client.ProgrammaticLogin()
+    # spreadsheet_key = 'tVc9gCzhh-seVwvaojke4Iw'
+    spreadsheet_key = '0Aoc8Ak8LScFgdFZjOWdDemhoLXNlVnd2YW9qa2U0SXc'
+    feed = gd_client.GetWorksheetsFeed(spreadsheet_key)
+    worksheet_id = 'od6'
+    for entry in feed.entry:
+        if entry.title.text == 'Entry':
+            worksheet_id = entry.id.text.rsplit('/', 1)[1]
 
-#     row = {}
-#     row['sex'] = 'm'
-#     row['name'] = 'John Kuczinksy'
-#     row['mobile'] = '2134223214'
-#     row['mpr'] = '3.4'
-#     row['ppd'] = '34.24'
-#     row['cardno'] = '12432155533'
-#     row['entry'] = '$15'  # if he is not member else '$0'
-#     row['card'] = '$5'  # if he has not his card else '$0'
-
-#     try:
-#         entry = gd_client.InsertRow(row, spreadsheet_key, worksheet_id)
-#     except Exception, e:
-#         print "Error %s inserting" % (e, )
-#     #     return False
-#     # entry = gd_client.InsertRow(row, spreadsheet_key, worksheet_id)
-#     if isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
-#         return True
+    row = {}
+    row['sex'] = 'm'
+    row['name'] = 'John Kuczinksy'
+    row['mobile'] = '2134223214'
+    row['mpr'] = '3.4'
+    row['ppd'] = '34.24'
+    row['cardno'] = '12432155533'
+    row['entry'] = '$15'  # if he is not member else '$0'
+    row['card'] = '$5'  # if he has not his card else '$0'
+    # row['name'] = 'Stu Pae'
+    try:
+        entry = gd_client.InsertRow(row, spreadsheet_key, worksheet_id)
+    except Exception, e:
+        print "Error %s inserting" % (e, )
+    #     return False
+    # entry = gd_client.InsertRow(row, spreadsheet_key, worksheet_id)
+    if isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
+        return True
 
 
 def _get_member(rfid):
@@ -531,9 +533,9 @@ def register(request, t_id, rfid_id):
             entry.mpr_rank = Decimal(stats['casual_mpr']) if stats['casual_mpr'] != 'None' else 9
             entry.ppd_rank = Decimal(stats['casual_ppd']) if stats['casual_ppd'] != 'None' else 60
             # override rank stat with tournament stats
-            if stats['event_mpr'] != 'None':
+            if stats['event_mpr'] and stats['event_mpr'] != 'None':
                 entry.mpr_rank = Decimal(stats['event_mpr'])
-            if stats['event_ppd'] != 'None':
+            if stats['event_ppd'] and stats['event_ppd'] != 'None':
                 entry.ppd_rank = Decimal(stats['event_ppd'])
 
             entry.save()
