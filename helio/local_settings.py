@@ -38,7 +38,7 @@ GOOGLE_DOC = {
 FEES = {
     'CARD': 5,
     'MEMBERSHIP': 15,
-    'SIGNUP': 25,
+    'SIGNUP': 30,
 }
 
 TWILIO_ACCOUNT_SID = 'AC23c0e5f6e7a76d5a3680f3669f6e2d1a'
