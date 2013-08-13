@@ -633,10 +633,15 @@ def event_signup(request, e_id):
     if request.method == 'POST':
         rfids = filter(None, [request.POST.get('card1'), request.POST.get('card2'), request.POST.get('card3')])
         players = []
-        #check any card(player) has already been signedup
+        #check any card(player) has already been signed up
         context['error_msg'] = ''
         for rfid in rfids:
-            player = Card.objects.get(rfid=rfid).player
+            try:
+                player = Card.objects.get(rfid=rfid).player
+            except ObjectDoesNotExist:
+                #player with the card has not been registered yet!
+                context['error_msg'] = 'player is not registered yet'
+
             if event.draw == 'L':
                 if event.drawentry_set.filter(player=player).exists():
                     context['error_msg'] = '%s has already signed up!' % (player.full_name)
