@@ -53,10 +53,12 @@ def entry_stat_team(team):
 @register.filter(name='entry_stat_player')
 def entry_stat_player(drawentry):
     tourney = drawentry.event.tournament
-    if drawentry.event.game == 'CR':
+    if drawentry.event.game == 'CR' or drawentry.event.game == 'Medley':
         player_stat = drawentry.player.entry_set.filter(tournament=tourney)[0].mpr_rank
     elif drawentry.event.game == '501' or drawentry.event.game == '701':
         player_stat = drawentry.player.entry_set.filter(tournament=tourney)[0].ppd_rank
+    else:
+        player_stat = 0
     return player_stat
 
 
