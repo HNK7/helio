@@ -46,7 +46,8 @@ TWILIO_AUTH_TOKEN = '6d32191bbb9f19664bfe72e0771b5961'
 
 
 SMS = {
-    'LIVE': True,
+    #'LIVE': True,
+    'LIVE': False,
 }
 
 SMS_MSG = {
