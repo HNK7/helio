@@ -638,19 +638,20 @@ def event_signup(request, e_id):
         for rfid in rfids:
             try:
                 player = Card.objects.get(rfid=rfid).player
+                if event.draw == 'L':
+                    if event.drawentry_set.filter(player=player).exists():
+                        context['error_msg'] = '%s has already signed up!' % (player.full_name)
+                else:
+                    if event.team_set.filter(players=player).exists():
+                        # player already signuped. redirect to signup page
+                        context['error_msg'] = '%s has already signed up!' % (player.full_name)
+                        # return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+                players.append(player)
+
             except ObjectDoesNotExist:
                 #player with the card has not been registered yet!
                 context['error_msg'] = 'player is not registered yet'
 
-            if event.draw == 'L':
-                if event.drawentry_set.filter(player=player).exists():
-                    context['error_msg'] = '%s has already signed up!' % (player.full_name)
-            else:
-                if event.team_set.filter(players=player).exists():
-                    # player already signuped. redirect to signup page
-                    context['error_msg'] = '%s has already signed up!' % (player.full_name)
-                    # return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-            players.append(player)
         if not context['error_msg']:
             if event.draw != 'L':
                 team = Team(event=event)
