@@ -5,9 +5,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 from tourney.models import Tournament, Event, Player, PreRegPlayer, Entry, Card, Team, DrawEntry, SMSLog
 from tourney.forms import TournamentForm, EventForm, RegisterForm, PreRegisterForm, ProfileForm
-import gdata.spreadsheet.service
+import gdrive
+import brother
 from twilio.rest import TwilioRestClient
 from phonenumbers import parse, format_number, PhoneNumberFormat
 from string import Template
@@ -188,38 +190,38 @@ def profile_edit(request, p_id):
     return render(request, 'tourney/profile_edit.html', context)
 
 
-def _insert_google_doc(row):
-    gd_client = gdata.spreadsheet.service.SpreadsheetsService()
-    gd_client.email = 'phoenix@dartoo.com'
-    gd_client.password = '3355dartoO'
-    gd_client.source = '22K'
-    gd_client.ProgrammaticLogin()
-    # spreadsheet_key = 'tVc9gCzhh-seVwvaojke4Iw'
-    spreadsheet_key = '0Aoc8Ak8LScFgdFZjOWdDemhoLXNlVnd2YW9qa2U0SXc'
-    feed = gd_client.GetWorksheetsFeed(spreadsheet_key)
-    worksheet_id = 'od6'
-    for entry in feed.entry:
-        if entry.title.text == 'Entry':
-            worksheet_id = entry.id.text.rsplit('/', 1)[1]
+# def _insert_google_doc(row):
+#     gd_client = gdata.spreadsheet.service.SpreadsheetsService()
+#     gd_client.email = 'phoenix@dartoo.com'
+#     gd_client.password = '3355dartoO'
+#     gd_client.source = '22K'
+#     gd_client.ProgrammaticLogin()
+#     # spreadsheet_key = 'tVc9gCzhh-seVwvaojke4Iw'
+#     spreadsheet_key = '0Aoc8Ak8LScFgdFZjOWdDemhoLXNlVnd2YW9qa2U0SXc'
+#     feed = gd_client.GetWorksheetsFeed(spreadsheet_key)
+#     worksheet_id = 'od6'
+#     for entry in feed.entry:
+#         if entry.title.text == 'Entry':
+#             worksheet_id = entry.id.text.rsplit('/', 1)[1]
 
-    row = {}
-    row['sex'] = 'm'
-    row['name'] = 'John Kuczinksy'
-    row['mobile'] = '2134223214'
-    row['mpr'] = '3.4'
-    row['ppd'] = '34.24'
-    row['cardno'] = '12432155533'
-    row['entry'] = '$15'  # if he is not member else '$0'
-    row['card'] = '$5'  # if he has not his card else '$0'
-    # row['name'] = 'Stu Pae'
-    try:
-        entry = gd_client.InsertRow(row, spreadsheet_key, worksheet_id)
-    except Exception, e:
-        print "Error %s inserting" % (e, )
-    #     return False
-    # entry = gd_client.InsertRow(row, spreadsheet_key, worksheet_id)
-    if isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
-        return True
+#     row = {}
+#     row['sex'] = 'm'
+#     row['name'] = 'John Kuczinksy'
+#     row['mobile'] = '2134223214'
+#     row['mpr'] = '3.4'
+#     row['ppd'] = '34.24'
+#     row['cardno'] = '12432155533'
+#     row['entry'] = '$15'  # if he is not member else '$0'
+#     row['card'] = '$5'  # if he has not his card else '$0'
+#     # row['name'] = 'Stu Pae'
+#     try:
+#         entry = gd_client.InsertRow(row, spreadsheet_key, worksheet_id)
+#     except Exception, e:
+#         print "Error %s inserting" % (e, )
+#     #     return False
+#     # entry = gd_client.InsertRow(row, spreadsheet_key, worksheet_id)
+#     if isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
+#         return True
 
 
 def _get_member(rfid):
@@ -539,6 +541,19 @@ def register(request, t_id, rfid_id):
                 entry.ppd_rank = Decimal(stats['event_ppd'])
 
             entry.save()
+            row = {}
+            row['sex'] = player_22k.gender
+            row['name'] = player_22k.full_name
+            row['mobile'] = player_22k.phone
+            row['mpr'] = str(entry.mpr_rank)
+            row['ppd'] = str(entry.ppd_rank)
+            row['cardno'] = card.cardno
+            # row['entry'] = entry.balance_card  # if he is not member else '$0'
+            # row['card'] = '$5'  # if he has not his card else '$0'
+            if settings.GOOGLE_DOC['SYNC']:
+                sheet = gdrive.Sheet(settings.GOOGLE_DOC['BOOK_NAME'], 'Entry')
+                sheet.insert(row)
+            # sheet.delete_all()
 
             #register new card and update temp card nickname
             if card_posted['type'] == 'new':
@@ -633,24 +648,30 @@ def event_signup(request, e_id):
     if request.method == 'POST':
         rfids = filter(None, [request.POST.get('card1'), request.POST.get('card2'), request.POST.get('card3')])
         players = []
-        #check any card(player) has already been signed up
-        context['error_msg'] = ''
+
+        #check if there is duplicate player in the team
+        context['error_msg'] = 'There is a duplicate player!' if len(rfids)!=len(set(rfids)) else ''
+
         for rfid in rfids:
             try:
                 player = Card.objects.get(rfid=rfid).player
-                if event.draw == 'L':
-                    if event.drawentry_set.filter(player=player).exists():
-                        context['error_msg'] = '%s has already signed up!' % (player.full_name)
+                if(player.is_registered(event.tournament)):
+
+                    if event.draw == 'L':
+                        if event.drawentry_set.filter(player=player).exists():
+                            context['error_msg'] = '%s has already signed up!' % (player.full_name)
+                    else:
+                        if event.team_set.filter(players=player).exists():
+                            # player already signuped. redirect to signup page
+                            context['error_msg'] = '%s has already signed up!' % (player.full_name)
+                            # return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+                    players.append(player)
                 else:
-                    if event.team_set.filter(players=player).exists():
-                        # player already signuped. redirect to signup page
-                        context['error_msg'] = '%s has already signed up!' % (player.full_name)
-                        # return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-                players.append(player)
+                    context['error_msg'] = 'Oops! %s is not registred yet.' % (player)
 
             except ObjectDoesNotExist:
                 #player with the card has not been registered yet!
-                context['error_msg'] = 'player is not registered yet'
+                context['error_msg'] = 'Oops! %s is not registered yet.' % (player)
 
         if not context['error_msg']:
             if event.draw != 'L':
@@ -661,15 +682,22 @@ def event_signup(request, e_id):
                     team.name = request.POST.get('teamname')
                 team.save()
             for player in players:
+                entry = player.entry_set.get(tournament=event.tournament)
                 if event.draw == 'L':
                     DrawEntry.objects.create(event=event, player=player)
                 else:
                     team.players.add(player)
-                    team.mpr_rank += player.stat_rank(event.tournament)['MPR']
-                    team.ppd_rank += player.stat_rank(event.tournament)['PPD']
+
+                    rank_mpr = player.stat_rank(event.tournament)['MPR']
+                    rank_ppd = player.stat_rank(event.tournament)['PPD']
+
+                    entry.mpr_rank = rank_mpr
+                    entry.ppd_rank = rank_ppd
+
+                    team.mpr_rank += rank_mpr
+                    team.ppd_rank += rank_ppd
 
                 # charge sign up fee
-                entry = player.entry_set.get(tournament=event.tournament)
                 entry.balance_signup = F('balance_signup') + settings.FEES['SIGNUP']
                 entry.save()
 
@@ -685,14 +713,43 @@ def event_signup(request, e_id):
                 context['success_msg'] = '%s singned up successfully' % (players[0].full_name)
             else:
                 context['success_msg'] = '%s singned up successfully' % (team.name)
+                #cacluate average
                 team.mpr_rank = team.mpr_rank / len(players)
                 team.ppd_rank = team.ppd_rank / len(players)
                 team.save()
+
+                if settings.GOOGLE_DOC['SYNC']:
+                    sheet = gdrive.Sheet(settings.GOOGLE_DOC['BOOK_NAME'], 'Signup')
+                    sheet.insert({'team': team.name, 'mpr': str(team.mpr_rank), 'ppd': str(team.ppd_rank)})
+
+                # print signup recepits
+                receipt = brother.Label()
+                receipt.print_singles(team.name, event.title, 'MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+                # receipt.print_line(team.name)
+                # receipt.print_line('MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+                receipt.cut()
+
     context['tournament'] = event.tournament
     context['event'] = event
     context['teams'] = event.team_set.all()
     context['draw_entry'] = DrawEntry.objects.filter(event=event)
     return render(request, 'tourney/event_signup.html', context)
+
+
+def del_entry(request, t_id, entry_id):
+    e = Entry.objects.get(pk=entry_id)
+    if not e.player.team_set.count():
+        e.delete()
+        # messages.info(request, '%s has beeen deleted.' % (e.player))
+    else:
+        messages.info(request, '%s already signed up and can not be deleted.' %(e.player))
+
+    return HttpResponseRedirect(reverse('22k:entry', args=(t_id,)))
+
+
+def del_team(request, e_id, team_id):
+    Team.objects.get(pk=team_id).delete()
+    return HttpResponseRedirect(reverse('22k:event_signup', args=(e_id,)))
 
 
 def draw(request, e_id):
@@ -755,9 +812,9 @@ def draw(request, e_id):
 def _save_gdoc(event):
     return 
     import bracket
-    import gdrive
+    # import gdrive
 
-    sort_order = 'mpr_rank' if event.game == 'CR' else 'ppd_rank'
+    sort_order = 'mpr_rank' if event.game == 'CR' or event.game == 'Medley' else 'ppd_rank'
     team_ranked = event.team_set.all().order_by(sort_order)
     teams = {}
     for i in range(0, len(team_ranked)):
@@ -773,6 +830,15 @@ def _save_gdoc(event):
             id = _bracket.match[i]['teams'][j]
             dct = {'number': "%03d00%03d" % (i, id), 'team': teams[str(id)]}
             sheet.insert( dct )
+
+
+def league_stat(request):
+    context = {}
+    # if request.method == 'POST':
+
+    # else:
+
+    return render(request, 'tourney/league_stat.html', context)
 
 
 def refree(request, e_id):

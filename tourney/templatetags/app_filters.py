@@ -41,12 +41,21 @@ def entry_stat_team(team):
     players = team.players.all()
     players_stat = []
     for player in players:
+<<<<<<< HEAD
         if team.event.game == 'CR':
             player_stat = player.stat_rank(tourney)['MPR']
+=======
+        if team.event.game == 'CR' or team.event.game == 'Medley':
+            player_stat = player.entry_set.filter(tournament=tourney)[0].mpr_rank
+>>>>>>> d6bf86ec6f4f34796083fa1014114816d830dc85
         elif team.event.game == '501' or team.event.game == '701':
             player_stat = player.stat_rank(tourney)['MPR']
         players_stat.append(str(player_stat))
+<<<<<<< HEAD
     team_stat = team.mpr_rank if team.event.game == 'CR' else team.mpr_rank
+=======
+    team_stat = team.mpr_rank if (team.event.game == 'CR' or team.event.game == 'Medley') else team.ppd_rank
+>>>>>>> d6bf86ec6f4f34796083fa1014114816d830dc85
     return '%s / %s' % (team_stat, ', '.join(players_stat))
 
 
