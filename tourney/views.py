@@ -1088,9 +1088,15 @@ def refree(request, e_id):
         else:
              player_pos.append(None)
 
-
     context['matches'] = teams
     context['player_pos'] = player_pos
-
-
     return render(request, 'tourney/bracket.html', context)
+
+def game_result(request):
+    context = dict()
+    cursor = connections['hi'].cursor()
+    cursor.execute("""select to_char(a.ctime, 'mm-dd hh:mi:ss AM' ) as ended_at, gameid, b.name, ppdmpr, teamtype, sameteam, iswin
+                      from v_gamedata3 a join userinfo b on a.rfid=b.rfid where shopid=209""")
+    r = cursor.fetchall()
+    context['games'] = r
+    return render(request, 'tourney/game_result.html', context)

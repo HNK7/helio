@@ -26,6 +26,5 @@ urlpatterns = patterns('',
     url(r'^d/s/(?P<e_id>\d+)/$', views.send_draw_sms, name='draw_sms'),
     url(r'^b/(?P<e_id>\d+)/$', views.refree, name='refree'),
     url(r'^l/$', views.league_stat, name='league_stat'),
-
-
+    url(r'^g/$', views.game_result, name='game_result'),
 )
