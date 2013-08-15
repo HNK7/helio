@@ -113,6 +113,9 @@ class Player(Address):
         return PreRegPlayer.objects.filter(player_ptr=self).exists()
         # return hasattr(self, 'credit')
 
+    def is_registered(self, tournament):
+        return Entry.objects.get(tournament=tournament, player=self)
+
 
 class Entry(models.Model):
     tournament = models.ForeignKey(Tournament)
@@ -133,7 +136,7 @@ class Entry(models.Model):
         unique_together = (('tournament', 'player'))
 
     def __unicode__(self):
-        return "%s plays %s" % (self.player.full_name, self.tournament.title)
+        return "%s - %s" % (self.player.full_name, self.tournament.title)
 
     def save(self, *args, **kwargs):
         self.created_at = datetime.now() if not self.pk else self.created_at
@@ -222,6 +225,16 @@ class Team(models.Model):
     ppd_event = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
     def __unicode__(self):
+        if self.name:
+            _team_name = self.name
+        else:
+            player_list = self.players.all()
+            _team_name = ','.join(player.last_name.title() for player in player_list) \
+                        if len(player_list) > 1 else player_list[0].full_name
+        return "%s - %s" % (_team_name, self.event.title)
+
+    @property
+    def team_name(self):
         if self.name:
             team_name = self.name
         else:
@@ -315,3 +328,5 @@ class PreRegPlayer(Player):
 
     def __unicode__(self):
         return self.full_name
+
+

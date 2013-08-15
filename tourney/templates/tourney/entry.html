@@ -14,6 +14,16 @@
             <!--div class="page-header">
             <span class="label label-info">TOTAL: {{ entry_total|intcomma }}</span>
             </div-->
+
+
+        {% if messages %}
+        <div class="alert alert-error alert-block">
+            <h4>Oops!</h4>
+            {% for message in messages %}
+                {{ message }}<br>
+            {% endfor %}
+        </div>
+        {% endif %}
             {% if entry %}
                 <table class="table table-condensed  table-hover">
                     <thead>
@@ -25,12 +35,12 @@
                             <th>Card</th>
                             <th>Stat: <span class="label">CA</span> / <span class="label label-important">TN</span></th>
                             <th>Balance</th>
-                            <!-- <th></th> -->
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                 {% for e in entry %}
-                    <tr{% if e.balance > 0 %} class="error" {% elif e.balance < 0 %} class="info" {% endif %}>
+                    <tr {% if e.balance > 0 %} class="error" {% elif e.balance < 0 %} class="info" {% endif %}>
                         <td class="muted">{{ forloop.counter }}</td>
                         <td>
                         {% if not e.player.is_profile_valid %}
@@ -42,10 +52,16 @@
                         </td>
                         <td><a href="{% url 22k:profile e.player.id %}">{{ e.player.full_name|title }}</a></td>
                         <td>{{ e.player.gender }}</td>
-                        <td>{{ e.player.card_number|format_card_number }}</td>
+                        <!--td>{{ e.player.card_number|format_card_number }}</td-->
+                        <td><span class="muted">{{e.player.rfid}}</span></td>
                         <td>{{ e.mpr_rank }}, {{ e.ppd_rank }} / {{ e.mpr_event }}, {{ e.ppd_event }}</td>
                         <td>
                             {{ e.balance|currency }}
+                        </td>
+                        <td>
+                            <div class="btn-group pull-right">
+                                <a href="{% url 22k:del_entry tournament.id e.id %}" class="btn btn-mini"><i class="icon-remove"></i> Withdraw</a>
+                            </div>
                         </td>
                         <!-- <td>
                         {% if e.balance > 0 %}

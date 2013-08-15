@@ -179,7 +179,7 @@ LOGGING = {
     }
 }
 
-BROKER_URL = 'redis://localhost:6379/0'
+# BROKER_URL = 'redis://localhost:6379/0'
 
 try:
     from local_settings import *
