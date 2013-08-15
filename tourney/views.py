@@ -742,7 +742,7 @@ def del_entry(request, t_id, entry_id):
         e.delete()
         # messages.info(request, '%s has beeen deleted.' % (e.player))
     else:
-        messages.info(request, '%s can not be deleted.' %(e.player))
+        messages.info(request, '%s already signed up and can not be deleted.' %(e.player))
 
     return HttpResponseRedirect(reverse('22k:entry', args=(t_id,)))
 
