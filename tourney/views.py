@@ -518,7 +518,7 @@ def register(request, t_id, rfid_id):
             entry.mpr_event = Decimal(stats['entry_mpr']) if stats['entry_mpr'] else None
             entry.ppd_event = Decimal(stats['entry_ppd']) if stats['entry_ppd'] else None
             entry.save()
-            
+
             # update casual stat with tournament stat
             player_22k.update_stat(entry.mpr_event, entry.ppd_event)
 
@@ -546,7 +546,7 @@ def register(request, t_id, rfid_id):
             if player_22k.is_pre_registered():
                 player_22k.is_registered = True
                 player_22k.save()
-            
+
             # overwrite player nick name with full name
             update_temp_card(player_22k.full_name, rfid_id)
 
@@ -734,8 +734,8 @@ def event_signup(request, e_id):
                     sheet.insert({'team': team.name, 'mpr': str(team.mpr_rank), 'ppd': str(team.ppd_rank)})
 
                 # print signup recepits
-                # print_signup_receipt(team, event)
-                # print_bracket_label(team, event)
+                print_signup_receipt(team, event)
+                print_bracket_label(team, event)
 
                 # receipt.print_line(team.name)
                 # receipt.print_line('MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
@@ -750,7 +750,7 @@ def event_signup(request, e_id):
 
 def del_entry(request, t_id, entry_id):
     e = Entry.objects.get(pk=entry_id)
-   
+
     if not Team.objects.filter(players__in=[e.player], event__in=Event.objects.filter(tournament_id=t_id)).count():
         e.delete()
         # messages.info(request, '%s has beeen deleted.' % (e.player))
@@ -823,7 +823,7 @@ def draw(request, e_id):
 
 
 def _save_gdoc(event):
-    return 
+    return
     import bracket
     # import gdrive
 
@@ -1106,7 +1106,7 @@ def refree(request, e_id):
     context['player_pos'] = player_pos
     return render(request, 'tourney/bracket.html', context)
 
-    
+
 def game_result(request, rfid=None):
     context = dict()
     cursor = connections['hi'].cursor()
