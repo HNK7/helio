@@ -632,21 +632,27 @@ def register(request, t_id, rfid_id):
 
 def print_signup_receipt(team, event):
     # print signup recepits
-    receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_RECEIPT'])
-    # receipt.print_singles(event.title, team.name, 'MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
-    receipt.print_line(event.tournament.title, size=50)
-    receipt.print_line('', size=50)
-    receipt.print_line('Event: %s' % (event.title))
-    receipt.print_line('Team: %s' % (team.name))
-    receipt.print_line('Stat(ppd/mpr): %s / %s' % (team.ppd_rank, team.mpr_rank))
-    receipt.print_line('', size=50)
-    receipt.print_line('%s' % (datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-    receipt.cut()
+    try:
+        receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_RECEIPT'])
+        # receipt.print_singles(event.title, team.name, 'MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+        receipt.print_line(event.tournament.title, size=50)
+        receipt.print_line('', size=50)
+        receipt.print_line('Event: %s' % (event.title))
+        receipt.print_line('Team: %s' % (team.name))
+        receipt.print_line('Stat(ppd/mpr): %s / %s' % (team.ppd_rank, team.mpr_rank))
+        receipt.print_line('', size=50)
+        receipt.print_line('%s' % (datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+        receipt.cut()
+    except:
+        pass
 
 def print_bracket_label(team, event):
     # print signup recepits
-    receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_LABEL'], port=9200)
-    receipt.print_singles(team.name, event.title, 'MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+    try:
+        receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_LABEL'], port=9200)
+        receipt.print_singles(team.name, event.title, 'MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+    except:
+        pass
     # receipt.cut()
     # receipt.print_line(team.name)
     # receipt.print_line('MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
