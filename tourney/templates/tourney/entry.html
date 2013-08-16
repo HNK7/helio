@@ -7,10 +7,8 @@
 <span class="label label-info pull-right">TOTAL : {{ entry.count }}</span></P>
 </div>
     <div class="row">
-        <div class="span3">
-            {% include 'include/left_menu.html' %}
-        </div>
-        <div class="span9">
+        
+        <div>
             <!--div class="page-header">
             <span class="label label-info">TOTAL: {{ entry_total|intcomma }}</span>
             </div-->
@@ -25,17 +23,34 @@
         </div>
         {% endif %}
             {% if entry %}
-                <table class="table table-condensed  table-hover">
+                <table class="table table-condensed table-hover">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th style="vertical-align: middle" rowspan="2">#</th>
+                            <th style="vertical-align: middle" rowspan="2"></th>
+                            <th style="vertical-align: middle" rowspan="2">Name</th>
+                            <th style="vertical-align: middle" rowspan="2"></th>
+                            <th style="vertical-align: middle" rowspan="2">Card</th>
+<!--                             <th>Stat: <span class="label">CA</span> / <span class="label label-important">TN</span></th>
+-->                         <th colspan="2" style="text-align: center"><span class="label">Casual</span></th>
+                            <!-- <th>PPD <span class="label">CA</span></th> -->
+                            <th colspan="2" style="text-align: center"><span class="label label-important">Tournament</span></th>
+<!--                             <th>PPD <span class="label label-important">TN</span></th>
+-->                         <th rowspan="2" style="vertical-align:middle; text-align: right">Balance</th>
+                            <th rowspan="2"></th>
+                        </tr>
+                        <tr rowspan="10">
+                            <!-- <th></th>
                             <th></th>
-                            <th>Name</th>
                             <th></th>
-                            <th>Card</th>
-                            <th>Stat: <span class="label">CA</span> / <span class="label label-important">TN</span></th>
-                            <th>Balance</th>
                             <th></th>
+                            <th></th> -->
+                            <td style="text-align: right">MPR</td>
+                            <td style="text-align: right">PPD</td>
+                            <td style="text-align: right">MPR</td>
+                            <td style="text-align: right">PPD</td>
+                            <!-- <th></th> -->
+                            <!-- <th></th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -54,12 +69,16 @@
                         <td>{{ e.player.gender }}</td>
                         <!--td>{{ e.player.card_number|format_card_number }}</td-->
                         <td><span class="muted">{{e.player.rfid}}</span></td>
-                        <td>{{ e.mpr_rank }}, {{ e.ppd_rank }} / {{ e.mpr_event }}, {{ e.ppd_event }}</td>
-                        <td>
-                            {{ e.balance|currency }}
-                        </td>
+                        <td style="text-align: right">{{ e.mpr_rank }}</td>
+                        <td style="text-align: right">{{ e.ppd_rank }}</td>
+                        <td style="text-align: right">{{ e.mpr_event }}</td>
+                        <td style="text-align: right">{{ e.ppd_event }}</td>
+                        <td style="text-align: right">{{ e.balance|currency }}</td>
                         <td>
                             <div class="btn-group pull-right">
+                                {% if e.balance > 0 %}
+                                <a href="{% url 22k:payment tournament.id e.player.rfid %}" class="btn btn-mini"><i class="icon-shopping-cart"></i> $$</a>
+                                {% endif %}
                                 <a href="{% url 22k:del_entry tournament.id e.id %}" class="btn btn-mini"><i class="icon-remove"></i> Withdraw</a>
                             </div>
                         </td>

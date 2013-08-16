@@ -7,10 +7,7 @@
         <p>{{ event.start_at|date:"D"|upper }} / {{ event.title }} / {{ event.get_division_display }} - Signup</p>
     </div>
     <div class="row">
-        <div class="span3">
-            {% include 'include/left_menu.html' %}
-        </div>
-        <div class="span9">
+        <div>
 {% if not event.is_lotd or not event.is_drawn %}
             <div class="well">
                 {% if error_msg %}
@@ -46,25 +43,25 @@
                     <div class="control-group">
                         <label class="control-label">Team Name</label>
                         <div class="controls">
-                            <input class="span2" type="text" name="teamname" id="first_input" required>
+                            <input class="span4" type="text" name="teamname" id="first_input" required>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">Card 1</label>
                         <div class="controls">
-                            <input class="span2" type="text" name="card1" required>
+                            <input class="span4" type="text" name="card1" required>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">Card 2</label>
                         <div class="controls">
-                            <input class="span2" type="text" name="card2" required>
+                            <input class="span4" type="text" name="card2" required>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">Card 3</label>
                         <div class="controls">
-                            <input class="span2" type="text" name="card3" required>
+                            <input class="span4" type="text" name="card3" required>
                         </div>
                     </div>
                     {% endif %}
@@ -123,7 +120,8 @@
                             <th>#</th>
                             <th>Team</th>
                             <th>Players</th>
-                             <th>Stat: <span class="label">Team</span> / <span class="label label-important">Player</span></th>
+                             <th><span class="label">Team</span></th>
+                             <th><span class="label label-important">Player</span></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -138,11 +136,14 @@
                             {{ team|players_in_team }}
                         </td>
                         <td>
-                            {{ team|entry_stat_team }}
+                            {{ team|entry_stat_team:"team" }}
+                        </td>
+                        <td>
+                            {{ team|entry_stat_team:"player" }}
                         </td>
                         <td>
                             <div class="btn-group pull-right">
-                                <a href="{% url 22k:del_team event.id team.id %}" class="btn btn-mini"><i class="icon-remove"></i></a>
+                                <a href="{% url 22k:del_team event.id team.id %}" class="btn btn-mini"><i class="icon-remove"></i> Withdraw</a>
                             </div>
                         </td>
                     </tr>

@@ -66,6 +66,7 @@ class Label:
 		__.job.page_feed()
 
 	def print_line(__, _str, size=42 ):  # size is 33, 42, 50 ...
+		__.job.feed_amount('1/8')
 		__.job.char_size( str(size) )
 		__.job.send( _str )
 		__.job.line_feed()

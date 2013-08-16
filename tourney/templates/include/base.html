@@ -6,17 +6,33 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/static.css" />
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <!-- <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
         <div class="container">
             <a href="{% url 22k:index %}" class="brand">Phoenix Cup 22K Admin</a>
             <p class="navbar-text pull-right">{% now "m-d-Y H:i" %}</p>
-                <div class="nav-collapse collapse">
-                    <ul class="nav">
-                      <li>
-                      </li>
-                    </ul>
-                </div>
+                <ul class="nav nav-pills">
+                  <li><a href="#">Register</a></li>
+                  <li><a href="#">...</a></li>
+                  <li><a href="#">...</a></li>
+                </ul>
+        </div>
+        </div>
+    </div> -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <a href="{% url 22k:index %}" class="brand" style="margin-left: 5px">Phoenix Cup 22K Admin</a>
+            <div class="container">
+                <ul class="nav nav-pills">
+                    <li><a href="{% url 22k:card request.session.tournament_id %}"><i class="icon icon-white icon-tags"></i> Register</a></li>
+                    <li><a href="{% url 22k:entry  request.session.tournament_id%}"><i class="icon icon-white icon-user"></i> Entry</a></li>
+                    <li><a href="{% url 22k:tourney_dashboard  request.session.tournament_id%}"><i class="icon icon-white icon-list-alt"></i> Event</a></li>
+                    <li><a href="{% url 22k:payment request.session.tournament_id %}" rel="tooltip" data-original-title="Collect Payment">
+                    <i class="icon icon-white icon-shopping-cart"></i> Payment</a></li>
+                        <!-- <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Dropdown<b class="caret"></b></a>
+                        <ul class="dropdown-menu"><li><a href="#">item 1</a></li></ul> -->
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

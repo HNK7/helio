@@ -14,6 +14,7 @@ from twilio.rest import TwilioRestClient
 from phonenumbers import parse, format_number, PhoneNumberFormat
 from string import Template
 from decimal import Decimal
+from datetime import datetime
 
 
 def convert_to_e164(raw_phone):
@@ -68,13 +69,19 @@ def send_draw_sms(request, e_id):
 def index(request):
     tournament_list = Tournament.objects.all().order_by('-start_at')
     context = {'tournament_list': tournament_list}
-    # _insert_google_doc('')
-    return render(request, 'tourney/index.html', context)
+    if not request.session.get('tournament_id'):
+        request.session['tournament_id'] = tournament_list[0].id
+        return HttpResponseRedirect(reverse('22k:index'))
+    else:
+        return render(request, 'tourney/index.html', context)
 
 
 def tourney_dashboard(request, t_id):
     context = dict()
     tournament = get_object_or_404(Tournament, pk=t_id)
+    if request.session.get('tournament_id') != t_id:
+        request.session['tournament_id'] = t_id
+
     context['events'] = tournament.event_set.all().order_by('start_at')
     context['tournament'] = tournament
     return render(request, 'tourney/tourney_dashboard.html', context)
@@ -361,7 +368,7 @@ def register_new_card(full_name, rfid):
 def update_temp_card(full_name, rfid):
     cursor = connections['hi'].cursor()
     cursor.execute("""
-        UPDATE userinfo set name=%s where rfid=%s
+        UPDATE userinfo set name=%s where rfid=getorigrfid2(%s)
         """, [full_name, rfid])
     transaction.commit_unless_managed(using='hi')
 
@@ -565,6 +572,10 @@ def register(request, t_id, rfid_id):
             if player_22k.is_pre_registered():
                 player_22k.is_registered = True
                 player_22k.save()
+            
+            # overwrite player nick name with full name
+            update_temp_card(player_22k.full_name, rfid_id)
+
             # text welcome message
             sms_msg = Template(settings.SMS_MSG['REGISTRATION'])
             sms_msg = sms_msg.safe_substitute(name=player_22k.first_name.title(),
@@ -640,6 +651,19 @@ def register(request, t_id, rfid_id):
         context['casual_stat'] = {'MPR': mpr, 'PPD': ppd}
     return render(request, 'tourney/register.html', context)
 
+def print_signup_receipt(team, event):
+    # print signup recepits
+    receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_RECEIPT'])
+    # receipt.print_singles(event.title, team.name, 'MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+    receipt.print_line(event.tournament.title, size=50)
+    receipt.print_line('', size=50)
+    receipt.print_line('Event: %s' % (event.title))
+    receipt.print_line('Team: %s' % (team.name))
+    receipt.print_line('Stat(ppd/mpr): %s / %s' % (team.ppd_rank, team.mpr_rank))
+    receipt.print_line('', size=50)
+    receipt.print_line('%s' % (datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+
+    receipt.cut()
 
 def event_signup(request, e_id):
     context = dict()
@@ -671,7 +695,7 @@ def event_signup(request, e_id):
 
             except ObjectDoesNotExist:
                 #player with the card has not been registered yet!
-                context['error_msg'] = 'Oops! %s is not registered yet.' % (player)
+                context['error_msg'] = 'Oops! Card (%s) is not registered yet.' % (rfid)
 
         if not context['error_msg']:
             if event.draw != 'L':
@@ -723,11 +747,10 @@ def event_signup(request, e_id):
                     sheet.insert({'team': team.name, 'mpr': str(team.mpr_rank), 'ppd': str(team.ppd_rank)})
 
                 # print signup recepits
-                receipt = brother.Label()
-                receipt.print_singles(team.name, event.title, 'MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+                print_signup_receipt(team, event)
                 # receipt.print_line(team.name)
                 # receipt.print_line('MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
-                receipt.cut()
+                # receipt.cut()
 
     context['tournament'] = event.tournament
     context['event'] = event
@@ -1092,11 +1115,14 @@ def refree(request, e_id):
     context['player_pos'] = player_pos
     return render(request, 'tourney/bracket.html', context)
 
-def game_result(request):
+def game_result(request, rfid=None):
     context = dict()
     cursor = connections['hi'].cursor()
-    cursor.execute("""select to_char(a.ctime, 'mm-dd hh:mi:ss AM' ) as ended_at, gameid, b.name, ppdmpr, teamtype, sameteam, iswin
-                      from v_gamedata3 a join userinfo b on a.rfid=b.rfid where shopid=209""")
+    sql_cond = ' and a.rfid=%s' % (rfid) if rfid else ''
+
+    cursor.execute("""select to_char(a.ctime, 'mm-dd hh:mi:ss AM' ) as ended_at, gameid, b.name, ppdmpr, teamtype, sameteam,
+                      iswin, a.rfid
+                      from v_gamedata3 a join userinfo b on a.rfid=b.rfid where shopid=209 %s""" % (sql_cond))
     r = cursor.fetchall()
     context['games'] = r
     return render(request, 'tourney/game_result.html', context)

@@ -56,3 +56,7 @@ SMS_MSG = {
     'PAYMENT': '$name,\nYou have paid $$$amount. Thank you!',
     'DRAW': '$name,\nYour partner for $event_title has been picked.\nName: $partner\nStat: $stat\nGood Luck!'
 }
+
+PRINTER = {
+    'BROTHER_RECEIPT': '192.168.0.251',
+}
