@@ -93,7 +93,7 @@ class Player(Address):
         #     event_stat = EventStat.objects.get(pk=self.user_id)
         # except:
         #     return {'PPD': None, 'MPR': None}
-        lastest_entry = Entry.objects.filter(player=self).lastest('created_at')
+        lastest_entry = self.entry_set.order_by('created_at')[0]
         return {'PPD': event_stat.ppd, 'MPR': event_stat.mpr}
 
     def is_membership_valid(self):
