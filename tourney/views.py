@@ -771,7 +771,8 @@ def event_signup(request, e_id):
 
 def del_entry(request, t_id, entry_id):
     e = Entry.objects.get(pk=entry_id)
-    if not e.player.team_set.count():
+    event = Event.objects.get(tournament_id=t_id)
+    if not e.player.team_set.filter(event_id=event.id).count():
         e.delete()
         # messages.info(request, '%s has beeen deleted.' % (e.player))
     else:
