@@ -11,6 +11,7 @@
             <a href="{% url 22k:index %}" class="brand" style="margin-left: 5px">Phoenix Cup 22K Admin</a>
             <div class="container">
                 <ul class="nav nav-pills">
+                     <li><a href="{% url 22k:tourney_dashboard request.session.tournament_id %}"><i class="icon icon-white icon-home"></i> {{ request.session.tournament_title }}</a></li>
                     <li><a href="{% url 22k:card request.session.tournament_id %}"><i class="icon icon-white icon-tags"></i> Register</a></li>
                     <li><a href="{% url 22k:entry  request.session.tournament_id%}"><i class="icon icon-white icon-user"></i> Entry</a></li>
                     <li><a href="{% url 22k:tourney_dashboard  request.session.tournament_id%}"><i class="icon icon-white icon-list-alt"></i> Event</a></li>
@@ -25,7 +26,7 @@
                     </li>
                 </ul>
             </div>
-            <div>{{ request.session.tournament_title }}</div>
+            
         </div>
     </div>
     <header></header>
