@@ -2,7 +2,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'djangostack',
-        'HOST': '/home/sopae/djangostack-1.4.5-0/postgresql',
+        'HOST': 'localhost',
         'PORT': '5432',
         'USER': 'postgres',
         'PASSWORD': 'tnvkfdl2'
@@ -10,7 +10,7 @@ DATABASES = {
     'hi': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'phoenix',
-        'HOST': 'db.us.phoenixdart.com',
+        'HOST': 'localhost',
         'PORT': '5440',
         'USER': 'pxprogram',
         'PASSWORD': 'vlslrtm'
