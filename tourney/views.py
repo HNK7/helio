@@ -833,6 +833,7 @@ def draw(request, e_id):
 
 
 def _save_gdoc(event):
+    return 
     import bracket
     # import gdrive
 
@@ -864,7 +865,7 @@ def league_stat(request):
 
 
 def refree(request, e_id):
-    # import gdrive
+    import gdrive
     import bracket
 
     context = {}
@@ -1115,7 +1116,21 @@ def refree(request, e_id):
     context['player_pos'] = player_pos
     return render(request, 'tourney/bracket.html', context)
 
+<<<<<<< HEAD
 def game_result(request, rfid=None):
+=======
+<<<<<<< HEAD
+
+    return render(request, 'tourney/bracket.html', context)
+
+def list_team(self, e_id):
+	event = Event.objects.get(id=e_id)
+	teams = event.team_set.all()
+	context['teams'] = teams
+	return render(request, 'tourney/team_list.html', context)
+
+def game_result(request):
+>>>>>>> 6ef7ec1aa4c4f4d9951e62934aca1198b756442b
     context = dict()
     cursor = connections['hi'].cursor()
     sql_cond = ' and a.rfid=%s' % (rfid) if rfid else ''
