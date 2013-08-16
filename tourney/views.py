@@ -507,22 +507,27 @@ def register(request, t_id, rfid_id):
             stats = {'casual_mpr': request.POST.get('casual_stat_mpr'),
                      'casual_ppd': request.POST.get('casual_stat_ppd'),
                      'event_mpr': request.POST.get('event_stat_mpr'),
-                     'event_ppd': request.POST.get('event_stat_ppd')}
-            entry.mpr_rank = Decimal(stats['casual_mpr']) if stats['casual_mpr'] != 'None' else 9
-            entry.ppd_rank = Decimal(stats['casual_ppd']) if stats['casual_ppd'] != 'None' else 60
-            # override rank stat with tournament stats
-            if stats['event_mpr'] and stats['event_mpr'] != 'None':
-                entry.mpr_rank = Decimal(stats['event_mpr'])
-            if stats['event_ppd'] and stats['event_ppd'] != 'None':
-                entry.ppd_rank = Decimal(stats['event_ppd'])
-
+                     'event_ppd': request.POST.get('event_stat_ppd'),
+                     'entry_mpr': request.POST.get('entry_mpr'),
+                     'entry_ppd': request.POST.get('entry_ppd')}
+            # entry.mpr_rank = Decimal(stats['casual_mpr']) if stats['casual_mpr'] != 'None' else 9
+            # entry.ppd_rank = Decimal(stats['casual_ppd']) if stats['casual_ppd'] != 'None' else 60
+            entry.mpr_rank = Decimal(stats['casual_mpr']) if stats['casual_mpr'] != 'None' else None
+            entry.ppd_rank = Decimal(stats['casual_ppd']) if stats['casual_ppd'] != 'None' else None
+            # set tournament stats
+            entry.mpr_event = Decimal(stats['entry_mpr']) if stats['entry_mpr'] else None
+            entry.ppd_event = Decimal(stats['entry_ppd']) if stats['entry_ppd'] else None
             entry.save()
+            
+            # update casual stat with tournament stat
+            player_22k.update_stat(entry.mpr_event, entry.ppd_event)
+
             row = {}
             row['sex'] = player_22k.gender
             row['name'] = player_22k.full_name
             row['mobile'] = player_22k.phone
-            row['mpr'] = str(entry.mpr_rank)
-            row['ppd'] = str(entry.ppd_rank)
+            row['mpr'] = str(entry.mpr_event)
+            row['ppd'] = str(entry.ppd_event)
             row['cardno'] = card.cardno
             # row['entry'] = entry.balance_card  # if he is not member else '$0'
             # row['card'] = '$5'  # if he has not his card else '$0'

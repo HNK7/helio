@@ -82,6 +82,10 @@ class Player(Address):
         r = cursor.fetchone()
         return {'PPD': r[0], 'MPR': r[1]} if r else {'PPD': None, 'MPR': None}
 
+    def update_stat(self, mpr, ppd):
+        cursor = connections['hi'].cursor()
+        cursor.execute("UPDATE useravg SET mpr_ta2=%s, ppd_ta2=%s WHERE rfid = getorigrfid2(%s)", [mpr, ppd, self.rfid])
+
     def stat_rank(self, tournament):
         entry = Entry.objects.get(tournament=tournament, player=self)
         ppd_rank = entry.ppd_event if entry.ppd_event else 60
