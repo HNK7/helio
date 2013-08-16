@@ -6,7 +6,7 @@
     <div class="page-header">
         <p>{{ event.start_at|date:"D"|upper }} / {{ event.title }} / {{ event.get_division_display }} - Signup</p>
     </div>
-    <div class="row">
+    <div class="row"><!-- -->
         <div>
 {% if not event.is_lotd or not event.is_drawn %}
             <div class="well">
