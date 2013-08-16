@@ -666,7 +666,7 @@ def print_signup_receipt(team, event):
 
 def print_bracket_label(team, event):
     # print signup recepits
-    receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_LABEL'])
+    receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_LABEL'], port=9200)
     receipt.print_singles(team.name, event.title, 'MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
     # receipt.cut()
     # receipt.print_line(team.name)
