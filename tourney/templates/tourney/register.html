@@ -24,22 +24,30 @@
                 <p class="lead"><strong>New Card!</strong></p>
             </div>
             {% else %}
-                {% if player.id and player.is_membership_valid %}
-            <div class="alert alert-block">
-                <p class="lead"><strong>Membership Valid.</strong><br>
-                Proceed registration.
-                </p>
-            </div>
-                {% elif player.id %}
-            <div class="alert alert-error alert-block">
-                <p class="lead"><strong>Membership Expired!</strong></p>
-            </div>
+                {% if last_entries %}
+                    {% if player.is_membership_valid %}
+                    <div class="alert alert-block">
+                        <p class="lead"><strong>Membership Valid.</strong><br>
+                        Proceed registration.
+                        </p>
+                    {% else %}
+                     <div class="alert alert-error alert-block">
+                        <p class="lead"><strong>Membership Expired!</strong></p>
+                    {% endif %}
+                    <ul>
+                    {% for entry in last_entries %}
+                        <li>{{ entry }}</li>
+                    {% endfor %}
+                    </ul>
+                    </div>
+
                 {% else %}
-            <div class="alert alert-block">
-                <p class="lead"><strong>No Membership yet!</strong></p>
-            </div>
+                <div class="alert alert-block">
+                    <p class="lead"><strong>No Membership yet!</strong></p>
+                </div>
                 {% endif %}
             {% endif %}
+
     {% endif %}
         <div class="span9">
     {% if not form.errors and card_type != 'new' %}
@@ -57,7 +65,7 @@
                         <td class="lead">
                             {% if player.id and player.is_membership_valid %}
                                 <strong>Valid</strong> <small>until {{ player.membership_expire_at|date }}</small>
-                            {% elif player.id %}
+                            {% elif player.id and last_entries %}
                                 <strong>Expired</strong> <small>on {{ player.membership_expire_at|date }}</small>
                             {% else %}
                                 <strong>No</strong>

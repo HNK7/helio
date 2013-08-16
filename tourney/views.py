@@ -464,7 +464,7 @@ def register(request, t_id, rfid_id):
             player = card.player
             form = RegisterForm(request.POST, instance=player)
             # returning member. update profile
-        except ObjectDoesNotExist:
+        except Card.DoesNotExist:
             # new member
             form = RegisterForm(request.POST)
             card = Card(cardno=card_posted['cardno'], rfid=rfid_id)
@@ -585,6 +585,7 @@ def register(request, t_id, rfid_id):
             player = Player()
         else:
 
+            last_entries = []
             try:
                 # check if 22K member
                 card = Card.objects.get(rfid=rfid_id)
@@ -597,7 +598,10 @@ def register(request, t_id, rfid_id):
                 player.phone = m_phone if not player.phone and m_phone else player.phone
                 player.zipcode = m_zip if not player.zipcode and m_zip else player.zipcode
 
-            except ObjectDoesNotExist:
+                # get previous entry
+                last_entries = player.entry_set.all()
+
+            except Card.DoesNotExist:
                 # not 22k member
                 card = Card(cardno=cardno, rfid=rfid_id)
                 player = Player(user_id=m_id,
@@ -613,6 +617,7 @@ def register(request, t_id, rfid_id):
         context['card_type'] = card_type
         context['screen_name'] = name
         context['player'] = player
+        context['last_entries'] = last_entries
         context['form'] = RegisterForm(instance=player)
         context['event_stat'] = player.event_stat()
         mpr = mpr if mpr > 0 else None

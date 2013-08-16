@@ -14,7 +14,6 @@ class Tournament(models.Model):
         return self.title
 
     def is_over(self):
-        return False
         return (datetime.now().date() > self.end_at)
 
     def total_entry(self):
@@ -140,7 +139,7 @@ class Entry(models.Model):
         unique_together = (('tournament', 'player'))
 
     def __unicode__(self):
-        return "%s - %s" % (self.player.full_name, self.tournament.title)
+        return "%s registered for %s" % (self.player.full_name, self.tournament.title)
 
     def save(self, *args, **kwargs):
         self.created_at = datetime.now() if not self.pk else self.created_at
