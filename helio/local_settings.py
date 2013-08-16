@@ -2,7 +2,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'djangostack',
-        'HOST': '/Applications/djangostack-1.4.5-0/postgresql',
+        'HOST': '/home/sopae/djangostack-1.4.5-0/postgresql',
         'PORT': '5432',
         'USER': 'postgres',
         'PASSWORD': 'tnvkfdl2'
@@ -10,8 +10,8 @@ DATABASES = {
     'hi': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'phoenix',
-        'HOST': 'localhost',
-        'PORT': '5400',
+        'HOST': 'db.us.phoenixdart.com',
+        'PORT': '5440',
         'USER': 'pxprogram',
         'PASSWORD': 'vlslrtm'
     }
@@ -47,6 +47,7 @@ TWILIO_AUTH_TOKEN = '6d32191bbb9f19664bfe72e0771b5961'
 
 
 SMS = {
+    #'LIVE': True,
     'LIVE': False,
 }
 
