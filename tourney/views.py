@@ -71,6 +71,7 @@ def index(request):
     context = {'tournament_list': tournament_list}
     if not request.session.get('tournament_id'):
         request.session['tournament_id'] = tournament_list[0].id
+        request.session['tournament_title'] = tournament_list[0].title
         return HttpResponseRedirect(reverse('22k:index'))
     else:
         return render(request, 'tourney/index.html', context)
@@ -81,6 +82,8 @@ def tourney_dashboard(request, t_id):
     tournament = get_object_or_404(Tournament, pk=t_id)
     if request.session.get('tournament_id') != t_id:
         request.session['tournament_id'] = t_id
+        request.session['tournament_title'] = tournament.title
+
 
     context['events'] = tournament.event_set.all().order_by('start_at')
     context['tournament'] = tournament
@@ -195,40 +198,6 @@ def profile_edit(request, p_id):
     context['form'] = form
     context['player'] = player
     return render(request, 'tourney/profile_edit.html', context)
-
-
-# def _insert_google_doc(row):
-#     gd_client = gdata.spreadsheet.service.SpreadsheetsService()
-#     gd_client.email = 'phoenix@dartoo.com'
-#     gd_client.password = '3355dartoO'
-#     gd_client.source = '22K'
-#     gd_client.ProgrammaticLogin()
-#     # spreadsheet_key = 'tVc9gCzhh-seVwvaojke4Iw'
-#     spreadsheet_key = '0Aoc8Ak8LScFgdFZjOWdDemhoLXNlVnd2YW9qa2U0SXc'
-#     feed = gd_client.GetWorksheetsFeed(spreadsheet_key)
-#     worksheet_id = 'od6'
-#     for entry in feed.entry:
-#         if entry.title.text == 'Entry':
-#             worksheet_id = entry.id.text.rsplit('/', 1)[1]
-
-#     row = {}
-#     row['sex'] = 'm'
-#     row['name'] = 'John Kuczinksy'
-#     row['mobile'] = '2134223214'
-#     row['mpr'] = '3.4'
-#     row['ppd'] = '34.24'
-#     row['cardno'] = '12432155533'
-#     row['entry'] = '$15'  # if he is not member else '$0'
-#     row['card'] = '$5'  # if he has not his card else '$0'
-#     # row['name'] = 'Stu Pae'
-#     try:
-#         entry = gd_client.InsertRow(row, spreadsheet_key, worksheet_id)
-#     except Exception, e:
-#         print "Error %s inserting" % (e, )
-#     #     return False
-#     # entry = gd_client.InsertRow(row, spreadsheet_key, worksheet_id)
-#     if isinstance(entry, gdata.spreadsheet.SpreadsheetsList):
-#         return True
 
 
 def _get_member(rfid):
@@ -771,9 +740,8 @@ def event_signup(request, e_id):
 
 def del_entry(request, t_id, entry_id):
     e = Entry.objects.get(pk=entry_id)
-    player = e.player
-
-    if not Team.objects.filter(event__in=Event.objects.filter(tournament_id=t_id)).count():
+   
+    if not Team.objects.filter(players__in=[e.player], event__in=Event.objects.filter(tournament_id=t_id)).count():
         e.delete()
         # messages.info(request, '%s has beeen deleted.' % (e.player))
     else:

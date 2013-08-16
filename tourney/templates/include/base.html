@@ -6,19 +6,6 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/static.css" />
 </head>
 <body>
-    <!-- <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
-        <div class="container">
-            <a href="{% url 22k:index %}" class="brand">Phoenix Cup 22K Admin</a>
-            <p class="navbar-text pull-right">{% now "m-d-Y H:i" %}</p>
-                <ul class="nav nav-pills">
-                  <li><a href="#">Register</a></li>
-                  <li><a href="#">...</a></li>
-                  <li><a href="#">...</a></li>
-                </ul>
-        </div>
-        </div>
-    </div> -->
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
             <a href="{% url 22k:index %}" class="brand" style="margin-left: 5px">Phoenix Cup 22K Admin</a>
@@ -34,6 +21,7 @@
                     </li>
                 </ul>
             </div>
+            <div>{{ request.session.tournament_title }}</div>
         </div>
     </div>
     <header></header>

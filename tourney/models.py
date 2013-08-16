@@ -14,6 +14,7 @@ class Tournament(models.Model):
         return self.title
 
     def is_over(self):
+        return False
         return (datetime.now().date() > self.end_at)
 
     def total_entry(self):
@@ -93,10 +94,10 @@ class Player(Address):
         #     event_stat = EventStat.objects.get(pk=self.user_id)
         # except:
         #     return {'PPD': None, 'MPR': None}
-        lastest_entry = self.entry_set.latest('created_at')
-        if len(lastest_entry):
+        try:
+            lastest_entry = self.entry_set.latest('created_at')
             return {'PPD': lastest_entry.ppd_event, 'MPR': lastest_entry.mpr_event}
-        else:
+        except Entry.DoesNotExist:
             return {'PPD': None, 'MPR': None}
 
     def is_membership_valid(self):
@@ -331,5 +332,3 @@ class PreRegPlayer(Player):
 
     def __unicode__(self):
         return self.full_name
-
-
