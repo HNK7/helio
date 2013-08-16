@@ -94,7 +94,7 @@ class Player(Address):
         # except:
         #     return {'PPD': None, 'MPR': None}
         lastest_entry = self.entry_set.order_by('created_at')[0]
-        return {'PPD': event_stat.ppd, 'MPR': event_stat.mpr}
+        return {'PPD': lastest_entry.ppd_event, 'MPR': lastest_entry.mpr_event}
 
     def is_membership_valid(self):
         try:
