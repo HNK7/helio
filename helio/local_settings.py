@@ -11,7 +11,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'phoenix',
         'HOST': 'localhost',
-        'PORT': '5440',
+        'PORT': '5400',
         'USER': 'pxprogram',
         'PASSWORD': 'vlslrtm'
     }
@@ -60,4 +60,5 @@ SMS_MSG = {
 
 PRINTER = {
     'BROTHER_RECEIPT': '192.168.0.251',
+    'BROTHER_LABEL': '192.168.0.250',
 }

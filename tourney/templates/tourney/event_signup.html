@@ -120,8 +120,8 @@
                             <th>#</th>
                             <th>Team</th>
                             <th>Players</th>
-                             <th><span class="label">Team</span></th>
-                             <th><span class="label label-important">Player</span></th>
+                             <th style="text-align: right"><span class="label">Team</span></th>
+                             <th style="text-align: right"><span class="label label-important">Player</span></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -135,10 +135,10 @@
                         <td>
                             {{ team|players_in_team }}
                         </td>
-                        <td>
+                        <td style="text-align: right">
                             {{ team|entry_stat_team:"team" }}
                         </td>
-                        <td>
+                        <td style="text-align: right">
                             {{ team|entry_stat_team:"player" }}
                         </td>
                         <td>

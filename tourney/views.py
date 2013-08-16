@@ -662,8 +662,16 @@ def print_signup_receipt(team, event):
     receipt.print_line('Stat(ppd/mpr): %s / %s' % (team.ppd_rank, team.mpr_rank))
     receipt.print_line('', size=50)
     receipt.print_line('%s' % (datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-
     receipt.cut()
+
+def print_bracket_label(team, event):
+    # print signup recepits
+    receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_LABEL'])
+    receipt.print_singles(team.name, event.title, 'MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+    # receipt.cut()
+    # receipt.print_line(team.name)
+    # receipt.print_line('MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+    # receipt.cut()
 
 def event_signup(request, e_id):
     context = dict()
@@ -748,6 +756,8 @@ def event_signup(request, e_id):
 
                 # print signup recepits
                 print_signup_receipt(team, event)
+                print_bracket_label(team, event)
+
                 # receipt.print_line(team.name)
                 # receipt.print_line('MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
                 # receipt.cut()
