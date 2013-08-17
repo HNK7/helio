@@ -1,0 +1,161 @@
+{% extends 'include/base.html' %}
+{% load humanize %}
+{% load app_filters %}
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <p>{{ event.start_at|date:"D"|upper }} / {{ event.title }} / {{ event.get_division_display }} - Signup</p>
+    </div>
+    <div class="row"><!-- -->
+        <div>
+{% if not event.is_lotd or not event.is_drawn %}
+            <div class="well">
+                {% if error_msg %}
+                <div class="alert alert-error"><i class="icon-exclamation-sign"></i> {{ error_msg }}</div>
+                {% elif success_msg %}
+                <div class="alert alert-success"><i class="icon-ok"></i> {{ success_msg }}</div>
+                {% else %}
+                <div class="alert alert-info"><i class="icon-tags"></i> Scan cards to signup</div>
+                {% endif %}
+                <form method="post" class="form-horizontal">
+                    {% csrf_token %}
+                    {% if event.draw == 'L' or event.format == 'S' %}
+                    <div class="control-group">
+                        <label class="control-label">Card</label>
+                        <div class="controls">
+                            <input type="text" name="card1" id="first_input" required>
+                        </div>
+                    </div>
+                    {% elif event.draw != 'L' and event.format == 'D' %}
+                    <div class="control-group">
+                        <label class="control-label">Card 1</label>
+                        <div class="controls">
+                            <input type="text" name="card1" id="first_input" required>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Card 2</label>
+                        <div class="controls">
+                            <input type="text" name="card2" required>
+                        </div>
+                    </div>
+                    {% elif event.draw != 'L' and event.format == 'T' %}
+                    <div class="control-group">
+                        <label class="control-label">Team Name</label>
+                        <div class="controls">
+                            <input class="span4" type="text" name="teamname" id="first_input" required>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Card 1</label>
+                        <div class="controls">
+                            <input class="span4" type="text" name="card1" required>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Card 2</label>
+                        <div class="controls">
+                            <input class="span4" type="text" name="card2" required>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Card 3</label>
+                        <div class="controls">
+                            <input class="span4" type="text" name="card3" required>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="control-group">
+                        <div class="controls">
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </div>
+                    </div>
+                </form>
+                <script type="text/javascript">
+                function FocusOnInput() { document.getElementById("first_input").focus(); }
+                FocusOnInput();
+                </script>
+            </div>
+            <hr>
+{% endif %}
+{% if not event.is_drawn %}
+                {% if draw_entry %}
+                <span class="label label-info pull-right">TOTAL : {{ draw_entry.count }}</span>
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Player</th>
+                            <th>Stat</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                {% for d in draw_entry %}
+                    <tr>
+                        <td class="muted">{{ forloop.counter }}</td>
+                        <td>
+                            {{ d.player.full_name }}
+                        </td>
+                        <td>
+							{{ d|entry_stat_player }}
+                        </td>
+                        <td>
+                            <div class="btn-group pull-right">
+                                <a href="#" class="btn btn-mini"><i class="icon-envelope"></i> SMS</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+                {% if draw_entry.count >= 8 and draw_entry.count|divisibleby:2 %}<a href="{% url 22k:draw event.id %}" class="btn btn-danger">Draw</a>{% endif %}
+{% else %}
+            {% if teams %}
+                <span class="label label-info pull-right">TOTAL : {{ teams.count }}</span>
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Team</th>
+                            <th>Players</th>
+                            <th style="text-align: right"><span class="label">TEAM</span></th>
+                            <!-- <th style="text-align: right"><span class="label">TN</span></th> -->
+
+                             <th style="text-align: right"><span class="label label-important">PLAYER</span></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                {% for team in teams %}
+                    <tr>
+                        <td class="muted">{{ forloop.counter }}</td>
+                        <td>
+                            {{ team.name }}
+                        </td>
+                        <td>
+                            {{ team|players_in_team }}
+                        </td>
+                        <td style="text-align: right">
+                            {{ team|entry_stat_team:"team" }}
+                        </td>
+                        <td style="text-align: right">
+                            {{ team|entry_stat_team:"player" }}
+                        </td>
+                        <td>
+                            <div class="btn-group pull-right">
+                                <a href="{% url 22k:del_team event.id team.id %}" class="btn btn-mini"><i class="icon-remove"></i> Withdraw</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                    </tbody>
+                </table>
+                {% if event.draw == 'L' and not event.draw_sms_sent %}<a href="{% url 22k:draw_sms event.id %}" class="btn btn-primary">Send SMS</a>{% endif %}
+            {% endif %}
+{% endif %}
+        </div>
+    </div>
+</div>
+{% endblock body %}

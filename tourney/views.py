@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from tourney.models import Tournament, Event, Player, PreRegPlayer, Entry, Card, Team, DrawEntry, SMSLog
-from tourney.forms import TournamentForm, EventForm, RegisterForm, PreRegisterForm, ProfileForm
+from tourney.forms import *
 import gdrive
 import brother
 from twilio.rest import TwilioRestClient
@@ -188,13 +188,13 @@ def profile_edit(request, p_id):
     context['tournament_list'] = Tournament.objects.all()
     player = get_object_or_404(Player, id=p_id)
     if request.method == 'POST':
-        form = ProfileForm(request.POST, instance=player)
+        form = EntryForm(request.POST, instance=player)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('22k:profile', args=(p_id,)))
 
     else:
-        form = ProfileForm(instance=player)
+        form = EntryForm(instance=player)
     context['form'] = form
     context['player'] = player
     return render(request, 'tourney/profile_edit.html', context)
@@ -470,6 +470,8 @@ def register(request, t_id, rfid_id):
             card = Card(cardno=card_posted['cardno'], rfid=rfid_id)
 
         if form.is_valid():
+            # check entry stat 
+
             player_22k = form.save()
             card.player = player_22k
             card.save()
@@ -631,6 +633,7 @@ def register(request, t_id, rfid_id):
         context['casual_stat'] = {'MPR': mpr, 'PPD': ppd}
     return render(request, 'tourney/register.html', context)
 
+
 def print_signup_receipt(team, event):
     # print signup recepits
     try:
@@ -639,8 +642,9 @@ def print_signup_receipt(team, event):
         receipt.print_line(event.tournament.title, size=50)
         receipt.print_line('', size=50)
         receipt.print_line('Event: %s' % (event.title))
+        receipt.print_line('', size=50)
         receipt.print_line('Team: %s' % (team.name))
-        receipt.print_line('Stat(ppd/mpr): %s / %s' % (team.ppd_rank, team.mpr_rank))
+        # receipt.print_line('Stat(ppd/mpr): %s / %s' % (team.ppd_rank, team.mpr_rank))
         receipt.print_line('', size=50)
         receipt.print_line('%s' % (datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
         receipt.cut()
@@ -660,6 +664,101 @@ def print_bracket_label(team, event):
     # receipt.cut()
 
 def event_signup(request, e_id):
+    context = dict()
+    event = get_object_or_404(Event, id=e_id)
+
+    if request.method == 'POST':
+        rfids = filter(None, [request.POST.get('card1'), request.POST.get('card2'), request.POST.get('card3')])
+        players = []
+
+        #check if there is duplicate player in the team
+        context['error_msg'] = 'There is a duplicate player!' if len(rfids)!=len(set(rfids)) else ''
+
+        for rfid in rfids:
+            try:
+                player = Card.objects.get(rfid=rfid).player
+                if(player.is_registered(event.tournament)):
+
+                    if event.draw == 'L':
+                        if event.drawentry_set.filter(player=player).exists():
+                            context['error_msg'] = '%s has already signed up!' % (player.full_name)
+                    else:
+                        if event.team_set.filter(players=player).exists():
+                            # player already signuped. redirect to signup page
+                            context['error_msg'] = '%s has already signed up!' % (player.full_name)
+                            # return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+                    players.append(player)
+                else:
+                    context['error_msg'] = 'Oops! %s is not registred yet.' % (player)
+
+            except ObjectDoesNotExist:
+                #player with the card has not been registered yet!
+                context['error_msg'] = 'Oops! Card (%s) is not registered yet.' % (rfid)
+
+        if not context['error_msg']:
+            if event.draw != 'L':
+                team = Team(event=event)
+                if len(players) < 3 and event.draw != 'L':
+                    team.name = ', '.join(player.full_name for player in players)
+                else:
+                    team.name = request.POST.get('teamname')
+                team.save()
+            for player in players:
+                entry = player.entry_set.get(tournament=event.tournament)
+                if event.draw == 'L':
+                    DrawEntry.objects.create(event=event, player=player)
+                else:
+                    team.players.add(player)
+
+                    rank_mpr = player.stat_rank(event.tournament)['MPR']
+                    rank_ppd = player.stat_rank(event.tournament)['PPD']
+
+                    # entry.mpr_rank = rank_mpr
+                    # entry.ppd_rank = rank_ppd
+
+                    team.mpr_rank += rank_mpr
+                    team.ppd_rank += rank_ppd
+
+                # charge sign up fee
+                entry.balance_signup = F('balance_signup') + settings.FEES['SIGNUP']
+                entry.save()
+
+                sms_msg = Template(settings.SMS_MSG['SIGNUP'])
+                sms_msg = sms_msg.safe_substitute(name=player.first_name.title(),
+                                                  event_title=event.title,
+                                                  start_at=event.start_at.strftime("%I:%M %p"))
+                try:
+                    send_sms(player.phone, sms_msg)
+                except:
+                    pass
+            if event.draw == 'L':
+                context['success_msg'] = '%s singned up successfully' % (players[0].full_name)
+            else:
+                context['success_msg'] = '%s singned up successfully' % (team.name)
+                #cacluate average
+                team.mpr_rank = team.mpr_rank / len(players)
+                team.ppd_rank = team.ppd_rank / len(players)
+                team.save()
+
+                if settings.GOOGLE_DOC['SYNC']:
+                    sheet = gdrive.Sheet(settings.GOOGLE_DOC['BOOK_NAME'], 'Signup')
+                    sheet.insert({'team': team.name, 'mpr': str(team.mpr_rank), 'ppd': str(team.ppd_rank)})
+
+                # print signup recepits
+                # print_signup_receipt(team, event)
+                # print_bracket_label(team, event)
+
+                # receipt.print_line(team.name)
+                # receipt.print_line('MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+                # receipt.cut()
+
+    context['tournament'] = event.tournament
+    context['event'] = event
+    context['teams'] = event.team_set.all()
+    context['draw_entry'] = DrawEntry.objects.filter(event=event)
+    return render(request, 'tourney/event_signup.html', context)
+
+def event_signup2(request, e_id):
     context = dict()
     event = get_object_or_404(Event, id=e_id)
 
@@ -752,7 +851,27 @@ def event_signup(request, e_id):
     context['event'] = event
     context['teams'] = event.team_set.all()
     context['draw_entry'] = DrawEntry.objects.filter(event=event)
-    return render(request, 'tourney/event_signup.html', context)
+    return render(request, 'tourney/event_signup2.html', context)
+
+
+def entry_edit(request, t_id, e_id):
+    context = dict()
+    context['tournament'] = Tournament.objects.get(pk=t_id)
+    entry = get_object_or_404(Entry, id=e_id)
+    if request.method == 'POST':
+        form = EntryForm(request.POST, instance=entry)
+        if form.is_valid():
+            form.save()
+
+            # update team and player stat
+            entry.player.update_stat(form.cleaned_data['mpr_event'], form.cleaned_data['ppd_event'])
+            return HttpResponseRedirect(reverse('22k:entry', args=(t_id,)))
+
+    else:
+        form = EntryForm(instance=entry)
+    context['form'] = form
+    context['entry'] = entry
+    return render(request, 'tourney/entry_edit.html', context)
 
 
 def del_entry(request, t_id, entry_id):

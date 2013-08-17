@@ -1,0 +1,17 @@
+{% extends 'include/base.html' %}
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h3>Entry Edit - {{ entry.player.full_name }}</h3>
+    </div>
+    <!-- Body -->
+    <form action="{% url 22k:entry_edit tournament.id entry.id %}" method="POST">
+        {% csrf_token %}
+        <table class="table">
+            {{ form.as_table }}
+        </table>
+            <label></label>
+            <button class="btn btn-large btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}

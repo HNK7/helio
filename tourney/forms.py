@@ -1,5 +1,6 @@
+from django import forms
 from django.forms import ModelForm, RadioSelect, HiddenInput
-from tourney.models import Tournament, Player, PreRegPlayer, Event, Match, Card
+from tourney.models import *
 from django.utils.safestring import mark_safe
 
 
@@ -24,6 +25,8 @@ class EventForm(ModelForm):
 
 
 class RegisterForm(ModelForm):
+    entry_mpr = forms.DecimalField(label='MPR', decimal_places=2)
+    entry_ppd = forms.DecimalField(label='PPD', decimal_places=2)
     class Meta:
         model = Player
         fields = ('user_id', 'first_name', 'last_name', 'gender', 'phone', 'email', 'zipcode')
@@ -38,18 +41,23 @@ class PreRegisterForm(ModelForm):
         fields = ('first_name', 'last_name', 'credit', 'gender', 'phone', 'email',
                   'zipcode')
 
-
-class ProfileForm(ModelForm):
-    class Meta:
-        model = Player
-        fields = ('first_name', 'last_name', 'gender', 'phone', 'email',
-                  'zipcode')
+# class ProfileForm(RegisterForm):
+    # class Meta:
+    #     model = Player
+    #     fields = ('first_name', 'last_name', 'gender', 'phone', 'email',
+    #               'zipcode')
 
 
 class EntryForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ModelForm, self).__init__(*args, **kwargs)
+        self.fields['mpr_event'].label = 'LIVE MPR'
+        self.fields['ppd_event'].label = 'LIVE PPD'
+
+
     class Meta:
-        model = Player
-        fields = ('first_name', 'last_name', 'gender', 'phone')
+        model = Entry
+        fields = ('mpr_event', 'ppd_event')
 
 
 class MatchForm(ModelForm):
