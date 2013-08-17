@@ -584,13 +584,14 @@ def register(request, t_id, rfid_id):
         (card_type, rfid, cardno, old_cardno, old_rfid, userinfo_rfid, members_rfid, name,
          m_num, utime, f_name, l_name, m_sex, m_email, m_phone, m_id, m_zip, ppd, mpr) = card_info
 
+        last_entries = []
+
         if card_type == 'new':
             # blank, never used one
             card = Card(cardno=cardno, rfid=rfid_id)
             player = Player()
         else:
 
-            last_entries = []
             try:
                 # check if 22K member
                 card = Card.objects.get(rfid=rfid_id)
