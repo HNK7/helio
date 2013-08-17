@@ -121,7 +121,7 @@ class Player(Address):
         # return hasattr(self, 'credit')
 
     def is_registered(self, tournament):
-        return Entry.objects.get(tournament=tournament, player=self)
+        return Entry.objects.filter(tournament=tournament, player=self).exists()
 
 
 class Entry(models.Model):

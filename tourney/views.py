@@ -439,9 +439,9 @@ def card(request, t_id):
     if request.method == 'POST':
         try:
             card = Card.objects.get(rfid=request.POST['rfid_id'])
-        except ObjectDoesNotExist:
+        except Card.DoesNotExist:
             return HttpResponseRedirect(reverse('22k:register', args=[t_id, request.POST['rfid_id']]))
-        if Entry.objects.filter(tournament=tourney, player=card.player):
+        if card.player.is_registered():
             return HttpResponseRedirect(reverse('22k:entry', args=[t_id]))
         else:
             return HttpResponseRedirect(reverse('22k:register', args=[t_id, request.POST['rfid_id']]))
@@ -1116,11 +1116,39 @@ def refree(request, e_id):
 def game_result(request, rfid=None):
     context = dict()
     cursor = connections['hi'].cursor()
-    sql_cond = ' and a.rfid=%s' % (rfid) if rfid else ''
 
-    cursor.execute("""select to_char(a.ctime, 'mm-dd hh:mi:ss AM' ) as ended_at, gameid, b.name, ppdmpr, teamtype, sameteam,
+    if rfid:
+        sql = """select to_char(a.ctime, 'mm-dd hh:mi:ss AM' ) as ended_at, gameid, b.name, ppdmpr, teamtype, sameteam,
+                      iswin, a.rfid from v_gamedata3 a join userinfo b on a.rfid=b.rfid
+                      where shopid=209 and a.rfid=%s and teamtype=8 order by gametype, gameid, sameteam""" % (rfid)
+    else:
+        sql = """select to_char(a.ctime, 'mm-dd hh:mi:ss AM' ) as ended_at, gameid, b.name, ppdmpr, teamtype, sameteam,
                       iswin, a.rfid
-                      from v_gamedata3 a join userinfo b on a.rfid=b.rfid where shopid=209 %s""" % (sql_cond))
+                      from v_gamedata3 a join userinfo b on a.rfid=b.rfid where shopid=209 and teamtype=8 order by gameid, sameteam"""
+
+    cursor.execute(sql)
     r = cursor.fetchall()
     context['games'] = r
     return render(request, 'tourney/game_result.html', context)
+
+def stat_monitor(request):
+    context = dict()
+    cursor = connections['hi'].cursor()
+    sql = """select b.rfid, a.name, b.tourney,
+    case when gametype=2 then c.ppd_ta2
+         when gametype=7 then c.mpr_ta2
+    end as casual,
+    case when gametype=2 then c.ppd_ta2 - tourney
+         when gametype=7 then c.mpr_ta2 - tourney
+    end as diff
+    , b.gc 
+    
+from userinfo a join (select rfid, gametype, count(*) as gc, trunc(avg(ppdmpr)::numeric, 2) as tourney
+from v_gamedata where shopid=209 and gameid not in (222295) group by rfid, gametype)as b on a.rfid=b.rfid 
+join useravg c on a.rfid=c.rfid
+
+where gc > 1 and b.rfid > 1 and b.rfid not in (16142028065945800250, 16142028065945803797) order by gametype, diff desc"""
+    cursor.execute(sql)
+    r = cursor.fetchall()
+    context['games'] = r
+    return render(request, 'tourney/stat_monitor.html', context)

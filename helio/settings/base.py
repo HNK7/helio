@@ -193,7 +193,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 SHOP_ID = 209
 
 GOOGLE_DOC = {
-    'SYNC': True,
+    'SYNC': False,
+    # 'SYNC': True,
     'BOOK_NAME': '22K',
     'SHEET_NAME': 'Label'
 }

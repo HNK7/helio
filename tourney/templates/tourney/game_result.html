@@ -10,6 +10,8 @@
 	<th>Date</th>
 	<th>Game ID</th>
 	<th>Player</th>
+	<th>Card</th>
+
 	<th style="text-align:right">Stat</th>
 	<th style="text-align:right">Team Type</th>
 	<th style="text-align:right">Team</th>
@@ -22,6 +24,7 @@
 	<td>{{game.0}}</td>
 	<td>{{game.1}}</td>
 	<td><a href="{% url 22k:game_result game.7 %}">{{game.2}}</a></td>
+	<td>{{game.7}}</td>
 	<td style="text-align:right">{{game.3|floatformat:2}}</td>
 	<td style="text-align:right">{{game.4}}</td>
 	<td style="text-align:right">{{game.5}}</td>

@@ -28,5 +28,7 @@ urlpatterns = patterns('',
     url(r'^l/$', views.league_stat, name='league_stat'),
     url(r'^g/?(?P<rfid>\d+)?/?$', views.game_result, name='game_result'),
     url(r'^g/$', views.game_result, name='game_result'),
+    url(r'^sm/$', views.stat_monitor, name='stat_monitor'),
+
 
 )
