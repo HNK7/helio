@@ -441,7 +441,7 @@ def card(request, t_id):
             card = Card.objects.get(rfid=request.POST['rfid_id'])
         except Card.DoesNotExist:
             return HttpResponseRedirect(reverse('22k:register', args=[t_id, request.POST['rfid_id']]))
-        if card.player.is_registered():
+        if card.player.is_registered(t_id):
             return HttpResponseRedirect(reverse('22k:entry', args=[t_id]))
         else:
             return HttpResponseRedirect(reverse('22k:register', args=[t_id, request.POST['rfid_id']]))
