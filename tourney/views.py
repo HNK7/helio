@@ -512,11 +512,11 @@ def register(request, t_id, rfid_id):
                      'entry_ppd': request.POST.get('entry_ppd')}
             # entry.mpr_rank = Decimal(stats['casual_mpr']) if stats['casual_mpr'] != 'None' else 9
             # entry.ppd_rank = Decimal(stats['casual_ppd']) if stats['casual_ppd'] != 'None' else 60
-            entry.mpr_rank = Decimal(stats['casual_mpr']) if stats['casual_mpr'] != 'None' else None
-            entry.ppd_rank = Decimal(stats['casual_ppd']) if stats['casual_ppd'] != 'None' else None
+            entry.mpr_rank = Decimal(stats['casual_mpr']) if stats['casual_mpr'] != 'None' else 0
+            entry.ppd_rank = Decimal(stats['casual_ppd']) if stats['casual_ppd'] != 'None' else 0
             # set tournament stats
-            entry.mpr_event = Decimal(stats['entry_mpr']) if stats['entry_mpr'] else None
-            entry.ppd_event = Decimal(stats['entry_ppd']) if stats['entry_ppd'] else None
+            entry.mpr_event = Decimal(stats['entry_mpr']) if stats['entry_mpr'] else 0
+            entry.ppd_event = Decimal(stats['entry_ppd']) if stats['entry_ppd'] else 0
             entry.save()
 
             # update casual stat with tournament stat
