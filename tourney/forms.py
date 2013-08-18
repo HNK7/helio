@@ -25,8 +25,8 @@ class EventForm(ModelForm):
 
 
 class RegisterForm(ModelForm):
-    entry_mpr = forms.DecimalField(label='MPR', decimal_places=2)
-    entry_ppd = forms.DecimalField(label='PPD', decimal_places=2)
+    entry_mpr = forms.DecimalField(label='MPR', decimal_places=2, min_value=0.1)
+    entry_ppd = forms.DecimalField(label='PPD', decimal_places=2, min_value=0.1)
     class Meta:
         model = Player
         fields = ('user_id', 'first_name', 'last_name', 'gender', 'phone', 'email', 'zipcode')
