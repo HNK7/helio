@@ -271,6 +271,13 @@ class Card(models.Model):
         cursor.execute("SELECT utime FROM checkrfid WHERE rfid=%s", [self.rfid])
         r = cursor.fetchone()
         return False if r[0] else True
+    
+    def live_stat(self):
+        cursor = connections['hi'].cursor()
+        cursor.execute("SELECT mpr_ta2, ppd_ta2 FROM useravg WHERE rfid=%s", [self.rfid])
+        r = cursor.fetchone()
+        return {'mpr': r[0], 'ppd': r[1]}
+
 
 
 # class EventStat(models.Model):
