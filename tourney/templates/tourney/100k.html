@@ -1,0 +1,36 @@
+{% extends 'include/base.html' %}
+{% load humanize %}
+{% load app_filters %}
+{% block body %}
+<div class="container">
+<h2>100K Qualification Checker</h2>
+<table class="table table-hover table-condensed">
+<thead>
+<tr>
+	<th>Player</th>
+		<th>Card</th>
+
+	<th style="text-align:right">League</th>
+
+	<th style="text-align:right">Operator</th>
+	<th style="text-align:right">League</th>
+	<th style="text-align:right">Points</th>
+	<th style="text-align:right">Card No</th>
+</tr>
+</thead>
+{% for player in players %}
+
+<tr>
+	<td><a href="{% url 22k:game_result game.0 %}" target="_blank">{{player.1}}</a></td>
+		<td>{{player.0}}</td>
+
+	<td style="text-align:right">{{player.2}}</td>
+	<td style="text-align:right">{{player.3}}</td>
+	<td style="text-align:right">{{player.4}}</td>
+	<td style="text-align:right">{{player.5}}</td>
+
+</tr>
+{% endfor %}
+</table>
+</div>
+{% endblock body %}

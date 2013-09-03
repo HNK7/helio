@@ -33,6 +33,6 @@ urlpatterns = patterns('',
     url(r'^g/?(?P<rfid>\d+)?/?$', views.game_result, name='game_result'),
     url(r'^g/$', views.game_result, name='game_result'),
     url(r'^sm/$', views.stat_monitor, name='stat_monitor'),
-
+    url(r'^100k/$, views.qualify_point, name='qualify_point'),
 
 )
