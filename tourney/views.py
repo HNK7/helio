@@ -1283,7 +1283,7 @@ def qualify_point(request):
     left join ml.league c on b.leagueid = c.leagueid
     left join pxprogram.dealers d on d.num = c.dealerid
 
-    where b.isdone = 1
+    where b.isdone = 1 and c.dealerid !=1
     group by a.rfid, d.name, c.name, e.name, e.cardno
     order by d.name, c.name, e.name, point
     """
