@@ -33,6 +33,7 @@
 </tr>
 {% endfor %}
 </table> -->
+
 <form action="/22k/100k/" method="post">
 {% csrf_token %}
 {{ form.as_table }}
@@ -41,6 +42,11 @@
 <button class="btn btn-large btn-primary" type="submit">Submit</button>
 </form>
 </div>
+
+{% if result %}
+<h3>Qualification Point: {{ point }}</h3>
+{% endif %}
+
 {% endblock body %}
 </body>
 </html>
