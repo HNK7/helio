@@ -1275,19 +1275,28 @@ where gc > 1 and b.rfid > 1 and b.rfid not in (16142028065945800250, 16142028065
 
 def qualify_point(request):
     context = dict()
-    cursor = connections['hi'].cursor()
-    sql = """
-    select d.name, c.name, e.name, count(distinct a.scheduleid) * 4 as point, e.cardno from ml.lineup a
-    join ml.schedule b on a.scheduleid = b.scheduleid
-    join ml.luserinfo e on e.rfid = a.rfid
-    left join ml.league c on b.leagueid = c.leagueid
-    left join pxprogram.dealers d on d.num = c.dealerid
-
-    where b.isdone = 1 and c.dealerid !=1
-    group by a.rfid, d.name, c.name, e.name, e.cardno
-    order by d.name, c.name, e.name, point
-    """
-    cursor.execute(sql)
-    r = cursor.fetchall()
-    context['players'] = r
+    if request.method == 'POST':
+        form = QualifyForm(request.POST)
+        if form.is_valid():
+        
+    else:
+        form = QualifyForm()
+    context['form'] = form
     return render(request, 'tourney/100k.html', context)
+
+    # cursor = connections['hi'].cursor()
+    # sql = """
+    # select d.name, c.name, e.name, count(distinct a.scheduleid) * 4 as point, e.cardno from ml.lineup a
+    # join ml.schedule b on a.scheduleid = b.scheduleid
+    # join ml.luserinfo e on e.rfid = a.rfid
+    # left join ml.league c on b.leagueid = c.leagueid
+    # left join pxprogram.dealers d on d.num = c.dealerid
+
+    # where b.isdone = 1 and c.dealerid !=1
+    # group by a.rfid, d.name, c.name, e.name, e.cardno
+    # order by d.name, c.name, e.name, point
+    # """
+    # cursor.execute(sql)
+    # r = cursor.fetchall()
+    # context['players'] = r
+    # return render(request, 'tourney/100k.html', context)

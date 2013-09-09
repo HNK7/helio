@@ -10,7 +10,7 @@
 {% block body %}
 <div class="container">
 <h2>100K Qualification Checker</h2>
-<table class="table table-hover table-condensed">
+<!-- <table class="table table-hover table-condensed">
 <thead>
 <tr>
 	<th>League</th>
@@ -32,7 +32,11 @@
 	<td>{{player.4}}</td>
 </tr>
 {% endfor %}
-</table>
+</table> -->
+<form action="{% url 22k:qualifiy_point %}" method="post">{% csrf_token %}
+{{ form.as_table }}
+<input type="submit" value="Submit" />
+</form>
 </div>
 {% endblock body %}
 </body>
