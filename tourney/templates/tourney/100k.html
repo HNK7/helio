@@ -33,9 +33,12 @@
 </tr>
 {% endfor %}
 </table> -->
-<form action="/22k/100k/" method="post">{% csrf_token %}
+<form action="/22k/100k/" method="post">
+{% csrf_token %}
 {{ form.as_table }}
-<input type="submit" value="Submit" />
+<label></label>
+<br>
+<button class="btn btn-large btn-primary" type="submit" value="Submit" />
 </form>
 </div>
 {% endblock body %}
