@@ -1278,6 +1278,7 @@ def qualify_point(request):
     if request.method == 'POST':
         form = QualifyForm(request.POST)
         if form.is_valid():
+            pass
         
     else:
         form = QualifyForm()
