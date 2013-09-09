@@ -1278,7 +1278,7 @@ def qualify_point(request):
     if request.method == 'POST':
         form = QualifyForm(request.POST)
         if form.is_valid():
-            pass
+            context['point'] = 48
         
     else:
         form = QualifyForm()
