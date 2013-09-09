@@ -37,7 +37,15 @@
 {% if not point %}
 <form action="/22k/100k/" method="post">
 {% csrf_token %}
-{{ form.as_table }}
+<fieldset>
+    <label>League Card Number</label>
+    <input type="text" name="league_card">
+    <label>Number of 22K events played</label>
+    <input type="text" name="pc22k">
+    <label>League games played as a sub</label>
+    <input type="text" name="subs">
+   
+  </fieldset>
 <label></label>
 <br>
 <button class="btn btn-large btn-primary" type="submit">Submit</button>
