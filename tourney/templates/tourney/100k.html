@@ -34,7 +34,7 @@
 {% endfor %}
 </table> -->
 
-{% if point %}
+{% if !point %}
 <form action="/22k/100k/" method="post">
 {% csrf_token %}
 {{ form.as_table }}
