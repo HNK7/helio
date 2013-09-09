@@ -34,6 +34,7 @@
 {% endfor %}
 </table> -->
 
+{% if point %}
 <form action="/22k/100k/" method="post">
 {% csrf_token %}
 {{ form.as_table }}
@@ -43,7 +44,7 @@
 </form>
 
 
-{% if point %}
+{% else %}
 <h3>Qualification Point: {{ point }}</h3>
 {% endif %}
 </div>
