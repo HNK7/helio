@@ -4,7 +4,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'djangostack',
-        'HOST': 'localhost',
+        'HOST': 'dartoo.com',
         'PORT': '5432',
         'USER': 'postgres',
         'PASSWORD': 'tnvkfdl2'

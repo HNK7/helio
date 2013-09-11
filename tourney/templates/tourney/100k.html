@@ -9,7 +9,9 @@
 {% load app_filters %}
 {% block body %}
 <div class="container">
-<h2>100K Qualification Checker</h2>
+<div class="page-header">
+<h2>Phoenix Cup 100K Qualification Checker</h2>
+</div>
 <!-- <table class="table table-hover table-condensed">
 <thead>
 <tr>
@@ -37,8 +39,11 @@
 {% if not point %}
 <form action="/22k/100k/" method="post">
 {% csrf_token %}
+<div class="register">
+
 <fieldset>
     <label>League Card Number</label>
+    {{ form.league_card.errors }}
     <input type="text" name="league_card" autocomplete="off" required>
     <label>League games played as a sub</label>
     <input type="text" name="subs" value="0">
@@ -47,6 +52,7 @@
     
    
   </fieldset>
+</div>
 <label></label>
 <br>
 <button class="btn btn-large btn-primary" type="submit">Submit</button>
@@ -54,7 +60,16 @@
 
 
 {% else %}
-<h3>Qualification Point: {{ point }}</h3>
+<div class="hero-unit">
+	{% if point >= 48 %}
+	<h2>{{ player.name}} is qualified for Phoenix Cup 100K Las Vegas</h2>
+	{% else %}
+	<h2>{{ player.name }} is NOT qualified yet!</h2>
+	<!-- <h3>Nick name: ({{ player.nickname }})</h3> -->
+	<h3>Qualification Point: {{ point }}</h3>
+	{% endif %}
+	<br>
+	<a class="btn btn-large btn-primary" href="/22k/100k">Go Back</a>
 {% endif %}
 </div>
 {% endblock body %}

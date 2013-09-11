@@ -1273,19 +1273,9 @@ where gc > 1 and b.rfid > 1 and b.rfid not in (16142028065945800250, 16142028065
     context['games'] = r
     return render(request, 'tourney/stat_monitor.html', context)
 
-def qualify_point(request):
-    context = dict()
-    if request.method == 'POST':
-        form = QualifyForm(request.POST)
-        if form.is_valid():
-            context['point'] = 48
-        
-    else:
-        form = QualifyForm()
-    context['form'] = form
-    return render(request, 'tourney/100k.html', context)
 
-    # cursor = connections['hi'].cursor()
+def lg_qualify_point(league_card):
+    cursor = connections['hi'].cursor()
     # sql = """
     # select d.name, c.name, e.name, count(distinct a.scheduleid) * 4 as point, e.cardno from ml.lineup a
     # join ml.schedule b on a.scheduleid = b.scheduleid
@@ -1297,7 +1287,43 @@ def qualify_point(request):
     # group by a.rfid, d.name, c.name, e.name, e.cardno
     # order by d.name, c.name, e.name, point
     # """
-    # cursor.execute(sql)
-    # r = cursor.fetchall()
-    # context['players'] = r
-    # return render(request, 'tourney/100k.html', context)
+
+    sql = """
+    select count(distinct a.scheduleid)*4 as point from ml.lineup a
+    join ml.schedule b on a.scheduleid = b.scheduleid
+    join ml.luserinfo e on e.rfid = a.rfid
+    where b.isdone = 1 and e.cardno='%s'
+    group by a.rfid
+    """ % (league_card)
+    cursor.execute(sql)
+    r = cursor.fetchone()
+    return r
+
+def lg_player_info(league_card):
+    cursor = connections['hi'].cursor()
+    sql = """
+    select name, nickname from ml.luserinfo where cardno='%s'
+    """ % (league_card)
+    cursor.execute(sql)
+    r = cursor.fetchone()
+    return r
+
+
+def qualify_point(request):
+    context = dict()
+    if request.method == 'POST':
+        form = QualifyForm(request.POST)
+        if form.is_valid():
+            lg_card = form.cleaned_data['league_card']
+            r = lg_player_info(lg_card)
+            if r:
+                context['player'] = {'name': r[0], 'nickname': r[1]}
+                subs_point = int(form.cleaned_data['subs']) * 4 if form.cleaned_data['subs'] else 0
+                pc22k_point = int(form.cleaned_data['pc22k']) * 2 if form.cleaned_data['pc22k'] else 0
+                context['point'] = int(lg_qualify_point(lg_card)[0]) + subs_point + pc22k_point
+        
+    else:
+        form = QualifyForm()
+    context['form'] = form
+    return render(request, 'tourney/100k.html', context)
+

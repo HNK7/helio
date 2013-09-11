@@ -74,3 +74,21 @@ class QualifyForm(forms.Form):
     league_card = forms.CharField(max_length=16)
     pc22k = forms.CharField()
     subs = forms.CharField()
+
+    def clean_league_card(self):
+        card_no = self.cleaned_data['league_card']
+        if not card_no.isdigit() or len(card_no) < 12:
+            raise forms.ValidationError('Enter a valid league card number')
+        return card_no
+
+    def clean_pc22k(self):
+        pc22k = self.cleaned_data['pc22k']
+        if not pc22k.isdigit():
+            raise forms.ValidationError('Enter a valid number of events played')
+        return pc22k
+
+    def clean_subs(self):
+        subs = self.cleaned_data['subs']
+        if not subs.isdigit():
+            raise forms.ValidationError('Enter a valid number of league matches played as a sub player')
+        return subs
