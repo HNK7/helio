@@ -1,4 +1,6 @@
 from django.conf.urls import patterns, include, url
+from tourney import views
+
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -13,7 +15,7 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    # url(r'^league/', 'helio.views.league', name='league'),
+    url(r'^100k/', views.qualify_point, name='qualify_point'),
     url(r'^22k/', include('tourney.urls', namespace='22k')),
     url(r'^admin/', include(admin.site.urls)),
 )
