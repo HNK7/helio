@@ -31,7 +31,7 @@
                     <td style="font-size: 18px">{{ event.get_division_display }}</td>
                     <!-- <td>{{ event.get_format_display }}</td> -->
                     <!-- <td>{{ event.get_game_display }}</td> -->
-                    <td><div class="text-right">{{ event|num_teams }} / {{ event|num_players }}</div></td>
+                    <td style="font-size: 18px"><div class="text-right">{{ event|num_teams }} / {{ event|num_players }}</div></td>
                     <td class="nowrap">
                         <div class="btn-group pull-right">
                             <a href="{% url 22k:event_signup event.id %}" class="btn btn-mini"><i class="icon-plus"></i> Signup</a>
