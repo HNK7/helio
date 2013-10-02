@@ -14,8 +14,8 @@
                     <tr style="font-size: 18px">
                         <th></th>
                         <th>Date</th>
-                        <th>Event</th>
                         <th>Division</th>
+                        <th>Event</th>
                         <!-- <th>Format</th> -->
                         <!-- <th>Game</th> -->
                         <th colspan="2">Team/Player</th>
@@ -26,11 +26,11 @@
                 <tr>
                     <td>{{ event.id }}</td>
                     <td style="font-size: 16px">{{ event.start_at|date:"D h:i a" }}<span class="minor">{{ event.start_at|timeuntil }}</span></td>
-                    <td style="font-size: 18px"><a href="{% url 22k:event_signup event.id %}">{{ event.title }}</a></td>
                     <td style="font-size: 18px">{{ event.get_division_display }}</td>
+                    <td style="font-size: 18px"><a href="{% url 22k:event_signup event.id %}">{{ event.title }}</a></td>
                     <!-- <td>{{ event.get_format_display }}</td> -->
                     <!-- <td>{{ event.get_game_display }}</td> -->
-                    <td style="font-size: 18px"><div class="text-right">{{ event|num_teams }} / {{ event|num_players }}</div></td>
+                    <td style="font-size: 18px">{{ event|num_teams }} / {{ event|num_players }}</td>
                     <td class="nowrap">
                         <div class="btn-group pull-right">
                             <a href="{% url 22k:event_signup event.id %}" class="btn btn-mini"><i class="icon-plus"></i> Signup</a>
