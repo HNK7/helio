@@ -22,12 +22,15 @@
                     <li><a href="https://docs.google.com/a/dartoo.com/spreadsheet/ccc?key=0AuSjK_NxR5d8dFE0ZHlWTk1ZdWw5UTNJTnpBZDdhWmc#gid=2" rel="tooltip" data-original-title="Pre-registers" target="_blank">
                     <i class="icon icon-white icon-barcode"></i> Pre-registers</a></li>
                         <!-- <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Dropdown<b class="caret"></b></a>
-                        <ul class="dropdown-menu"><li><a href="#">item 1</a></li></ul> -->
-                    </li>
+                        <ul class="dropdown-menu"><li><a href="#">item 1</a></li></ul>
+                    </li>-->
                 </ul>
             </div>
             
         </div>
+        {% if user.is_authenticated %}
+                    <div class="navbar-text"><a href="{% url logout %}">{{ user.username }}: log out</a></div>
+                    {% endif %}
     </div>
     <header></header>
     {% block body %}

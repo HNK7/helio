@@ -1,0 +1,44 @@
+{% load url from future %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/admin.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/static.css" />
+</head>
+<body>
+
+<div class="container">
+	 <div class="page-header">
+        <p>Login</p>
+    </div>
+	<div class="hero-unit">
+		{% if form.errors %}
+		<p>Your username and password didn't match. Please try again.</p>
+		{% endif %}
+
+		<form class="form-horizontal" method="post" action="{% url 'django.contrib.auth.views.login' %}">
+			{% csrf_token %}
+		  	<div class="control-group">
+			    <label class="control-label" for="username">Username</label>
+			    <div class="controls">
+			      {{ form.username }}
+			    </div>
+		  	</div>
+			 <div class="control-group">
+			   <label class="control-label" for="inputPassword">Password</label>
+			   <div class="controls">
+			    {{ form.password }}
+			   </div>
+			 </div>
+		  <div class="control-group">
+		    <div class="controls">
+		    	<input type="hidden" name="next" value="{{ next }}" />
+		      <button type="submit" class="btn btn-primary">Log In</button>
+		    </div>
+		  </div>
+		</form>
+	</div>
+</div>
+</body>
+</html>

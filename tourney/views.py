@@ -15,6 +15,7 @@ from phonenumbers import parse, format_number, PhoneNumberFormat
 from string import Template
 from decimal import Decimal
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
 
 
 def convert_to_e164(raw_phone):
@@ -66,6 +67,7 @@ def send_draw_sms(request, e_id):
     return HttpResponseRedirect(reverse('22k:event_signup', args=(event.id,)))
 
 
+@login_required
 def index(request):
     tournament_list = Tournament.objects.all().order_by('-start_at')
     context = {'tournament_list': tournament_list}
