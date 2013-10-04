@@ -344,6 +344,12 @@ def update_temp_card(full_name, rfid):
     transaction.commit_unless_managed(using='hi')
 
 
+def update_stat(mpr, ppd, rfid):
+    cursor = connections['hi'].cursor()
+    cursor.execute("UPDATE useravg SET mpr_ta2=%s, ppd_ta2=%s WHERE rfid = getorigrfid2(%s)", [mpr, ppd, rfid])
+    transaction.commit_unless_managed(using='hi')
+
+
 def payment(request, t_id, rfid_id=None):
     context = dict()
     tourney = get_object_or_404(Tournament, id=t_id)
@@ -866,7 +872,7 @@ def entry_edit(request, t_id, e_id):
             form.save()
 
             # update team and player stat
-            entry.player.update_stat(form.cleaned_data['mpr_event'], form.cleaned_data['ppd_event'])
+            update_stat(form.cleaned_data['mpr_event'], form.cleaned_data['ppd_event'], entry.player.rfid)
             return HttpResponseRedirect(reverse('22k:entry', args=(t_id,)))
 
     else:
