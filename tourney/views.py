@@ -866,7 +866,7 @@ def entry_edit(request, t_id, e_id):
             form.save()
 
             # update team and player stat
-            # entry.player.update_stat(form.cleaned_data['mpr_event'], form.cleaned_data['ppd_event'])
+            entry.player.update_stat(form.cleaned_data['mpr_event'], form.cleaned_data['ppd_event'])
             return HttpResponseRedirect(reverse('22k:entry', args=(t_id,)))
 
     else:
