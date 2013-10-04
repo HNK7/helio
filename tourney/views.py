@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import connections, transaction
-from django.db.models import F
+from django.db.models import F, Count
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
@@ -69,7 +69,7 @@ def send_draw_sms(request, e_id):
 
 @login_required
 def index(request):
-    tournament_list = Tournament.objects.all().order_by('-start_at')
+    tournament_list = Tournament.objects.all().order_by('-start_at').annotate(num_players=Count('players'))
     context = {'tournament_list': tournament_list}
     if not request.session.get('tournament_id'):
         request.session['tournament_id'] = tournament_list[0].id
