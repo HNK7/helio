@@ -1,4 +1,4 @@
-from django.db import models, connections
+from django.db import models, connections, transaction
 from datetime import datetime, timedelta
 from django.contrib.localflavor.us.models import USStateField
 from decimal import Decimal
@@ -85,7 +85,8 @@ class Player(Address):
     def update_stat(self, mpr, ppd):
         cursor = connections['hi'].cursor()
         cursor.execute("UPDATE useravg SET mpr_ta2=%s, ppd_ta2=%s WHERE rfid = getorigrfid2(%s)", [mpr, ppd, self.rfid])
-
+        transaction.commit_unless_managed()
+        
     def stat_rank(self, tournament):
         entry = Entry.objects.get(tournament=tournament, player=self)
         ppd_rank = entry.ppd_event if entry.ppd_event else 60
