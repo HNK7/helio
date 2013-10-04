@@ -85,7 +85,7 @@ class Player(Address):
     def update_stat(self, mpr, ppd):
         cursor = connections['hi'].cursor()
         cursor.execute("UPDATE useravg SET mpr_ta2=%s, ppd_ta2=%s WHERE rfid = getorigrfid2(%s)", [mpr, ppd, self.rfid])
-        transaction.commit_unless_managed()
+        transaction.commit_unless_managed(using='hi')
         
     def stat_rank(self, tournament):
         entry = Entry.objects.get(tournament=tournament, player=self)
