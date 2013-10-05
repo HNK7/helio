@@ -154,7 +154,9 @@ def entry(request, t_id):
     tourney = get_object_or_404(Tournament, pk=t_id)
     context['tournament'] = tourney
 
-    entry = Entry.objects.filter(tournament=tourney).order_by('-created_at').select_related('player', 'player__card')
+    entry = Entry.objects.filter(tournament=tourney).order_by('-created_at')
+    # entry = Entry.objects.filter(tournament=tourney).order_by('-created_at').select_related('player', 'player__card')
+
     context['entry'] = entry
     return render(request, 'tourney/entry.html', context)
 
