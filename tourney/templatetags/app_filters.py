@@ -46,9 +46,9 @@ def entry_stat_team(team, mode='team'):
         players_stat = []
         for player in players:
             if team.event.game == 'CR' or team.event.game == 'Medley':
-                player_stat = player.entry_set.filter(tournament=tourney)[0].mpr_rank
+                player_stat = player.entry_set.get(tournament=tourney).mpr_rank
             elif team.event.game == '501' or team.event.game == '701':
-                player_stat = player.entry_set.filter(tournament=tourney)[0].ppd_rank
+                player_stat = player.entry_set.get(tournament=tourney).ppd_rank
             players_stat.append(str(player_stat))
         return '%s' % (', '.join(players_stat))
     
