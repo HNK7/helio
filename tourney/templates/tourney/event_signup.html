@@ -27,7 +27,13 @@
         </li>
         <li class="span3">
             <div class="thumbnail" style="text-align: center; vertical-align: middle">
-              <h1 style="color: royalblue;">{% if event.draw  == 'L' %} {{ draw_entry.count }} {% else %} 0 {% endif %}</h1>
+              <h1 style="color: royalblue;">
+                {% if event.draw  == 'L' and draw_entry.count %} {{ draw_entry.count }} 
+                {% elif teams.count %} {{ teams.count }} 
+                {% else %}
+                0 
+                {% endif %}
+            </h1>
               <p class="lead">&nbsp;</p>
             </div>
         </li>
