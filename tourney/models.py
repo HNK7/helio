@@ -261,13 +261,7 @@ class Card(models.Model):
     rfid = models.CharField(max_length=255, editable=False, unique=True)
     cardno = models.CharField(max_length=16, editable=False, unique=True)
     # used = models.DateTimeField(null=True)
-    player = models.ForeignKey(Player)
-    type_choices = (
-        ('C', 'Casual'),
-        ('L', 'League')
-        )
-    card_type = models.CharField(max_length=1, choices=type_choices, default='C')
-
+    player = models.OnetoOneField(Player)
 
     def __unicode__(self):
         return self.cardno
