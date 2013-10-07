@@ -261,7 +261,7 @@ class Card(models.Model):
     rfid = models.CharField(max_length=255, editable=False, unique=True)
     cardno = models.CharField(max_length=16, editable=False, unique=True)
     # used = models.DateTimeField(null=True)
-    player = models.OnetoOneField(Player)
+    player = models.OneToOneField(Player)
 
     def __unicode__(self):
         return self.cardno
