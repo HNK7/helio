@@ -138,6 +138,7 @@ class Entry(models.Model):
     balance_signup = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     balance_card = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
 
+    qualified = models.BooleanField(default=False)
     created_at = models.DateTimeField(editable=False)
 
     class Meta:
