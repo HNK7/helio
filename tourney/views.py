@@ -480,7 +480,7 @@ def register(request, t_id, rfid_id):
             card = Card(cardno=card_posted['cardno'], rfid=rfid_id)
 
         if form.is_valid():
-            # check entry stat 
+            # check entry stat
 
             player_22k = form.save()
             card.player = player_22k
@@ -682,32 +682,33 @@ def event_signup(request, e_id):
         players = []
 
         #check if there is duplicate player in the team
-        context['error_msg'] = 'There is a duplicate player!' if len(rfids)!=len(set(rfids)) else ''
+        if len(rfids)!=len(set(rfids)):
+            context['error_msg'] = 'There is a duplicate player!'
+        else:
+            for rfid in rfids:
+                reg_url = reverse('22k:register', args=[event.tournament_id, rfid])
+                try:
+                    player = Card.objects.get(rfid=rfid).player
+                    if(player.is_registered(event.tournament)):
 
-        for rfid in rfids:
-            reg_url = reverse('22k:register', args=[event.tournament_id, rfid])
-            try:
-                player = Card.objects.get(rfid=rfid).player
-                if(player.is_registered(event.tournament)):
-
-                    if event.draw == 'L':
-                        if event.drawentry_set.filter(player=player).exists():
-                            context['error_msg'] = '%s has already signed up!' % (player.full_name)
+                        if event.draw == 'L':
+                            if event.drawentry_set.filter(player=player).exists():
+                                context['error_msg'] = '%s has already signed up!' % (player.full_name)
+                        else:
+                            if event.team_set.filter(players=player).exists():
+                                # player already signuped. redirect to signup page
+                                context['error_msg'] = '%s has already signed up!' % (player.full_name)
+                                # return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+                        players.append(player)
                     else:
-                        if event.team_set.filter(players=player).exists():
-                            # player already signuped. redirect to signup page
-                            context['error_msg'] = '%s has already signed up!' % (player.full_name)
-                            # return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-                    players.append(player)
-                else:
-                    context['error_msg'] = 'Oops! %s is not registred yet. <a href="%s">Click here to register</a>' % (player, reg_url)
-                    # return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
+                        context['error_msg'] = 'Oops! %s is not registred yet. <a href="%s">Click here to register</a>' % (player, reg_url)
+                        # return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
 
-            except ObjectDoesNotExist:
-                #player with the card has not been registered yet!
-                
-                context['error_msg'] = 'Oops! Card (%s) is not registered yet. <a href="%s">Click here to register</a>' % (rfid, reg_url)
-                # return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
+                except ObjectDoesNotExist:
+                    #player with the card has not been registered yet!
+
+                    context['error_msg'] = 'Oops! Card (%s) is not registered yet. <a href="%s">Click here to register</a>' % (rfid, reg_url)
+                    # return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
 
         if not context['error_msg']:
             if event.draw != 'L':
@@ -791,7 +792,7 @@ def entry_edit(request, t_id, e_id):
     context = dict()
     context['tournament'] = Tournament.objects.get(pk=t_id)
     entry = get_object_or_404(Entry, id=e_id)
-    
+
     if request.method == 'POST':
         form = EntryForm(request.POST, instance=entry) # bound form with POST data
         if form.is_valid():
@@ -803,7 +804,7 @@ def entry_edit(request, t_id, e_id):
 
     else:
         form = EntryForm(instance=entry)
-    
+
     context['form'] = form
     context['entry'] = entry
     return render(request, 'tourney/entry_edit.html', context)
@@ -1206,10 +1207,10 @@ def stat_monitor(request):
     case when gametype=2 then c.ppd_ta2 - tourney
          when gametype=7 then c.mpr_ta2 - tourney
     end as diff
-    , b.gc 
-    
+    , b.gc
+
 from userinfo a join (select rfid, gametype, count(*) as gc, trunc(avg(ppdmpr)::numeric, 2) as tourney
-from v_gamedata where shopid=209 and gameid not in (222295) group by rfid, gametype)as b on a.rfid=b.rfid 
+from v_gamedata where shopid=209 and gameid not in (222295) group by rfid, gametype)as b on a.rfid=b.rfid
 join useravg c on a.rfid=c.rfid
 
 where gc > 1 and b.rfid > 1 and b.rfid not in (16142028065945800250, 16142028065945803797) order by gametype, diff desc"""
@@ -1266,7 +1267,7 @@ def qualify_point(request):
                 subs_point = int(form.cleaned_data['subs']) * 4 if form.cleaned_data['subs'] else 0
                 pc22k_point = int(form.cleaned_data['pc22k']) * 2 if form.cleaned_data['pc22k'] else 0
                 context['point'] = int(lg_qualify_point(lg_card)[0]) + subs_point + pc22k_point
-        
+
     else:
         form = QualifyForm()
     context['form'] = form
