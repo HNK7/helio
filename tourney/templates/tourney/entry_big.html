@@ -18,7 +18,6 @@
                     <th>#</th>
                     <th>Name</th>
                     <th></th>
-                    <th>Card</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,7 +26,6 @@
                 <td class="muted">{{ forloop.counter }}</td>
                 <td>{{ e.player.full_name }}</td>
                 <td class="muted">{{ e.player.gender }}</td>
-                <td>{{ e.mpr_rank }}, {{ e.ppd_rank }} / {{ e.mpr_event }}, {{ e.ppd_event }}</td>
             </tr>
         {% endfor %}
             </tbody>
