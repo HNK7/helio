@@ -868,8 +868,9 @@ def entry_edit(request, t_id, e_id):
     context = dict()
     context['tournament'] = Tournament.objects.get(pk=t_id)
     entry = get_object_or_404(Entry, id=e_id)
+    
     if request.method == 'POST':
-        form = EntryForm(request.POST, instance=entry)
+        form = EntryForm(request.POST, instance=entry) # bound form with POST data
         if form.is_valid():
             form.save()
 
@@ -879,6 +880,7 @@ def entry_edit(request, t_id, e_id):
 
     else:
         form = EntryForm(instance=entry)
+    
     context['form'] = form
     context['entry'] = entry
     return render(request, 'tourney/entry_edit.html', context)
