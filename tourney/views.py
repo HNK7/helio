@@ -700,6 +700,7 @@ def event_signup(request, e_id):
                     players.append(player)
                 else:
                     context['error_msg'] = 'Oops! %s is not registred yet.' % (player)
+                    return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
 
             except ObjectDoesNotExist:
                 #player with the card has not been registered yet!
@@ -771,7 +772,12 @@ def event_signup(request, e_id):
 def event_signup2(request, e_id):
     context = dict()
     event = get_object_or_404(Event, id=e_id)
-
+    if request.method == 'POST':
+        rfids = filter(None, [request.POST.get('card1'), request.POST.get('card2'), request.POST.get('card3')])
+        #check if there is duplicate player in the team
+        context['error_msg'] = 'ERROR: duplicate card number. Try again' if len(rfids)!=len(set(rfids)) else ''
+        for rfid in rfids:
+            context['error_msg'] = 'ERROR: player(card) has not been registered yet!' if Player.objects.filter(card__rfid=rfid).count() == 0 else ''
     context['tournament'] = event.tournament
     context['event'] = event
     context['total_signup'] = event.team_set.count()

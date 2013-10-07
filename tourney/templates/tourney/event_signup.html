@@ -4,14 +4,39 @@
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <p>{{ event.start_at|date:"D"|upper }} / {{ event.title }} / {{ event.get_division_display }} - Signup</p>
+        <p>{{ event.title }} - Signup</p>
     </div>
-    <div class="row"><!-- -->
-        <div>
+    <ul class="thumbnails">
+        <li class="span3">
+            <div class="thumbnail" style="text-align: center">
+            <h3>{{ event.start_at|date:"l"|upper }}</h3>
+            <p class="lead">{{ event.start_at|timeuntil }}</p>
+            </div>
+        </li>
+        <li class="span3">
+            <div class="thumbnail" style="text-align: center">
+              <h3>{{ event.get_game_display|upper }}</h3>
+              <p class="lead">{{ event.get_format_display|upper }}</p>
+            </div>
+        </li>
+        <li class="span3">
+            <div class="thumbnail" style="text-align: center">
+              <h3>{{ event.get_division_display|upper }}</h3>
+              <p class="lead">{{ event.get_draw_display|upper }}</p>
+            </div>
+        </li>
+        <li class="span3">
+            <div class="thumbnail" style="text-align: center; vertical-align: middle">
+              <h1 style="color: royalblue;">{% if team.count %} {{ team.count }} {% else %} 0 {% endif %}</h1>
+              <p class="lead">&nbsp;</p>
+            </div>
+        </li>
+    </ul>
+
 {% if not event.is_lotd or not event.is_drawn %}
             <div class="well">
                 {% if error_msg %}
-                <div class="alert alert-error"><i class="icon-exclamation-sign"></i> {{ error_msg }}</div>
+                <div class="alert alert-error lead">{{ error_msg }}</div>
                 {% elif success_msg %}
                 <div class="alert alert-success"><i class="icon-ok"></i> {{ success_msg }}</div>
                 {% else %}
@@ -155,7 +180,6 @@
                 {% if event.draw == 'L' and not event.draw_sms_sent %}<a href="{% url 22k:draw_sms event.id %}" class="btn btn-primary">Send SMS</a>{% endif %}
             {% endif %}
 {% endif %}
-        </div>
-    </div>
+       
 </div>
 {% endblock body %}

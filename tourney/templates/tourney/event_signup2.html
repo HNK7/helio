@@ -32,5 +32,76 @@
             </div>
         </li>
     </ul>
+
+    {% if not event.is_lotd or not event.is_drawn %}
+    <div class="well">
+        {% if error_msg %}
+        <div class="alert alert-error lead">{{ error_msg }}</div>
+        {% elif success_msg %}
+        <div class="alert alert-success lead">{{ success_msg }}</div>
+        {% else %}
+        <div class="alert alert-info lead">Scan cards to signup</div>
+        {% endif %}
+        <form method="post" class="form-horizontal">
+            {% csrf_token %}
+            {% if event.draw == 'L' or event.format == 'S' %}
+            <div class="control-group">
+                <label class="control-label">CARD</label>
+                <div class="controls">
+                    <input type="text" name="card1" id="first_input" required>
+                </div>
+            </div>
+            {% elif event.draw != 'L' and event.format == 'D' %}
+            <div class="control-group">
+                <label class="control-label">CARD 1</label>
+                <div class="controls">
+                    <input type="text" name="card1" id="first_input" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">CARD 2</label>
+                <div class="controls">
+                    <input type="text" name="card2" required>
+                </div>
+            </div>
+            {% elif event.draw != 'L' and event.format == 'T' %}
+            <div class="control-group">
+                <label class="control-label">Team Name</label>
+                <div class="controls">
+                    <input class="span4" type="text" name="teamname" id="first_input" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">CARD 1</label>
+                <div class="controls">
+                    <input class="span4" type="text" name="card1" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">CARD 2</label>
+                <div class="controls">
+                    <input class="span4" type="text" name="card2" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">CARD 3</label>
+                <div class="controls">
+                    <input class="span4" type="text" name="card3" required>
+                </div>
+            </div>
+            {% endif %}
+            <div class="control-group">
+                <div class="controls">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+        <script type="text/javascript">
+        function FocusOnInput() { document.getElementById("first_input").focus(); }
+        FocusOnInput();
+        </script>
+    </div>
+    <hr>
+{% endif %}
 </div>
 {% endblock body %}
