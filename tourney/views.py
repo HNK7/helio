@@ -680,6 +680,7 @@ def event_signup(request, e_id):
     if request.method == 'POST':
         rfids = filter(None, [request.POST.get('card1'), request.POST.get('card2'), request.POST.get('card3')])
         players = []
+        context['error_msg'] = ''
 
         #check if there is duplicate player in the team
         if len(rfids)!=len(set(rfids)):
