@@ -44,9 +44,9 @@
                 {% if error_msg %}
                 <div class="alert alert-error lead">{{ error_msg }}</div>
                 {% elif success_msg %}
-                <div class="alert alert-success"><i class="icon-ok"></i> {{ success_msg }}</div>
+                <div class="alert alert-success lead">{{ success_msg }}</div>
                 {% else %}
-                <div class="alert alert-info"><i class="icon-tags"></i> Scan cards to signup</div>
+                <div class="alert alert-info lead">Scan cards to signup</div>
                 {% endif %}
                 <form method="post" class="form-horizontal">
                     {% csrf_token %}

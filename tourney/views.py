@@ -705,6 +705,7 @@ def event_signup(request, e_id):
             except ObjectDoesNotExist:
                 #player with the card has not been registered yet!
                 context['error_msg'] = 'Oops! Card (%s) is not registered yet.' % (rfid)
+                return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
 
         if not context['error_msg']:
             if event.draw != 'L':
