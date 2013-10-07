@@ -42,7 +42,7 @@
 {% if not event.is_lotd or not event.is_drawn %}
             <div class="well">
                 {% if error_msg %}
-                <div class="alert alert-error lead">{{ error_msg }}</div>
+                <div class="alert alert-error lead">{{ error_msg|safe }}</div>
                 {% elif success_msg %}
                 <div class="alert alert-success lead">{{ success_msg }}</div>
                 {% else %}

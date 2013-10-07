@@ -685,6 +685,7 @@ def event_signup(request, e_id):
         context['error_msg'] = 'There is a duplicate player!' if len(rfids)!=len(set(rfids)) else ''
 
         for rfid in rfids:
+            reg_url = reverse('22k:register', args=[event.tournament_id, rfid])
             try:
                 player = Card.objects.get(rfid=rfid).player
                 if(player.is_registered(event.tournament)):
@@ -699,13 +700,14 @@ def event_signup(request, e_id):
                             # return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
                     players.append(player)
                 else:
-                    context['error_msg'] = 'Oops! %s is not registred yet.' % (player)
-                    return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
+                    context['error_msg'] = 'Oops! %s is not registred yet. <a href="%s">Click here to register</a>' % (player, reg_url)
+                    # return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
 
             except ObjectDoesNotExist:
                 #player with the card has not been registered yet!
-                context['error_msg'] = 'Oops! Card (%s) is not registered yet.' % (rfid)
-                return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
+                
+                context['error_msg'] = 'Oops! Card (%s) is not registered yet. <a href="%s">Click here to register</a>' % (rfid, reg_url)
+                # return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
 
         if not context['error_msg']:
             if event.draw != 'L':
