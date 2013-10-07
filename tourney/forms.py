@@ -18,10 +18,12 @@ class TournamentForm(ModelForm):
 class EventForm(ModelForm):
     class Meta:
         model = Event
-        fields = ('tournament', 'title', 'start_at', 'division', 'format', 'draw', 'game')
-        widgets = {'tournament': HiddenInput(), 'format': RadioSelect(renderer=HorizontalRadioRenderer),
-                   'draw': RadioSelect(renderer=HorizontalRadioRenderer),
-                   'game': RadioSelect(renderer=HorizontalRadioRenderer), }
+        fields = ('tournament', 'category', 'title', 'start_at', 'division', 'format', 'draw', 'game')
+        widgets = {'tournament': HiddenInput(),
+                    'category': RadioSelect(renderer=HorizontalRadioRenderer),
+                    'format': RadioSelect(renderer=HorizontalRadioRenderer),
+                    'draw': RadioSelect(renderer=HorizontalRadioRenderer),
+                    'game': RadioSelect(renderer=HorizontalRadioRenderer), }
 
 
 class RegisterForm(ModelForm):
