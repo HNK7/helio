@@ -262,6 +262,12 @@ class Card(models.Model):
     cardno = models.CharField(max_length=16, editable=False, unique=True)
     # used = models.DateTimeField(null=True)
     player = models.ForeignKey(Player)
+    type_choices = (
+        ('C', 'Casual'),
+        ('L', 'League')
+        )
+    card_type = models.CharField(max_length=1, choices=type_choices, default='C')
+
 
     def __unicode__(self):
         return self.cardno
