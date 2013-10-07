@@ -86,7 +86,7 @@ class Player(Address):
         cursor = connections['hi'].cursor()
         cursor.execute("UPDATE useravg SET mpr_ta2=%s, ppd_ta2=%s WHERE rfid = getorigrfid2(%s)", [mpr, ppd, self.rfid])
         # transaction.commit(using='hi')
-        
+
     def stat_rank(self, tournament):
         entry = Entry.objects.get(tournament=tournament, player=self)
         ppd_rank = entry.ppd_event if entry.ppd_event else 60
@@ -261,7 +261,7 @@ class Card(models.Model):
     rfid = models.CharField(max_length=255, editable=False, unique=True)
     cardno = models.CharField(max_length=16, editable=False, unique=True)
     # used = models.DateTimeField(null=True)
-    player = models.OneToOneField(Player)
+    player = models.ForeignKey(Player)
 
     def __unicode__(self):
         return self.cardno
@@ -277,7 +277,7 @@ class Card(models.Model):
         cursor.execute("SELECT utime FROM checkrfid WHERE rfid=%s", [self.rfid])
         r = cursor.fetchone()
         return False if r[0] else True
-    
+
     def live_stat(self):
         cursor = connections['hi'].cursor()
         cursor.execute("SELECT mpr_ta2, ppd_ta2 FROM useravg WHERE rfid=getorigrfid2(%s)", [self.rfid])
