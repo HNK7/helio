@@ -806,10 +806,20 @@ def entry_edit(request, t_id, e_id):
     return render(request, 'tourney/entry_edit.html', context)
 
 
+def is_player_signup_any_event(t_id, entry_id):
+    e = Entry.objects.get(pk=entry_id)
+    tc = Team.objects.filter(players__in=[e.player], event__in=Event.objects.filter(tournament_id=t_id)).count()
+    dc = DrawEntry.objects.filter(player=e.player, event__in=Event.objects.filter(tournament_id=t_id)).count()
+    if tc or dc:
+        return True
+    else:
+        return False
+
+
 def del_entry(request, t_id, entry_id):
     e = Entry.objects.get(pk=entry_id)
 
-    if not Team.objects.filter(players__in=[e.player], event__in=Event.objects.filter(tournament_id=t_id)).count():
+    if not is_player_signup_any_event(t_id, entry_id):
         e.delete()
         # messages.info(request, '%s has beeen deleted.' % (e.player))
     else:
