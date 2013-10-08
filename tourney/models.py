@@ -178,8 +178,8 @@ class Event(models.Model):
     )
     format = models.CharField(max_length=1, choices=format_choices, default='S')
     draw_choies = (
-        ('L', 'Luck of Draw'),
-        ('D', 'Division'),
+        ('L', 'Blind Draw'),
+        ('D', 'Bring'),
     )
     draw = models.CharField(max_length=1, choices=draw_choies, default='D')
     game_choies = (
@@ -228,6 +228,13 @@ class Event(models.Model):
     def is_official(self):
         return True if self.category == 'O' else False
 
+    def signup_required_number(self):
+        if self.is_lotd() or self.format == 'S':
+            return 1
+        elif self.format == 'D':
+            return 2
+        elif self.format == 'T':
+            return 3
 
 class DrawEntry(models.Model):
     event = models.ForeignKey(Event)
