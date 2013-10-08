@@ -124,6 +124,9 @@ class Player(Address):
     def is_registered(self, tournament):
         return Entry.objects.filter(tournament=tournament, player=self).exists()
 
+    def is_qualified(self, tournament):
+        return Entry.objects.get(tournament=tournament, player=self).qualified
+
 
 class Entry(models.Model):
     tournament = models.ForeignKey(Tournament)
