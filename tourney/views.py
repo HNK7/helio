@@ -840,7 +840,7 @@ def del_signup(request, e_id, s_id):
     if e.is_lotd():
         d = DrawEntry.objects.get(pk=s_id)
         d.delete()
-        messages.info(request, '%s cancelled signup' % (d.player.name))
+        messages.info(request, '%s cancelled signup' % (d.player.full_name))
     else:
         t = Team.objects.get(pk=s_id)
         t.delete()
