@@ -707,7 +707,7 @@ def event_signup(request, e_id):
                                 # player already signuped. redirect to signup page
                                 messages.error(request, '%s has already signed up!' % (player.full_name))
                                 return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-                        if event.is_offical() and  not player.is_qualified(event.tournament):
+                        if event.is_official() and  not player.is_qualified(event.tournament):
                                 messages.error(request, '%s is qualified!' % (player.full_name))
                                 return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
 
