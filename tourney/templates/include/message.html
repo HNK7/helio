@@ -3,10 +3,8 @@
 
         <div class="alert alert-success lead">
             <a class="close" href="#" data-dismiss="alert">×</a>
-            <strong>Success!</strong>
-
+            <!-- <strong>Success!</strong> -->
                 {{ message|safe }}
-
         </div>
     {% endif %}
 {% endfor %}
@@ -16,7 +14,6 @@
         <div class="alert alert-error lead">
             <a class="close" href="#" data-dismiss="alert">×</a>
             <strong>Error!</strong>
-
                 {{ message|safe }}
 
         </div>
@@ -26,8 +23,7 @@
     {% if 'info' in message.tags %}
         <div class="alert alert-info lead">
             <a class="close" href="#" data-dismiss="alert">×</a>
-            <strong>INFO!</strong>
-
+            <!-- <strong>INFO!</strong> -->
                 {{ message|safe }}
 
         </div>
