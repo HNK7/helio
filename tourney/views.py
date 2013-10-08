@@ -692,7 +692,7 @@ def event_signup(request, e_id):
                     player = Card.objects.get(rfid=rfid).player
                 except ObjectDoesNotExist:
                     #player with the card has not been registered yet!
-                    messages.error(request, 'Card (%s) is not registered yet. <a href="%s">Click here to register</a>' % (rfid, reg_url))
+                    messages.error(request, 'Card is not registered yet. <a href="%s">Click here to register</a>' % (reg_url))
                     # return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
                     return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
                 else:
