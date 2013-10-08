@@ -710,7 +710,9 @@ def event_signup(request, e_id):
                         if event.is_official() and  not player.is_qualified(event.tournament):
                                 messages.error(request, '%s is NOT qualified for this event!' % (player.full_name))
                                 return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-
+                        if event.is_ladies_event() and not player.is_lady():
+                                messages.error(request, '%s is not allowed for ladies event' % (player.full_name))
+                                return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
                         players.append(player)
                     else:
                         messages.error(request, '%s is not registred yet. <a href="%s">Click here to register</a>' % (player, reg_url))

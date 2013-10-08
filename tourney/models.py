@@ -127,6 +127,9 @@ class Player(Address):
     def is_qualified(self, tournament):
         return Entry.objects.get(tournament=tournament, player=self).qualified
 
+    def is_lady(self):
+        return True if self.gender == 'F' else False
+
 
 class Entry(models.Model):
     tournament = models.ForeignKey(Tournament)
@@ -240,10 +243,11 @@ class Event(models.Model):
             return 3
 
     def is_team_event(self):
-        if self.format == 'D' or self.format == 'T':
-            return True
-        else:
-            return  False
+        return True if self.format == 'D' or self.format == 'T' else False
+    
+    def is_ladies_event(self):
+        return True if self.division == 'F' else False
+
 
 class DrawEntry(models.Model):
     event = models.ForeignKey(Event)
