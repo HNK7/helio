@@ -29,7 +29,7 @@
                     <!-- <td>{{ event.get_format_display }}</td> -->
                     <!-- <td>{{ event.get_game_display }}</td> -->
                     <!--td style="font-size: 18px"> event|num_teams  / event|num_players </td-->
-                    <td style="font-size: 18px; text-align: right">{{ event.num_signups }}</td>
+                    <td style="font-size: 18px; text-align: right">{{ event.total_signup }}</td>
 
                     <td class="nowrap">
                         <div class="btn-group pull-right">
@@ -39,6 +39,8 @@
                     </td>
                 </tr>
                 {% endfor %}
+            </tbody>
+        </table>
         </div>
     </div>
 </div>

@@ -87,7 +87,8 @@ def tourney_dashboard(request, t_id):
         request.session['tournament_title'] = tournament.title
 
 
-    context['events'] = tournament.event_set.all().order_by('start_at').annotate(num_signups=Count('team'))
+    # context['events'] = tournament.event_set.all().order_by('start_at').annotate(num_signups=Count('team'))
+    context['events'] = tournament.event_set.all().order_by('start_at')
     context['tournament'] = tournament
     return render(request, 'tourney/tourney_dashboard.html', context)
 
