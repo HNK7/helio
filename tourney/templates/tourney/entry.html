@@ -56,6 +56,10 @@
                         {% if not e.player.card_number %}
                             <span class="label label-important">card</span>
                         {% endif %}
+                        {% if e.qualified %}
+                            <span class="label label-info">Q</span>
+                        {% endif %}
+
                         </td>
                         <td><a href="{% url 22k:profile e.player.id %}">{{ e.player.full_name|title }}</a></td>
                         <td>{{ e.player.gender }}</td>
