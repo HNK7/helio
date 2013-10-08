@@ -22,7 +22,7 @@
         <li class="span3">
             <div class="thumbnail" style="text-align: center">
               <h3>{{ event.get_division_display|upper }}</h3>
-              <p class="lead">{{ event.get_draw_display|upper }}</p>
+              <p class="lead">{% if event.is_team_event %} {{ event.get_draw_display|upper }} {% else %} &nbsp; {% endif %}</p>
             </div>
         </li>
         <li class="span3">

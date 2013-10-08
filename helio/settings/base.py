@@ -222,6 +222,7 @@ SMS_MSG = {
 }
 
 PRINTER = {
+    'LIVE': False,
     'BROTHER_RECEIPT': '184.185.164.173',
     'BROTHER_LABEL': '184.185.164.173',
 }

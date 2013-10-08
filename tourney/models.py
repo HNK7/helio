@@ -236,6 +236,12 @@ class Event(models.Model):
         elif self.format == 'T':
             return 3
 
+    def is_team_event(self):
+        if self.format == 'D' or self.format == 'T':
+            return True
+        else:
+            return  False
+
 class DrawEntry(models.Model):
     event = models.ForeignKey(Event)
     player = models.ForeignKey('Player')

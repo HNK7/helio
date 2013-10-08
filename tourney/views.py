@@ -762,12 +762,10 @@ def event_signup(request, e_id):
                     sheet.insert({'team': team.name, 'mpr': str(team.mpr_rank), 'ppd': str(team.ppd_rank)})
 
                 # print signup recepits
-                # print_signup_receipt(team, event)
-                # print_bracket_label(team, event)
+                if settings.PRINTER['LIVE']:
+                    print_signup_receipt(team, event)
+                    print_bracket_label(team, event)
 
-                # receipt.print_line(team.name)
-                # receipt.print_line('MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
-                # receipt.cut()
 
     context['tournament'] = event.tournament
     context['event'] = event
