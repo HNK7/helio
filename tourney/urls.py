@@ -19,6 +19,8 @@ urlpatterns = patterns('',
     url(r'^p/(?P<p_id>\d+)/$', views.profile, name='profile'),
     url(r'^p/e/(?P<p_id>\d+)/$', views.profile_edit, name='profile_edit'),
     url(r'^s/(?P<e_id>\d+)/$', views.event_signup, name='event_signup'),
+    url(r'^d_s/(?P<e_id>\d+)/(?P<s_id>\d+)/$', views.del_signup, name='del_signup'),
+
     url(r'^s2/(?P<e_id>\d+)/$', views.event_signup2, name='event_signup2'),
 
     url(r'^d_t/(?P<e_id>\d+)/(?P<team_id>\d+)/$', views.del_team, name='del_team'),

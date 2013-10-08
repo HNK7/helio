@@ -836,6 +836,13 @@ def del_team(request, e_id, team_id):
     Team.objects.get(pk=team_id).delete()
     return HttpResponseRedirect(reverse('22k:event_signup', args=(e_id,)))
 
+def del_signup(request, e_id, s_id):
+    e = get_object_or_404(Event, id=e_id)
+    if e.is_lotd():
+        DrawEntry.objects.get(pk=s_id).delete()
+    else:
+        Team.objects.get(pk=s_id).delete()
+    return HttpResponseRedirect(reverse('22k:event_signup', args=(e_id,)))
 
 def draw(request, e_id):
     from random import shuffle
