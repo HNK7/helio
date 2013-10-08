@@ -14,7 +14,7 @@
             </div>
         </li>
         <li class="span3">
-            <div class="thumbnail" style="text-align: center">
+            <div class="thumbnail" style="text-align: center; {% if event.is_official %} color: white; background-color: darkred;{% endif %}">
               <h3>{{ event.get_game_display|upper }}</h3>
               <p class="lead">{{ event.get_format_display|upper }}</p>
             </div>
