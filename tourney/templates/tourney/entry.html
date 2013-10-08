@@ -15,10 +15,10 @@
 
 
         {% if messages %}
-        <div class="alert alert-error alert-block">
+        <div class="alert alert-error alert-block lead">
             <h4>Oops!</h4>
             {% for message in messages %}
-                {{ message }}<br>
+                {{ message|safe }}<br>
             {% endfor %}
         </div>
         {% endif %}
