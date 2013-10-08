@@ -201,7 +201,12 @@ class Event(models.Model):
         return self.title
 
     def total_signup(self):
-        len(self.teams.all)
+        if self.draw == 'L':
+            return self.drawentry_set.all().count()
+        elif self.draw == 'D':
+            return self.team_set.all().count()
+        else:
+            return 0
 
     def is_lotd(self):
         return True if self.draw == 'L' else False
@@ -216,6 +221,12 @@ class Event(models.Model):
 
     def draw_sms_sent(self):
         return SMSLog.objects.filter(event=self).exists()
+
+    def is_side_shoot(self):
+        return True if self.category == 'S' else False
+
+    def is_official(self):
+        return True if self.category == 'O' else False
 
 
 class DrawEntry(models.Model):

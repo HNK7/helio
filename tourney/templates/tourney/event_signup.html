@@ -28,11 +28,7 @@
         <li class="span3">
             <div class="thumbnail" style="text-align: center; vertical-align: middle">
               <h1 style="color: royalblue;">
-                {% if event.draw  == 'L' and draw_entry.count %} {{ draw_entry.count }} 
-                {% elif teams.count %} {{ teams.count }} 
-                {% else %}
-                0 
-                {% endif %}
+                {{ event.total_signup }}
             </h1>
               <p class="lead">&nbsp;</p>
             </div>
@@ -186,6 +182,6 @@
                 {% if event.draw == 'L' and not event.draw_sms_sent %}<a href="{% url 22k:draw_sms event.id %}" class="btn btn-primary">Send SMS</a>{% endif %}
             {% endif %}
 {% endif %}
-       
+
 </div>
 {% endblock body %}
