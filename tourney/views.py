@@ -449,7 +449,7 @@ def card(request, t_id):
 
     if request.method == 'POST':
         form = CardScanForm(request.POST)
-        form.is_valid():
+        if form.is_valid():
             try:
                 p_rfid = form.cleaned_data['rfid']
                 card = Card.objects.get(rfid=p_rfid)
