@@ -72,7 +72,7 @@ class CardForm(ModelForm):
         model = Card
 
 
-class CardScanForm(ModelForm):
+class CardScanForm(forms.Form):
     rfid = forms.CharField(max_length=20)
     
     def clean_rfid():
