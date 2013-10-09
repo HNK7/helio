@@ -12,7 +12,8 @@
             <form method="post">
                 {% csrf_token %}
                 <div class="register">
-                    <input type="text" name="rfid_id" id="rfid_id" autocomplete="off" required>
+                    {{ form.rfid.errors }}
+                    <input type="text" name="rfid" id="id_rfid" autocomplete="off" required>
                     <label></label>
                     <button class="btn btn-primary btn-large" type="submit">Submit</button>
                 </div>
