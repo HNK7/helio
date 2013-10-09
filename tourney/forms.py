@@ -72,10 +72,10 @@ class CardForm(ModelForm):
         model = Card
 
 
-# class CardScanForm(ModelForm):
-#     class Meta:
-#         model = Card
-#         fields = ('rfid',)
+class CardScanForm(ModelForm):
+    class Meta:
+        model = Card
+        fields = ('rfid',)
 
 
 class QualifyForm(forms.Form):
