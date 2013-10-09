@@ -448,15 +448,21 @@ def card(request, t_id):
         return HttpResponseRedirect(reverse('22k:index'))
 
     if request.method == 'POST':
-        try:
-            card = Card.objects.get(rfid=request.POST['rfid_id'])
-        except Card.DoesNotExist:
-            return HttpResponseRedirect(reverse('22k:register', args=[t_id, request.POST['rfid_id']]))
-        if card.player.is_registered(t_id):
-            return HttpResponseRedirect(reverse('22k:entry', args=[t_id]))
-        else:
-            return HttpResponseRedirect(reverse('22k:register', args=[t_id, request.POST['rfid_id']]))
+        form = CardScanForm(request.POST)
+        form.is_valid():
+            try:
+                p_rfid = form.cleaned_data['rfid']
+                card = Card.objects.get(rfid=p_rfid)
+            except Card.DoesNotExist:
+                return HttpResponseRedirect(reverse('22k:register', args=[t_id, p_rfid))
+            if card.player.is_registered(t_id):
+                return HttpResponseRedirect(reverse('22k:entry', args=[t_id]))
+            else:
+                return HttpResponseRedirect(reverse('22k:register', args=[t_id, p_rfid))
+    else:
+        form = CardScanForm()
 
+    context['form'] = form
     context['tournament'] = tourney
     return render(request, 'tourney/card.html', context)
 
