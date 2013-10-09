@@ -290,8 +290,8 @@ class Team(models.Model):
 
 
 class Card(models.Model):
-    rfid = models.CharField(max_length=255, editable=False, unique=True)
-    cardno = models.CharField(max_length=16, editable=False, unique=True)
+    rfid = models.CharField(max_length=255, editable=True, unique=True)
+    cardno = models.CharField(max_length=16, editable=True, unique=True)
     # used = models.DateTimeField(null=True)
     player = models.OneToOneField(Player)
 
