@@ -454,11 +454,11 @@ def card(request, t_id):
                 p_rfid = form.cleaned_data['rfid']
                 card = Card.objects.get(rfid=p_rfid)
             except Card.DoesNotExist:
-                return HttpResponseRedirect(reverse('22k:register', args=[t_id, p_rfid))
+                return HttpResponseRedirect(reverse('22k:register', args=[t_id, p_rfid]))
             if card.player.is_registered(t_id):
                 return HttpResponseRedirect(reverse('22k:entry', args=[t_id]))
             else:
-                return HttpResponseRedirect(reverse('22k:register', args=[t_id, p_rfid))
+                return HttpResponseRedirect(reverse('22k:register', args=[t_id, p_rfid]))
     else:
         form = CardScanForm()
 
