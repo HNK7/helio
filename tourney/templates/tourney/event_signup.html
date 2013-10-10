@@ -40,8 +40,24 @@
 {% if not event.is_lotd or not event.is_drawn %}
             <div class="well">
                 {% include "include/message.html" %}
-                {% if collect_payment %}
-                <h1> Payment</h1>
+                {% if entries %}
+                    <!-- <div class="page-header">
+                        <h1>Payment</h1>
+                    </div> -->
+                    {% for entry in entries %}
+                        <div class="well"><h3>{{ entry.player }} <span class="lead">Amount Due:</span> {{ entry.balance|currency }}</h3>
+                        <br>
+                        {% if entry.balance > 0 %}
+                        <p>
+                            <ul class="lead">
+                                <li>Card Fee: {{ entry.balance_card }}</li>
+                                <li>Membership Fee: {{ entry.balance_membership }}</li>
+                                <li>Sign Up Fee: {{ entry.balance_signup}}</li>
+                            </ul>
+                        </p>
+                        {% endif %}
+                        </div>
+                    {% endfor  %}
                 {% else %}
                 <form method="post" class="form-horizontal">
                     <fieldset>

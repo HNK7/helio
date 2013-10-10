@@ -688,6 +688,10 @@ def _validate_card_scan(rfids, unique=True):
             return False
     return True
 
+def _need_to_pay(players, event):
+    for entry in Entry.objects.filter(player__in=players, tournament=event.tournament):
+        return True if entry.balance > 0 else False
+
 def event_signup(request, e_id):
     context = dict()
     event = get_object_or_404(Event, id=e_id)
@@ -752,7 +756,10 @@ def event_signup(request, e_id):
                 team.players.add(player)
 
             messages.success(request, '%s signed up successfully.' % (team.name))
-        context['collect_payment'] = True
+            
+        # Check payment status
+
+        context['entries'] = Entry.objects.filter(player__in=players, tournament=event.tournament)
 
         # if event.draw != 'L':
         #     team = Team(event=event)
@@ -875,19 +882,28 @@ def del_entry(request, t_id, entry_id):
 
 
 def del_team(request, e_id, team_id):
-    Team.objects.get(pk=team_id).delete()
+    try:
+        Team.objects.get(pk=team_id).delete()
+    except DoesNotExist:
+        pass
     return HttpResponseRedirect(reverse('22k:event_signup', args=(e_id,)))
 
 def del_signup(request, e_id, s_id):
     e = get_object_or_404(Event, id=e_id)
     if e.is_lotd():
-        d = DrawEntry.objects.get(pk=s_id)
-        d.delete()
-        messages.info(request, '%s cancelled signup' % (d.player.full_name))
+        try:
+            d = DrawEntry.objects.get(pk=s_id)
+            d.delete()
+            messages.info(request, '%s cancelled signup' % (d.player.full_name))
+        except ObjectDoesNotExist:
+            pass
     else:
-        t = Team.objects.get(pk=s_id)
-        t.delete()
-        messages.info(request, '%s cancelled signup' % (t.name))
+        try:
+            t = Team.objects.get(pk=s_id)
+            t.delete()
+            messages.info(request, '%s cancelled signup' % (t.name))
+        except ObjectDoesNotExist:
+            pass
     return HttpResponseRedirect(reverse('22k:event_signup', args=(e_id,)))
 
 def draw(request, e_id):
