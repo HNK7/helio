@@ -234,7 +234,7 @@ class Event(models.Model):
     def is_official(self):
         return True if self.category == 'O' else False
 
-    def signup_required_number(self):
+    def team_size(self):
         if self.is_lotd() or self.format == 'S':
             return 1
         elif self.format == 'D':

@@ -40,19 +40,22 @@
 {% if not event.is_lotd or not event.is_drawn %}
             <div class="well">
                 {% include "include/message.html" %}
+                {% if collect_payment %}
+                <h1> Payment</h1>
+                {% else %}
                 <form method="post" class="form-horizontal">
                     <fieldset>
                     <legend>Scan cards to signup</legend>
 
                     {% csrf_token %}
-                    {% if event.draw == 'L' or event.format == 'S' %}
+                    {% if event.team_size == 1 %}
                     <div class="control-group">
                         <label class="control-label">Card</label>
                         <div class="controls">
                             <input type="text" name="card1" id="first_input" autocomplete="off" required>
                         </div>
                     </div>
-                    {% elif event.draw != 'L' and event.format == 'D' %}
+                    {% elif event.team_size == 2 %}
                     <div class="control-group">
                         <label class="control-label">Card 1</label>
                         <div class="controls">
@@ -65,7 +68,7 @@
                             <input type="text" name="card2" autocomplete="off" required>
                         </div>
                     </div>
-                    {% elif event.draw != 'L' and event.format == 'T' %}
+                    {% elif event.team_size == 3 %}
                     <div class="control-group">
                         <label class="control-label">Team Name</label>
                         <div class="controls">
@@ -102,6 +105,7 @@
                 function FocusOnInput() { document.getElementById("first_input").focus(); }
                 FocusOnInput();
                 </script>
+                {% endif %}
             </div>
             <hr>
 {% endif %}

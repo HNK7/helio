@@ -680,110 +680,139 @@ def print_bracket_label(team, event):
     # receipt.print_line('MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
     # receipt.cut()
 
+def _validate_card_scan(rfids, unique=True):
+    if unique and len(set(rfids)) != len(rfids):
+        return  False
+    for rfid in rfids:
+        if not rfid.isdigit() or len(rfid) != 20:
+            return False
+    return True
+
 def event_signup(request, e_id):
     context = dict()
     event = get_object_or_404(Event, id=e_id)
 
     if request.method == 'POST':
         rfids = filter(None, [request.POST.get('card1'), request.POST.get('card2'), request.POST.get('card3')])
+
+        # Validate RFIDs
+        if not _validate_card_scan(rfids) or len(set(rfids))!= event.team_size():
+            messages.error(request, 'Invalid or duplicate RFIDs. Check the cards and try again.')
+            return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+
+        # Check if card/player registered
         players = []
-
-        #check if there is duplicate player in the team
-        if len(rfids)!=len(set(rfids)):
-            messages.error(request, 'There is a duplicate player!')
-        else:
-            for rfid in rfids:
-                reg_url = reverse('22k:register', args=[event.tournament_id, rfid])
-                try:
-                    player = Card.objects.get(rfid=rfid).player
-                except ObjectDoesNotExist:
-                    #player with the card has not been registered yet!
-                    messages.error(request, 'Card is not registered yet. <a href="%s">Click here to register</a>' % (reg_url))
-                    # return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
+        for rfid in rfids:
+            reg_url = reverse('22k:register', args=[event.tournament_id, rfid])
+            try:
+                player = Card.objects.get(rfid=rfid).player
+                players.append(player)
+            except ObjectDoesNotExist:
+                #player with the card has not been registered yet!
+                messages.error(request, 'Card is not registered yet. <a href="%s">Click here to register</a>' % (reg_url))
+                # return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
+                return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+            else:
+                if not player.is_registered(event.tournament):
+                    messages.error(request, '%s is not registered yet. <a href="%s">Click here to register</a>' % (player, reg_url))
                     return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-                else:
-                    if(player.is_registered(event.tournament)):
-
-                        if event.draw == 'L':
-                            if event.drawentry_set.filter(player=player).exists():
-                                messages.error(request, '%s has already signed up!' % (player.full_name))
-                                return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-                        else:
-                            if event.team_set.filter(players=player).exists():
-                                # player already signuped. redirect to signup page
-                                messages.error(request, '%s has already signed up!' % (player.full_name))
-                                return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-                        if event.is_official() and  not player.is_qualified(event.tournament):
-                                messages.error(request, '%s is NOT qualified for this event!' % (player.full_name))
-                                return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-                        if event.is_ladies_event() and not player.is_lady():
-                                messages.error(request, '%s is not allowed for ladies event' % (player.full_name))
-                                return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-                        players.append(player)
-                    else:
-                        messages.error(request, '%s is not registred yet. <a href="%s">Click here to register</a>' % (player, reg_url))
-                        # return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
-                        return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-
-
-        # if not context['error_msg']:
-        if event.draw != 'L':
-            team = Team(event=event)
-            if len(players) < 3 and event.draw != 'L':
-                team.name = ', '.join(player.full_name for player in players)
-            else:
-                team.name = request.POST.get('teamname')
-            team.save()
+        
+        
+        # Check players are qualifeid for the event
         for player in players:
-            entry = player.entry_set.get(tournament=event.tournament)
-            if event.draw == 'L':
-                DrawEntry.objects.create(event=event, player=player)
+            if event.is_official() and not player.is_qualified(event.tournament):
+                messages.error(request, '%s is NOT qualified for this event!' % (player.full_name))
+                return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+            elif event.is_ladies_event() and not player.is_lady():
+                messages.error(request, '%s is not allowed for ladies event' % (player.full_name))
+                return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+
+        # Check players are already signed up
+        for player in players:
+            if event.is_lotd():
+                if event.drawentry_set.filter(player=player).exists():
+                    messages.error(request, '%s has already signed up!' % (player.full_name))
+                    return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
             else:
+                if event.team_set.filter(players=player).exists():
+                    messages.error(request, '%s has already signed up!' % (player.full_name))
+                    return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+
+        # Okay to procced to sign up
+        if event.is_lotd():
+            # blind draw event. add player to drawentry
+            for player in players:
+                DrawEntry.objects.create(event=event, player=player)
+                messages.success(request, '%s signed up successfully.' % (player.full_name))
+        else:
+            # singles or bring event. create a team
+            team_name = ', '.join(player.full_name for player in players)
+            team = Team.objects.create(event=event, name=team_name)
+            for player in players:
                 team.players.add(player)
 
-                rank_mpr = player.stat_rank(event.tournament)['MPR']
-                rank_ppd = player.stat_rank(event.tournament)['PPD']
+            messages.success(request, '%s signed up successfully.' % (team.name))
+        context['collect_payment'] = True
 
-                # entry.mpr_rank = rank_mpr
-                # entry.ppd_rank = rank_ppd
+        # if event.draw != 'L':
+        #     team = Team(event=event)
+        #     if len(players) < 3 and event.draw != 'L':
+        #         team.name = ', '.join(player.full_name for player in players)
+        #     else:
+        #         team.name = request.POST.get('teamname')
+        #     team.save()
+        # for player in players:
+        #     entry = player.entry_set.get(tournament=event.tournament)
+        #     if event.draw == 'L':
+        #         DrawEntry.objects.create(event=event, player=player)
+        #     else:
+        #         team.players.add(player)
 
-                team.mpr_rank += rank_mpr
-                team.ppd_rank += rank_ppd
+        #         rank_mpr = player.stat_rank(event.tournament)['MPR']
+        #         rank_ppd = player.stat_rank(event.tournament)['PPD']
 
-            # charge sign up fee
-            entry.balance_signup = F('balance_signup') + settings.FEES['SIGNUP']
-            entry.save()
+        #         # entry.mpr_rank = rank_mpr
+        #         # entry.ppd_rank = rank_ppd
 
-            sms_msg = Template(settings.SMS_MSG['SIGNUP'])
-            sms_msg = sms_msg.safe_substitute(name=player.first_name.title(),
-                                              event_title=event.title,
-                                              start_at=event.start_at.strftime("%I:%M %p"))
-            try:
-                send_sms(player.phone, sms_msg)
-            except:
-                pass
-        if event.draw == 'L':
-            messages.success(request, '%s singned up successfully.' % (players[0].full_name))
-        else:
-            messages.success(request, '%s singned up successfully.' % (team.name))
-            #cacluate average
-            team.mpr_rank = team.mpr_rank / len(players)
-            team.ppd_rank = team.ppd_rank / len(players)
-            team.save()
+        #         team.mpr_rank += rank_mpr
+        #         team.ppd_rank += rank_ppd
 
-            if settings.GOOGLE_DOC['SYNC']:
-                sheet = gdrive.Sheet(settings.GOOGLE_DOC['BOOK_NAME'], 'Signup')
-                sheet.insert({'team': team.name, 'mpr': str(team.mpr_rank), 'ppd': str(team.ppd_rank)})
+        #     # charge sign up fee
+        #     entry.balance_signup = F('balance_signup') + settings.FEES['SIGNUP']
+        #     entry.save()
 
-            # print signup recepits
-            if settings.PRINTER['LIVE']:
-                print_signup_receipt(team, event)
-                print_bracket_label(team, event)
+        #     sms_msg = Template(settings.SMS_MSG['SIGNUP'])
+        #     sms_msg = sms_msg.safe_substitute(name=player.first_name.title(),
+        #                                       event_title=event.title,
+        #                                       start_at=event.start_at.strftime("%I:%M %p"))
+        #     try:
+        #         send_sms(player.phone, sms_msg)
+        #     except:
+        #         pass
+        # if event.draw == 'L':
+        #     messages.success(request, '%s singned up successfully.' % (players[0].full_name))
+        # else:
+        #     messages.success(request, '%s singned up successfully.' % (team.name))
+        #     #cacluate average
+        #     team.mpr_rank = team.mpr_rank / len(players)
+        #     team.ppd_rank = team.ppd_rank / len(players)
+        #     team.save()
+
+        #     if settings.GOOGLE_DOC['SYNC']:
+        #         sheet = gdrive.Sheet(settings.GOOGLE_DOC['BOOK_NAME'], 'Signup')
+        #         sheet.insert({'team': team.name, 'mpr': str(team.mpr_rank), 'ppd': str(team.ppd_rank)})
+
+        #     # print signup recepits
+        #     if settings.PRINTER['LIVE']:
+        #         print_signup_receipt(team, event)
+        #         print_bracket_label(team, event)
 
     context['tournament'] = event.tournament
     context['event'] = event
-    context['teams'] = event.team_set.all()
-    context['draw_entry'] = DrawEntry.objects.filter(event=event)
+    if event.is_lotd():
+        context['draw_entry'] = DrawEntry.objects.filter(event=event)
+    else:
+        context['teams'] = event.team_set.all()
     return render(request, 'tourney/event_signup.html', context)
 
 def event_signup2(request, e_id):
