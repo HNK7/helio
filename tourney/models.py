@@ -317,7 +317,7 @@ class Card(models.Model):
         return {'mpr': r[0], 'ppd': r[1]}
 
 
-class SignupPayment(models.Modle):
+class SignupPayment(models.Model):
     player = models.ForeignKey('Player')
     event = models.ForeignKey('Event')
 
