@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models, connections, transaction
 from datetime import datetime, timedelta
 from django.contrib.localflavor.us.models import USStateField
@@ -130,6 +131,9 @@ class Player(Address):
     def is_lady(self):
         return True if self.gender == 'F' else False
 
+    def is_paid_for(self, event):
+        return True if self.signuppayment_set.filter(event=event).exists() else False
+
 
 class Entry(models.Model):
     tournament = models.ForeignKey(Tournament)
@@ -206,6 +210,10 @@ class Event(models.Model):
                                      # self.format_choices[self.format], self.game_choies[self.game])
         return self.title
 
+    @property
+    def signup_fee(self):
+        return settings.FEE['SIGNUP'] if self.is_official() else settings.FEE['SIDESHOOT']
+
     def total_signup(self):
         if self.draw == 'L':
             return self.drawentry_set.all().count()
@@ -247,6 +255,9 @@ class Event(models.Model):
     
     def is_ladies_event(self):
         return True if self.division == 'F' else False
+
+    def is_paid_by(self, player):
+        return True if self.signuppayment_set.filter(player=player).exists() else False
 
 
 class DrawEntry(models.Model):
@@ -320,6 +331,9 @@ class Card(models.Model):
 class SignupPayment(models.Model):
     player = models.ForeignKey('Player')
     event = models.ForeignKey('Event')
+
+    def __unicode__(self):
+        return '%s paid for %s' % (self.player, self.event) 
 
 
 

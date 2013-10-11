@@ -727,11 +727,12 @@ def event_signup(request, e_id):
             if event.is_official() and not player.is_qualified(event.tournament):
                 messages.error(request, '%s is NOT qualified for this event!' % (player.full_name))
                 return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-            elif event.is_ladies_event() and not player.is_lady():
+            elif event.is_ladies_event() and not player.is_lady()
                 messages.error(request, '%s is not allowed for ladies event' % (player.full_name))
                 return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
 
-        # Check players are already signed up
+        # Check players are already signed up/ and make entry list
+        entries = []
         for player in players:
             if event.is_lotd():
                 if event.drawentry_set.filter(player=player).exists():
@@ -741,6 +742,13 @@ def event_signup(request, e_id):
                 if event.team_set.filter(players=player).exists():
                     messages.error(request, '%s has already signed up!' % (player.full_name))
                     return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+            entries.append(player.entry_set.get(tournament=event.tournament))
+
+         # Check signup fee payment
+        for entrty in entires:
+            if not entry.player.is_paid_for(event=event):
+                entry.balance = F('balance_signup') + event.signup_fee
+                entry.save()
 
         # Okay to procced to sign up
         if event.is_lotd():
@@ -756,8 +764,6 @@ def event_signup(request, e_id):
                 team.players.add(player)
 
             messages.success(request, '%s signed up successfully.' % (team.name))
-            
-        # Check payment status
 
         context['entries'] = Entry.objects.filter(player__in=players, tournament=event.tournament)
 
