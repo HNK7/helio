@@ -324,9 +324,6 @@ class PaymentItem(models.Model):
     def __unicode__(self):
         return self.name
 
-    class Meta:
-        abstract = True
-
 
 class SignupPackage(PaymentItem):
     signup_tickets = models.ManyToManyField('Event')
