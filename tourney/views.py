@@ -727,7 +727,7 @@ def event_signup(request, e_id):
             if event.is_official() and not player.is_qualified(event.tournament):
                 messages.error(request, '%s is NOT qualified for this event!' % (player.full_name))
                 return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-            elif event.is_ladies_event() and not player.is_lady()
+            elif event.is_ladies_event() and not player.is_lady():
                 messages.error(request, '%s is not allowed for ladies event' % (player.full_name))
                 return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
 
@@ -745,9 +745,9 @@ def event_signup(request, e_id):
             entries.append(player.entry_set.get(tournament=event.tournament))
 
          # Check signup fee payment
-        for entrty in entires:
+        for entry in entries:
             if not entry.player.is_paid_for(event=event):
-                entry.balance = F('balance_signup') + event.signup_fee
+                entry.balance_signup = entry.balance_signup + event.signup_fee
                 entry.save()
 
         # Okay to procced to sign up

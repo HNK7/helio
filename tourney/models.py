@@ -212,7 +212,7 @@ class Event(models.Model):
 
     @property
     def signup_fee(self):
-        return settings.FEE['SIGNUP'] if self.is_official() else settings.FEE['SIDESHOOT']
+        return settings.FEES['SIGNUP'] if self.is_official() else settings.FEES['SIDESHOOT']
 
     def total_signup(self):
         if self.draw == 'L':
