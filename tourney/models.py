@@ -317,6 +317,32 @@ class Card(models.Model):
         return {'mpr': r[0], 'ppd': r[1]}
 
 
+class PaymentItem(models.Model):
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        abstract = True
+
+
+class SignupPackage(PaymentItem):
+    signup_tickets = models.ManyToManyField('Event')
+
+class Payment(models.Model):
+    player = models.ForeignKey('Player')
+    items = models.ManyToManyField('PaymentItem')
+    payment = models.ForeignKey('Order')
+    amount = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    pay_type_choices = (
+        ('B', 'Cash'),
+        ('C', 'Credit Card'),
+        ('P', 'Paypal')
+        )
+    pay_type = models.CharField(max_length=1, choices=pay_type_choices, default='B')
+    paid_at = models.DateTimeField(auto_now_add=True)
 
 # class EventStat(models.Model):
 #     userid = models.CharField(max_length=64, editable=False, primary_key=True)
