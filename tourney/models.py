@@ -334,7 +334,6 @@ class SignupPackage(PaymentItem):
 class Payment(models.Model):
     player = models.ForeignKey('Player')
     items = models.ManyToManyField('PaymentItem')
-    payment = models.ForeignKey('Order')
     amount = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     pay_type_choices = (
         ('B', 'Cash'),
