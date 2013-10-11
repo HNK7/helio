@@ -317,6 +317,11 @@ class Card(models.Model):
         return {'mpr': r[0], 'ppd': r[1]}
 
 
+class SignupPayment(models.Modle):
+    player = models.ForeignKey('Player')
+    event = models.ForeignKey('Event')
+    
+
 class PaymentItem(models.Model):
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
