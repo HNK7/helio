@@ -5,14 +5,18 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" />
 <!--     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/admin.css" />
  -->    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/refree.css" />
+<style>
+.table th, .table td { border-top: none; }
+</style>
 </head>
-<body>
+
+<body style="background-color:black; color: white">
 <div class="container">
 
-        <h3>Players Directory</h3>
+        <h3>Player Directory</h3>
 
         <span class="pull-right">Total: {{ entry.count }}</span>
-        <table class="table table-condensed table-hover">
+        <table class="table table-condensed">
             <thead>
                 <tr>
                     <th>#</th>
