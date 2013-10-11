@@ -320,7 +320,8 @@ class Card(models.Model):
 class SignupPayment(models.Modle):
     player = models.ForeignKey('Player')
     event = models.ForeignKey('Event')
-    
+
+
 
 class PaymentItem(models.Model):
     name = models.CharField(max_length=255)
