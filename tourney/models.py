@@ -27,7 +27,7 @@ class Tournament(models.Model):
 class Address(models.Model):
     street_line1 = models.CharField(max_length=100, blank=True, null=True)
     street_line2 = models.CharField(max_length=100, blank=True, null=True)
-    zipcode = models.CharField(max_length=5)
+    zipcode = models.CharField(max_length=5, blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
     # state = models.CharField(max_length=100, null=True)
     state = USStateField(blank=True, null=True)
