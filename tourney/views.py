@@ -732,7 +732,6 @@ def event_signup(request, e_id):
                 return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
 
         # Check players are already signed up/ and make entry list
-        entries = []
         for player in players:
             if event.is_lotd():
                 if event.drawentry_set.filter(player=player).exists():
@@ -742,7 +741,6 @@ def event_signup(request, e_id):
                 if event.team_set.filter(players=player).exists():
                     messages.error(request, '%s has already signed up!' % (player.full_name))
                     return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-            entries.append(player.entry_set.get(tournament=event.tournament))
 
          # Check signup fee payment
         for entry in entries:
@@ -751,6 +749,7 @@ def event_signup(request, e_id):
                 entry.save()
 
         # Okay to procced to sign up
+        entries = Entry.objects.filter(player__in=players, tournament=event.tournament)
         if event.is_lotd():
             # blind draw event. add player to drawentry
             for player in players:
@@ -765,7 +764,7 @@ def event_signup(request, e_id):
 
             messages.success(request, '%s signed up successfully.' % (team.name))
 
-        context['entries'] = Entry.objects.filter(player__in=players, tournament=event.tournament)
+        context['entries'] = entries
 
         # if event.draw != 'L':
         #     team = Team(event=event)
