@@ -47,7 +47,8 @@
                 <form method="post">   
                     {% csrf_token %}
                     {% for entry in entries %}
-                        <div class="well"><h3>{{ entry.player }} <span class="lead">Amount Due:</span> {{ entry.balance|currency }}</h3>
+                        <div class="well"><h3>{{ entry.player }}</h3>
+                        <span class="lead">Amount Due: <b>{{ entry.balance|currency }}</b></span>
                         {% if entry.balance > 0 %}
                         <div class="lead">
                             <ul>

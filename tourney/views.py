@@ -716,7 +716,7 @@ def event_signup(request, e_id):
                 team = Team.objects.create(event=event, name=team_name)
                 for player in players:
                     team.players.add(player)
-                messages.success(request, 'Team( %s ) signed up successfully.' % (team.name))
+                messages.success(request, 'Team - %s signed up successfully.' % (team.name))
 
             # book signup fee payment record
             for player in players:
