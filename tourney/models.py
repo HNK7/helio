@@ -438,7 +438,7 @@ class PreRegVegas(Address):
     sat_doubles = models.BooleanField(default=False)
     sat_triples = models.BooleanField(default=False)
     sun_doubles = models.BooleanField(default=False)
-    partner_cricket = models.CharField(max_lengh=255, blank=True, null=True)
-    partner_01 = models.CharField(max_lengh=255, blank=True, null=True)
+    partner_cricket = models.CharField(max_length=255, blank=True, null=True)
+    partner_01 = models.CharField(max_length=255, blank=True, null=True)
     note = models.CharField(max_length=255, blank=True, null=True)
 
