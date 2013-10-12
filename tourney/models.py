@@ -428,9 +428,9 @@ class PreRegPlayer(Player):
         return self.full_name
 
 class PreRegVegas(Address):
-    first_name = models.CharField(max_lengh=255)
-    last_name = models.CharField(max_lengh=255)
-    mobile = models.CharField(max_lengh=40, blank=True, null=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    mobile = models.CharField(max_length=40, blank=True, null=True)
     email = models.EmailField(max_length=255, blank=True, null=True)
     casual_card = models.CharField(max_length=16, blank=True, null=True)
     league_card = models.CharField(max_length=16, blank=True, null=True)
@@ -440,5 +440,5 @@ class PreRegVegas(Address):
     sun_doubles = BooleanField(default=False)
     partner_cricket = models.CharField(max_lengh=255, blank=True, null=True)
     partner_01 = models.CharField(max_lengh=255, blank=True, null=True)
-    note = models.CharField(max_lengh=255, blank=True, null=True)
+    note = models.CharField(max_length=255, blank=True, null=True)
 
