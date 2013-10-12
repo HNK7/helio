@@ -44,6 +44,8 @@
                     <!-- <div class="page-header">
                         <h1>Payment</h1>
                     </div> -->
+                <form method="post">   
+                    {% csrf_token %}
                     {% for entry in entries %}
                         <div class="well"><h3>{{ entry.player }} <span class="lead">Amount Due:</span> {{ entry.balance|currency }}</h3>
                         {% if entry.balance > 0 %}
@@ -56,8 +58,10 @@
                         </div>
                         {% endif %}
                         </div>
+                        <input type="hidden" name='entry_id' value="{{ entry.id }}">
                     {% endfor  %}
-                    <a href="{% url 22k:event_signup event.id %}" class="btn btn-large btn-primary">Ok</a>
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </form>
                 {% else %}
                 <form method="post" class="form-horizontal">
                     <fieldset>

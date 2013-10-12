@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from tourney.models import Tournament, Event, Player, PreRegPlayer, Entry, Card, Team, DrawEntry, SMSLog
+from tourney.models import *
 from tourney.forms import *
 import gdrive
 import brother
@@ -698,73 +698,86 @@ def event_signup(request, e_id):
 
     if request.method == 'POST':
         rfids = filter(None, [request.POST.get('card1'), request.POST.get('card2'), request.POST.get('card3')])
-
-        # Validate RFIDs
-        if not _validate_card_scan(rfids) or len(set(rfids))!= event.team_size():
-            messages.error(request, 'Invalid or duplicate RFIDs. Check the cards and try again.')
-            return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-
-        # Check if card/player registered
-        players = []
-        for rfid in rfids:
-            reg_url = reverse('22k:register', args=[event.tournament_id, rfid])
-            try:
-                player = Card.objects.get(rfid=rfid).player
-                players.append(player)
-            except ObjectDoesNotExist:
-                #player with the card has not been registered yet!
-                messages.error(request, 'Card is not registered yet. <a href="%s">Click here to register</a>' % (reg_url))
-                # return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
-                return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-            else:
-                if not player.is_registered(event.tournament):
-                    messages.error(request, '%s is not registered yet. <a href="%s">Click here to register</a>' % (player, reg_url))
-                    return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+        entry_ids = request.POST.getlist('entry_id')
         
-        
-        # Check players are qualifeid for the event
-        for player in players:
-            if event.is_official() and not player.is_qualified(event.tournament):
-                messages.error(request, '%s is NOT qualified for this event!' % (player.full_name))
-                return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-            elif event.is_ladies_event() and not player.is_lady():
-                messages.error(request, '%s is not allowed for ladies event' % (player.full_name))
-                return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+        # Validation step is done. finish signup
+        if len(entry_ids) > 0:
+            players = [Entry.objects.get(pk=entry_id).player for entry_id in entry_ids]        
 
-        # Check players are already signed up/ and make entry list
-        for player in players:
+            # Okay to procced to sign up
             if event.is_lotd():
-                if event.drawentry_set.filter(player=player).exists():
-                    messages.error(request, '%s has already signed up!' % (player.full_name))
-                    return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+                # blind draw event. add player to drawentry
+                for player in players:
+                    DrawEntry.objects.create(event=event, player=player)             
+                    messages.success(request, '%s signed up successfully.' % (player.full_name))
             else:
-                if event.team_set.filter(players=player).exists():
-                    messages.error(request, '%s has already signed up!' % (player.full_name))
+                # singles or bring event. create a team
+                team_name = ', '.join(player.full_name for player in players)
+                team = Team.objects.create(event=event, name=team_name)
+                for player in players:
+                    team.players.add(player)
+                messages.success(request, 'Team( %s ) signed up successfully.' % (team.name))
+
+            # book signup fee payment record
+            for player in players:
+                SignupPayment.objects.get_or_create(player=player, event=event)
+            # reset entry balance
+            Entry.objects.filter(id__in=entry_ids).update(balance_card=0, balance_membership=0, balance_signup=0)
+
+        else:
+            # Start validation
+            # Validate RFIDs
+            if not _validate_card_scan(rfids) or len(set(rfids))!= event.team_size():
+                messages.error(request, 'Invalid or duplicate RFIDs. Check the cards and try again.')
+                return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+
+            # Check if card/player registered
+            players = []
+            for rfid in rfids:
+                reg_url = reverse('22k:register', args=[event.tournament_id, rfid])
+                try:
+                    player = Card.objects.get(rfid=rfid).player
+                    players.append(player)
+                except ObjectDoesNotExist:
+                    #player with the card has not been registered yet!
+                    messages.error(request, 'Card is not registered yet. <a href="%s">Click here to register</a>' % (reg_url))
+                    # return HttpResponseRedirect(reverse('22k:register', args=[event.tournament_id, rfid]))
+                    return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+                else:
+                    if not player.is_registered(event.tournament):
+                        messages.error(request, '%s is not registered yet. <a href="%s">Click here to register</a>' % (player, reg_url))
+                        return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+            
+            
+            # Check players are qualifeid for the event
+            for player in players:
+                if event.is_official() and not player.is_qualified(event.tournament):
+                    messages.error(request, '%s is NOT qualified for this event!' % (player.full_name))
+                    return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+                elif event.is_ladies_event() and not player.is_lady():
+                    messages.error(request, '%s is not allowed for ladies event' % (player.full_name))
                     return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
 
-        # Check signup fee payment
-        entries = Entry.objects.filter(player__in=players, tournament=event.tournament)
-        for entry in entries:
-            if not entry.player.is_paid_for(event=event):
-                entry.balance_signup = entry.balance_signup + event.signup_fee
-                entry.save()
-
-        # Okay to procced to sign up
-        if event.is_lotd():
-            # blind draw event. add player to drawentry
+            # Check players are already signed up/ and make entry list
             for player in players:
-                DrawEntry.objects.create(event=event, player=player)
-                messages.success(request, '%s signed up successfully.' % (player.full_name))
-        else:
-            # singles or bring event. create a team
-            team_name = ', '.join(player.full_name for player in players)
-            team = Team.objects.create(event=event, name=team_name)
-            for player in players:
-                team.players.add(player)
+                if event.is_lotd():
+                    if event.drawentry_set.filter(player=player).exists():
+                        messages.error(request, '%s has already signed up!' % (player.full_name))
+                        return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
+                else:
+                    if event.team_set.filter(players=player).exists():
+                        messages.error(request, '%s has already signed up!' % (player.full_name))
+                        return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
 
-            messages.success(request, '%s signed up successfully.' % (team.name))
+            # Check signup fee payment
+            entries = Entry.objects.filter(player__in=players, tournament=event.tournament)
+            for entry in entries:
+                if not entry.player.is_paid_for(event=event):
+                    entry.balance_signup = entry.balance_signup + event.signup_fee
+                    entry.save()
 
-        context['entries'] = entries
+            context['entries'] = entries
+            messages.info(request, 'Collect payment to finish the signup.')
 
         # if event.draw != 'L':
         #     team = Team(event=event)
