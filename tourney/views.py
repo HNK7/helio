@@ -771,10 +771,14 @@ def event_signup(request, e_id):
             # Check signup fee payment
             entries = Entry.objects.filter(player__in=players, tournament=event.tournament)
             for entry in entries:
-                if not entry.player.is_paid_for(event=event):
-                    # entry.balance_signup = entry.balance_signup + event.signup_fee
-                    # entry.save()
-                    SignupPayment.objects.get_or_create(player=player, event=event)
+                signup_payment, created = SignupPayment.objects.get_or_create(player=player, event=event)
+                if created:
+                    if not signup_payment.paid:
+                        entry.balance_signup = entry.balance_signup + event.signup_fee
+                        entry.save()
+
+
+                    
 
             context['entries'] = entries
             messages.info(request, 'Collect payment to finish the signup.')
