@@ -440,5 +440,6 @@ class PreRegVegas(Address):
     sun_doubles = models.BooleanField(default=False)
     partner_cricket = models.CharField(max_length=255, blank=True, null=True)
     partner_01 = models.CharField(max_length=255, blank=True, null=True)
-    note = models.CharField(max_length=255, blank=True, null=True)
+    note = models.TextField(blank=True, null=True)
+    balance = models.DecimalField('credit', max_digits=8, decimal_places=2, default=0.00)
 
