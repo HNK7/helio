@@ -331,6 +331,7 @@ class Card(models.Model):
 class SignupPayment(models.Model):
     player = models.ForeignKey('Player')
     event = models.ForeignKey('Event')
+    paid = models.BooleanField(default=False)
 
     def __unicode__(self):
         return '%s paid for %s' % (self.player, self.event) 
