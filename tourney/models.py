@@ -334,7 +334,10 @@ class SignupPayment(models.Model):
     paid = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return '%s paid for %s' % (self.player, self.event) 
+        if self.paid:
+            return '%s paid for %s' % (self.player, self.event)
+        else:
+            return '%s need to pay for %s' % (self.player, self.event)
 
 
 

@@ -708,18 +708,18 @@ def event_signup(request, e_id):
             if event.is_lotd():
                 # blind draw event. add player to drawentry
                 for player in players:
-                    DrawEntry.objects.create(event=event, player=player)             
+                    DrawEntry.objects.get_or_create(event=event, player=player)             
                     messages.success(request, '%s signed up successfully.' % (player.full_name))
             else:
                 # singles or bring event. create a team
                 team_name = ', '.join(player.full_name for player in players)
-                team = Team.objects.create(event=event, name=team_name)
+                team = Team.objects.get_or_create(event=event, name=team_name)
                 for player in players:
                     team.players.add(player)
                 messages.success(request, 'Team - %s signed up successfully.' % (team.name))
 
             # book signup fee payment record
-            SignupPayment.object.filter(player__in=players, event=event).update(paid=True)
+            SignupPayment.objects.filter(player__in=players, event=event).update(paid=True)
             # reset entry balance
             Entry.objects.filter(id__in=entry_ids).update(balance_card=0, balance_membership=0, balance_signup=0)
 
