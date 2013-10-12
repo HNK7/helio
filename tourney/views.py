@@ -719,8 +719,7 @@ def event_signup(request, e_id):
                 messages.success(request, 'Team - %s signed up successfully.' % (team.name))
 
             # book signup fee payment record
-            for player in players:
-                SignupPayment.objects.get_or_create(player=player, event=event)
+            SignupPayment.object.filter(player__in=players, event=event).update(paid=True)
             # reset entry balance
             Entry.objects.filter(id__in=entry_ids).update(balance_card=0, balance_membership=0, balance_signup=0)
 
@@ -773,8 +772,9 @@ def event_signup(request, e_id):
             entries = Entry.objects.filter(player__in=players, tournament=event.tournament)
             for entry in entries:
                 if not entry.player.is_paid_for(event=event):
-                    entry.balance_signup = entry.balance_signup + event.signup_fee
-                    entry.save()
+                    # entry.balance_signup = entry.balance_signup + event.signup_fee
+                    # entry.save()
+                    SignupPayment.objects.get_or_create(player=player, event=event)
 
             context['entries'] = entries
             messages.info(request, 'Collect payment to finish the signup.')
