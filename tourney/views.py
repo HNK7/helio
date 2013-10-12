@@ -742,14 +742,14 @@ def event_signup(request, e_id):
                     messages.error(request, '%s has already signed up!' % (player.full_name))
                     return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
 
-         # Check signup fee payment
+        # Check signup fee payment
+        entries = Entry.objects.filter(player__in=players, tournament=event.tournament)
         for entry in entries:
             if not entry.player.is_paid_for(event=event):
                 entry.balance_signup = entry.balance_signup + event.signup_fee
                 entry.save()
 
         # Okay to procced to sign up
-        entries = Entry.objects.filter(player__in=players, tournament=event.tournament)
         if event.is_lotd():
             # blind draw event. add player to drawentry
             for player in players:
