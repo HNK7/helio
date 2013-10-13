@@ -36,6 +36,45 @@ class Address(models.Model):
     class Meta:
         abstract = True
 
+class Card(models.Model):
+    rfid = models.CharField(max_length=255, editable=False, unique=True)
+    cardno = models.CharField(max_length=16, editable=False, unique=True)
+    # used = models.DateTimeField(null=True)
+    player = models.OneToOneField('Player')
+
+    def __unicode__(self):
+        return self.cardno
+
+    def is_valid(self, league=False):
+        #invalid format
+        if not self.cardno.isdigit() or len(self.cardno) != 16:
+            return False
+        cursor = connections['hi'].cursor()
+        if league:
+            cursor.execute("SELECT cardno from lg_checkrfid where cardno=%s", [self.cardno])
+        else:
+            cursor.execute("SELECT cardno from checkrfid where cardno=%s", [self.cardno])
+        r = cursor.fetchone()
+        return True if r else False
+
+    def orginal_rfid(self):
+        cursor = connections['hi'].cursor()
+        cursor.execute("SELECT getorigrfid2(%s)", [self.rfid])
+        r = cursor.fetchone()
+        return r[0]
+
+    def is_new(self):
+        cursor = connections['hi'].cursor()
+        cursor.execute("SELECT utime FROM checkrfid WHERE rfid=%s", [self.rfid])
+        r = cursor.fetchone()
+        return False if r[0] else True
+
+    def live_stat(self):
+        cursor = connections['hi'].cursor()
+        cursor.execute("SELECT mpr_ta2, ppd_ta2 FROM useravg WHERE rfid=getorigrfid2(%s)", [self.rfid])
+        r = cursor.fetchone()
+        return {'mpr': r[0], 'ppd': r[1]}
+
 
 class Player(Address):
     gender_choices = (
@@ -64,12 +103,12 @@ class Player(Address):
 
     @property
     def card_number(self):
-        return Card.objects.get(player=self).cardno
+        return self.card.cardno
         # return self.cardno
 
     @property
     def rfid(self):
-        return Card.objects.get(player=self).rfid
+        return self.card.rfid
 
     def is_profile_valid(self):
         return True if self.card_number and self.phone and self.email and self.gender else False
@@ -300,32 +339,6 @@ class Team(models.Model):
         return team_name
 
 
-class Card(models.Model):
-    rfid = models.CharField(max_length=255, editable=False, unique=True)
-    cardno = models.CharField(max_length=16, editable=False, unique=True)
-    # used = models.DateTimeField(null=True)
-    player = models.OneToOneField(Player)
-
-    def __unicode__(self):
-        return self.cardno
-
-    def orginal_rfid(self):
-        cursor = connections['hi'].cursor()
-        cursor.execute("SELECT getorigrfid2(%s)", [self.rfid])
-        r = cursor.fetchone()
-        return r[0]
-
-    def is_new(self):
-        cursor = connections['hi'].cursor()
-        cursor.execute("SELECT utime FROM checkrfid WHERE rfid=%s", [self.rfid])
-        r = cursor.fetchone()
-        return False if r[0] else True
-
-    def live_stat(self):
-        cursor = connections['hi'].cursor()
-        cursor.execute("SELECT mpr_ta2, ppd_ta2 FROM useravg WHERE rfid=getorigrfid2(%s)", [self.rfid])
-        r = cursor.fetchone()
-        return {'mpr': r[0], 'ppd': r[1]}
 
 
 class SignupPayment(models.Model):
