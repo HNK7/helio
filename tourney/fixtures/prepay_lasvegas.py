@@ -6,9 +6,9 @@ sys.path.append('/Applications/djangostack-1.4.6-0/apps/django/django_projects/h
 sys.path.append('/Applications/djangostack-1.4.5-0/apps/django/django_projects/helio')
 
 from csv import reader
-from helio import settings
+from helio.settings import local 
 from django.core.management import setup_environ
-setup_environ(settings)
+setup_environ(local)
 from tourney.models import PreRegVegas
 
 
@@ -22,21 +22,10 @@ class PhoenixCard(object):
     def __str__(self):
         return '%s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s' % tuple(self.number)
 
-    @property
-    def number(self):
-        return self._number
-
-    @number.setter
-    def number(self, n):
-        # clean up card number
-        c_n = ''.join(n.strip().split())
-        if not c_n.isdigit() or len(c_n) != 16:
-            raise Exception("Invalid Phoenix Card Number: %s" % (n))
-        self._number = c_n
 
 def register(item, line_no):
     cleaned_item = map(str.strip, item)
-    (Payment, Operator, First_Name, Last_Name, Mobile, Email, Adress, Casual_Card, League_Card,
+    (Payment, Operator, First_Name, Last_Name, Mobile, Email, Address, Casual_Card, League_Card,
       Fri_Singles, Sat_Doubles, Sat_Triples, Sun_Doubles, Package_Purchased,
       Paid_Amount, Balance, CR_Partner, Zero_Parter, Note ) = cleaned_item
 
@@ -46,31 +35,36 @@ def register(item, line_no):
     line_number = '%s: ' % line_no
     first_name = First_Name.title()
     last_name = Last_Name.title()
-    mobile = Mobile
-    # cn  = ''.join(Casual_Card.split())
-    # ln  = ''.join(League_Card.split())
-    # c_number = '%s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s' % tuple(cn) if len(cn) == 16 else 'invalid'
-    # l_number = '%s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s' % tuple(ln) if len(ln) == 16 else 'invalid'
-    c_card = PhoenixCard(number=Casual_Card)
-    l_card = PhoenixCard(number=League_Card)
+    cn  = ''.join(Casual_Card.split())
+    ln  = ''.join(League_Card.split())
+    c_number = '%s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s' % tuple(cn) if len(cn) == 16 else 'invalid'
+    l_number = '%s%s%s%s %s%s%s%s %s%s%s%s %s%s%s%s' % tuple(ln) if len(ln) == 16 else 'invalid'
+    fri_singles = True if Fri_Singles == 'yes' else False
+    sat_doubles = True if Sat_Doubles == 'yes' else False
+    sat_triples = True if Sat_Triples == 'yes' else False
+    sun_doubles = True if Sun_Doubles == 'yes' else False
+    credit = Paid_Amount.replace('$', '')
+    balance = Balance.replace('$', '')
+
     # print line_number, first_name, last_name, c_number, cn, l_number, ln
-    print line_number, first_name, last_name, c_card, l_card
-    # print First_Name, Last_Name, Email, Phone, Zip, Amount, Note
-    # pre_reg = PreRegPlayer.objects.create(first_name=First_Name.title(),
-    #                                last_name=Last_Name.title(),
-    #                                email=Email.lower(),
-    #                                phone=Phone,
-    #                                zipcode=Zip,
-    #                                credit=Amount,
-    #                                note=Note)
-    # pre_reg = PreRegPlayer(first_name=First_Name.title(),
-    #                                last_name=Last_Name.title(),
-    #                                email=Email.lower(),
-    #                                phone=Phone,
-    #                                zipcode=Zip,
-    #                                credit=Amount,
-    #                                note=Note)
-    # print "=> %s" % (pre_reg)
+    
+    pre_player = PreRegVegas.objects.create(first_name=first_name,
+        last_name=last_name,
+        mobile=Mobile,
+        email=Email,
+        casual_card=cn,
+        league_card=ln,
+        fri_singles=fri_singles,
+        sat_doubles=sat_doubles,
+        sat_triples=sat_triples,
+        sun_doubles=sun_doubles,
+        package=Package_Purchased,
+        credit=credit,
+        balance=balance,
+        partner_cricket=CR_Partner,
+        partner_01=Zero_Parter,
+        note=Note)
+    print "%s => %s" % (line_number, pre_player)
     # card.save()
     # entry = Entry(tournament=tourney, player=player)
     # entry.save()

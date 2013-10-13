@@ -442,4 +442,10 @@ class PreRegVegas(Address):
     partner_01 = models.CharField('501 Partner', max_length=255, blank=True, null=True)
     note = models.TextField(blank=True, null=True)
     balance = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    operator = models.CharField(max_length=255)
+    package = models.CharField(max_length=255)
+    credit = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+
+    def __unicode__(self):
+        return '%s %s' % (self.first_name.title(), self.last_name.title())
 
