@@ -43,9 +43,8 @@ def register(item, line_no):
     sat_doubles = True if Sat_Doubles == 'yes' else False
     sat_triples = True if Sat_Triples == 'yes' else False
     sun_doubles = True if Sun_Doubles == 'yes' else False
-    credit = Paid_Amount.replace('$', '')
-    balance = Balance.replace('$', '')
-
+    credit = Paid_Amount.replace('$', '') if Paid_Amount else 0
+    balance = Balance.replace('$', '') if Balance else 0
     # print line_number, first_name, last_name, c_number, cn, l_number, ln
     
     pre_player = PreRegVegas.objects.create(first_name=first_name,
@@ -73,5 +72,5 @@ with open('prepay_lasvegas.csv') as f:
     reader = reader(f)
     line_no = 1
     for row in reader:
-      register(row, line_no)
-      line_no += 1
+        register(row, line_no)
+        line_no += 1
