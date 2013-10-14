@@ -11,7 +11,7 @@ from helio.settings import local, production
 from django.core.management import setup_environ
 setup_environ(production)
 from tourney.models import PreRegVegas, Player, Card, Entry
-from tourney.phoenixcard import PhoenixCard
+from tourney.pheonixcard import PhoenixCard
 
 counter = {'22k': 0, 'casual_invalid': 0, 'league_invalid': 0}
 
