@@ -3,13 +3,13 @@
 import sys
 from decimal import Decimal
 sys.path.append('/home/sopae/djangostack-1.4.5-0/apps/django/django_projects/helio')
-sys.path.append('/Applications/djangostack-1.4.6-0/apps/django/django_projects/helio')
-sys.path.append('/Applications/djangostack-1.4.5-0/apps/django/django_projects/helio')
+# sys.path.append('/Applications/djangostack-1.4.6-0/apps/django/django_projects/helio')
+# sys.path.append('/Applications/djangostack-1.4.5-0/apps/django/django_projects/helio')
 
 from csv import reader
 from helio.settings import local
 from django.core.management import setup_environ
-setup_environ(local)
+setup_environ(production)
 from tourney.models import PhoenixCard, PreRegVegas, Player, Card, Entry
 
 counter = {'22k': 0, 'casual_invalid': 0, 'league_invalid': 0}
