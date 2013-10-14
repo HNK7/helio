@@ -67,7 +67,7 @@ def send_draw_sms(request, e_id):
     return HttpResponseRedirect(reverse('22k:event_signup', args=(event.id,)))
 
 
-@login_required
+# @login_required
 def index(request):
     tournament_list = Tournament.objects.all().order_by('-start_at').annotate(num_players=Count('players'))
     context = {'tournament_list': tournament_list}

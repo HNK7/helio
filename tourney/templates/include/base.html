@@ -28,9 +28,7 @@
             </div>
             
         </div>
-        {% if user.is_authenticated %}
-                    <div class="navbar-text"><a href="{% url logout %}">{{ user.username }}: log out</a></div>
-        {% endif %}
+        
     </div>
     <header></header>
     {% block body %}

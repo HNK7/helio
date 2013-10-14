@@ -4,6 +4,55 @@ from datetime import datetime, timedelta
 from django.contrib.localflavor.us.models import USStateField
 from decimal import Decimal
 
+class PhoenixCard:
+    def __init__(self, cardno=None, rfid=None):
+        if not cardno and not rfid:
+            raise Exception('cardno or rfid needs to be set')
+        else:
+            if cardno and (len(str(cardno)) != 16 or not str(cardno).isdigit()):
+                raise Exception('invalid card number')
+            if rfid and (len(str(rfid)) != 32 or not str(rfid).isdigit()):
+                raise Exception('invalid rfid')
+            self.cardno = str(cardno)
+            self.rfid = str(rfid)
+
+    def get_cardno(self):
+        if self.cardno:
+            return self.cardno
+        elif self.rfid:
+            cursor = connections['hi'].cursor()
+            try:
+                cursor.execute('SELECT cardno from checkrfid where rfid=%s', [self.rfid])
+                r = cursor.fetchone()
+            except Exception:
+                raise Exception('invalid rfid number')
+            if r:
+                return r[0]
+            else:
+                raise Exception('invalid rfid number')
+        else:
+            raise Exception('cardno or rfid needs to be set')
+
+    def get_rfid(self):
+        if self.rfid:
+            return self.rfid
+        elif self.cardno:
+            cursor = connections['hi'].cursor()
+            try:
+                cursor.execute('SELECT rfid from checkrfid where rfid=%s', [self.cardno])
+                r = cursor.fetchone()
+            except Exception:
+                raise Exception('invalid rfid number')
+            if r:
+                return r[0]
+            else:
+                raise Exception('invalid rfid number')
+        else:
+            raise Exception('cardno or rfid needs to be set')
+
+    def __str__(self):
+        return self.cardno if self.cardno else self.rfid
+
 
 class Tournament(models.Model):
     title = models.CharField(max_length=255)
@@ -74,6 +123,27 @@ class Card(models.Model):
         cursor.execute("SELECT mpr_ta2, ppd_ta2 FROM useravg WHERE rfid=getorigrfid2(%s)", [self.rfid])
         r = cursor.fetchone()
         return {'mpr': r[0], 'ppd': r[1]}
+
+    def casual_stat(self, cardno=None):
+        cursor = connections['hi'].cursor()
+        if cardno == '':
+            return {'PPD': None, 'MPR': None}
+        elif len(cardno) == 16:
+            cursor.execute("select ppd_ta2, mpr_ta2 from useravg a, userinfo b where a.rfid=b.rfid and b.cardno=%s", [cardno])
+        elif cardno==None:
+            cursor.execute("SELECT ppd_ta2, mpr_ta2 FROM useravg where rfid = getorigrfid2(%s)", [self.rfid])
+        r = cursor.fetchone()
+        return {'PPD': r[0], 'MPR': r[1]} if r else {'PPD': None, 'MPR': None}
+
+    def league_stat(self, cardno=None):
+        cursor = connections['hi'].cursor()
+        if cardno:
+            cursor.execute("SELECT ppd_ta, mpr_ta FROM ml.luser a, ml.luserinfo b  where a.rfid=b.rfid and b.cardno=%s", [cardno])
+        else:
+            cursor.execute("SELECT ppd_ta, mpr_ta FROM ml.luser where rfid = getorigrfid2(%s)", [self.rfid])
+        r = cursor.fetchone()
+        return {'PPD': r[0], 'MPR': r[1]} if r else {'PPD': None, 'MPR': None}
+
 
 
 class Player(Address):
@@ -192,6 +262,7 @@ class Entry(models.Model):
 
     class Meta:
         unique_together = (('tournament', 'player'))
+        get_latest_by = 'created_at'
 
     def __unicode__(self):
         return "%s registered for %s" % (self.player.full_name, self.tournament.title)
@@ -440,6 +511,7 @@ class PreRegPlayer(Player):
     def __unicode__(self):
         return self.full_name
 
+
 class PreRegVegas(Address):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
@@ -462,3 +534,8 @@ class PreRegVegas(Address):
     def __unicode__(self):
         return '%s %s' % (self.first_name.title(), self.last_name.title())
 
+    def get_22k_member(self):
+        try:
+            return Player.objects.get(card__cardno=self.casual_card)
+        except Player.DoesNotExist:
+            return Player.objects.none()
