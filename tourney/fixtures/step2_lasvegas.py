@@ -7,7 +7,7 @@ sys.path.append('/Applications/djangostack-1.4.6-0/apps/django/django_projects/h
 sys.path.append('/Applications/djangostack-1.4.5-0/apps/django/django_projects/helio')
 
 from csv import reader
-from helio.settings import local 
+from helio.settings import local
 from django.core.management import setup_environ
 setup_environ(local)
 from tourney.models import PhoenixCard, PreRegVegas, Player, Card, Entry
@@ -21,8 +21,8 @@ for no, reg in enumerate(PreRegVegas.objects.all(), start=1):
             card.rfid = card.get_rfid()
             stat = card.get_stat()
             print no, reg.first_name, reg.last_name, card.cardno, stat['PPD'], stat['MPR']
-        except:
-            print no, reg.first_name, reg.last_name, "invalid casual number"
+        except Exception, e:
+            print no, reg.first_name, reg.last_name, "invalid casual number:%s" % e
             pass
     else:
         print no, reg.first_name, reg.last_name, "no casual card"
