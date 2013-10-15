@@ -64,9 +64,9 @@ class Card(models.Model):
 
     def is_new(self):
         cursor = connections['hi'].cursor()
-        cursor.execute("SELECT utime FROM checkrfid WHERE rfid=%s", [self.rfid])
+        cursor.execute("SELECT rfid FROM userinfo WHERE rfid=getorigrfid2(%s)", [self.rfid])
         r = cursor.fetchone()
-        return False if r[0] else True
+        return True if r == None else False
 
     def live_stat(self):
         cursor = connections['hi'].cursor()

@@ -1,4 +1,4 @@
-from django.db import connections
+from django.db import connections, transaction
 
 class PhoenixCard:
     def __init__(self, cardno=None, rfid=None):
@@ -50,7 +50,7 @@ class PhoenixCard:
 
     def get_stat(self):
         try:
-            self.cursor.execute('SELECT ppd_ta2, mpr_ta2 from useravg a, checkrfid b where a.rfid=getorigrfid2(b.rfid) and (b.cardno=%s or b.rfid=%s)', [self.cardno, self.rfid])
+            self.cursor.execute('SELECT ppd_ta2, mpr_ta2 from useravg a, checkrfid b where a.rfid=getorigrfid2(b.rfid) and (b.cardno=%s or b.rfid=getorigrfid2(%s))', [self.cardno, self.rfid])
             r = self.cursor.fetchone()
         except Exception, e:
             raise Exception('invalid card:%s' % [e])
@@ -61,11 +61,11 @@ class PhoenixCard:
 
     def is_new(self):
         try:
-            self.cursor.execute('SELECT utime from checkrfid a, userinfo b where a.rfid=b.rfid and a.cardno=%s or b.rfid=%s', [self.cardno, self.rfid])
+            self.cursor.execute('SELECT rfid from userinfo  where cardno=%s or rfid=getorigrfid2(%s)', [self.cardno, self.rfid])
             r = self.cursor.fetchone()
         except Exception, e:
-            raise Exception('invalid card:%s' % [e])
-        return False if r else True 
+            raise Exception('Invalid card:%s' % [e])
+        return True if r == None else False
 
 class PhoenixLeagueCard(PhoenixCard):
    

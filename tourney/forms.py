@@ -103,6 +103,8 @@ class CardScanForm(forms.Form):
 class CardCopyForm(forms.Form):
     new_card = PxRFIDField(max_length=32)
     current_card = PxCardNumberField(max_length=32, widget=forms.HiddenInput)
+    current_rfid = PxRFIDField(max_length=32, widget=forms.HiddenInput)
+
 
 class QualifyForm(forms.Form):
     league_card = forms.CharField(max_length=16)

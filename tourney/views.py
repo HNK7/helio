@@ -148,6 +148,19 @@ def player(request):
     context['player_total'] = len(players)
     return render(request, 'tourney/player.html', context)
 
+
+def _do_card_copy(old_cardno, old_rfid, new_cardno, new_rfid):
+    cursor = connections['hi'].cursor()
+    cursor.execute("UPDATE checkrfid set utime=now() where rfid=%s", [new_rfid])
+    cursor.execute("INSERT INTO cardcopy values(%s, %s, %s, %s, now())", [old_rfid, old_cardno, new_rfid, new_cardno])
+    cursor.execute("UPDATE checkrfid set dtime=now() where rfid=%s", [old_rfid])
+    cursor.execute('UPDATE userinfo SET cardno=%s where cardno=%s', [new_cardno, old_cardno])
+    transaction.commit_unless_managed(using='hi')
+
+    # update card info in helio
+    Card.objects.get(rfid=old_rfid).update(rfid=new_rfid, cardno=new_cardno)
+
+
 def card_copy(request, e_id):
     context = dict()
     entry = get_object_or_404(Entry, id=e_id)
@@ -155,13 +168,15 @@ def card_copy(request, e_id):
         form = CardCopyForm(request.POST)
         if form.is_valid():
             new_rfid = form.cleaned_data['new_card']
-            current_card_cardno = form.cleaned_data['current_card']
-            old_card = PhoenixCard(cardno=current_card_cardno)
+            current_cardno = form.cleaned_data['current_card']
+            current_rfid = form.cleaned_data['current_rfid']
+
+            current_card = PhoenixCard(cardno=current_cardno)
             new_card = PhoenixCard(rfid=new_rfid)
             
             # make sure new card number is valid
             try:
-                new_card.get_cardno()
+                new_card_number = new_card.get_cardno()
             except Exception:
                 messages.error(request, 'Invalid card number!')
                 return HttpResponseRedirect(reverse('22k:card_copy', args=(entry.id,)))
@@ -169,10 +184,14 @@ def card_copy(request, e_id):
             if not new_card.is_new():
                 messages.error(request, 'Card is already in use! Try with new one')
                 return HttpResponseRedirect(reverse('22k:card_copy', args=(entry.id,)))
-                
+            # make card coopy
+            _do_card_copy(current_cardno, current_rfid, new_card_number, new_rfid)
+
+
             return HttpResponseRedirect(reverse('22k:entry_detail', args=(entry.tournament.id, entry.id)))
     else:
-        current_card = {'current_card': entry.player.card.cardno}
+        current_card = {'current_card': entry.player.card.cardno,
+                        'current_rfid': entry.player.card.rfid}
         form = CardCopyForm(initial=current_card)
     
     context['form'] = form
