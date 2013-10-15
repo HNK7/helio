@@ -158,7 +158,7 @@ def _do_card_copy(old_cardno, old_rfid, new_cardno, new_rfid):
     transaction.commit_unless_managed(using='hi')
 
     # update card info in helio
-    Card.objects.get(rfid=old_rfid).update(rfid=new_rfid, cardno=new_cardno)
+    Card.objects.filter(rfid=old_rfid).update(rfid=new_rfid, cardno=new_cardno)
 
 
 def card_copy(request, e_id):
@@ -234,6 +234,10 @@ def entry_edit(request, t_id, e_id):
             last_name = form.cleaned_data['last_name']
             gender = form.cleaned_data['gender']
             mobile = form.cleaned_data['mobile']
+            balance_membership = form.cleaned_data['balance_membership']
+            balance_signup = form.cleaned_data['balance_signup']
+            balance_card = form.cleaned_data['balance_card']
+            qualified = form.cleaned_data['qualified']
             
             player = entry.player 
             if first_name != player.first_name or last_name != player.last_name:
@@ -245,7 +249,11 @@ def entry_edit(request, t_id, e_id):
             player.gender = gender
             player.phone = mobile
             player.save()
-            entry.qualified = form.cleaned_data['qualified']
+
+            entry.balance_membership = balance_membership
+            entry.balance_signup = balance_signup
+            entry.balance_card = balance_card
+            entry.qualified = qualified
             entry.save()
 
             # update team and player stat
@@ -258,6 +266,9 @@ def entry_edit(request, t_id, e_id):
                       'last_name': player.last_name.title(),
                       'gender': player.gender,
                       'mobile': player.phone,
+                      'balance_membership': entry.balance_membership,
+                      'balance_signup': entry.balance_signup,
+                      'balance_card': entry.balance_card,
                       'qualified': entry.qualified}
         form = EntryForm(initial=entry_data)
 

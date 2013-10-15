@@ -65,7 +65,11 @@ class EntryForm(forms.Form):
     last_name = forms.CharField(max_length=255)
     gender = forms.ChoiceField(choices = (('M', 'Man'), ('F', 'Lady')))
     mobile = forms.CharField(max_length=40)
+    balance_membership = forms.DecimalField(max_digits=8, decimal_places=2, required=False)
+    balance_signup = forms.DecimalField(max_digits=8, decimal_places=2, required=False)
+    balance_card = forms.DecimalField(max_digits=8, decimal_places=2, required=False)
     qualified = forms.BooleanField(required=False)
+
 
 
 class MatchForm(ModelForm):
