@@ -64,7 +64,7 @@
                         <td><a href="{% url 22k:entry_detail tournament.id e.id %}">{{ e.player.full_name|title }}</a></td>
                         <td>{{ e.player.gender }}</td>
                         <!--td>{{ e.player.card_number|format_card_number }}</td-->
-                        <td><span class="muted">{{e.player.card_number|format_card_number}}</span></td>
+                        <td><span class="muted">{{ e.player.rfid }}</span></td>
                         <td style="text-align: right">{{ e.mpr_rank }}</td>
                         <td style="text-align: right">{{ e.ppd_rank }}</td>
                         <td style="text-align: right">{{ e.mpr_event }}</td>
