@@ -176,7 +176,7 @@ def entry_big(request, t_id):
 def profile(request, p_id):
     context = dict()
     # context['tournament_list'] = Tournament.objects.all()
-    player = Player.objects.get(id=p_id)
+    player = get_object_or_404(Player, id=p_id)
     casual_stat = player.casual_stat()
     event_stat = player.event_stat()
     # entries = player.entry_set.all()
@@ -716,6 +716,17 @@ def event_signup(request, e_id):
                 team = Team.objects.get_or_create(event=event, name=team_name)
                 for player in players:
                     team.players.add(player)
+                    
+                    rank_mpr = player.stat_rank(event.tournament)['MPR']
+                    rank_ppd = player.stat_rank(event.tournament)['PPD']
+                    
+                    team.mpr_rank += rank_mpr
+                    team.ppd_rank += rank_ppd
+                
+                # cacluate average
+                team.mpr_rank = team.mpr_rank / len(players)
+                team.ppd_rank = team.ppd_rank / len(players)
+                team.save()
                 messages.success(request, 'Team - %s signed up successfully.' % (team.name))
 
             # book signup fee payment record
@@ -776,12 +787,11 @@ def event_signup(request, e_id):
                     if not signup_payment.paid:
                         entry.balance_signup = entry.balance_signup + event.signup_fee
                         entry.save()
-
-
-                    
+                        messages.info(request, 'Collect payment to finish the signup.')
+                elif signup_payment.paid:
+                    messages.info(request, '%s' % signup_payment)
 
             context['entries'] = entries
-            messages.info(request, 'Collect payment to finish the signup.')
 
         # if event.draw != 'L':
         #     team = Team(event=event)

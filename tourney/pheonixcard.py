@@ -60,3 +60,52 @@ class PhoenixCard:
             return {'PPD': r[0], 'MPR': r[1]}
         else:
             raise Exception('invalid card')
+
+
+class PheonixLeagueCard(PhoenixCard):
+   
+    def get_cardno(self):
+        if self.cardno:
+            return self.cardno
+        elif self.rfid:
+            cursor = connections['hi'].cursor()
+            try:
+                cursor.execute('SELECT cardno from lg_checkrfid where rfid=%s', [self.rfid])
+                r = cursor.fetchone()
+            except Exception:
+                raise Exception('invalid rfid number')
+            if r:
+                return str(r[0])
+            else:
+                raise Exception('invalid rfid number')
+        else:
+            raise Exception('cardno or rfid needs to be set')
+
+    def get_rfid(self):
+        if self.rfid:
+            return self.rfid
+        elif self.cardno:
+            cursor = connections['hi'].cursor()
+            try:
+                cursor.execute('SELECT rfid from lg_checkrfid where cardno=%s', [self.cardno])
+                r = cursor.fetchone()
+            except Exception:
+                raise Exception('invalid card number')
+            if r:
+                return str(r[0])
+            else:
+                raise Exception('invalid card number')
+        else:
+            raise Exception('cardno or rfid needs to be set')
+
+    def get_stat(self):
+        cursor = connections['hi'].cursor()
+        try:
+            cursor.execute('SELECT ppd_ta, mpr_ta from ml.luser a, lg_checkrfid b where a.rfid=getorigrfid2(b.rfid) and (b.cardno=%s or b.rfid=%s)', [self.cardno, self.rfid])
+            r = cursor.fetchone()
+        except Exception, e:
+            raise Exception('invalid card:%s' % [e])
+        if r:
+            return {'PPD': r[0], 'MPR': r[1]}
+        else:
+            raise Exception('invalid card')
