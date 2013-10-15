@@ -1,0 +1,76 @@
+{% extends 'include/base.html' %}
+{% load app_filters %}
+{% block body %}
+<div class="container">
+          <!-- Body -->
+            <div class="span8">
+                <div class="page-header">
+                    <h1>{{ player }} <a href="{% url 22k:entry_edit entry.tournament.id entry.id %}" class="btn btn-mini"><i class="icon-edit"></i> Edit</a></h1>
+
+                </div>
+                <h4 class="lead">Basic Info </h4>
+                <table class="table lead">
+                    <thead>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="muted">Card No</td>
+                            <td>{{ player.card_number|format_card_number }}<a href="{% url 22k:card_copy entry.id %}" class="pull-right btn btn-mini"><i class="icon-tags"></i> Copy</a> <!--small class="muted">(RFID: {{ player.rfid }})</small-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="muted">User ID</td>
+                            <td class="lead">
+                                {% if player.user_id %}
+                                <a href="http://us.phoenixdart.com" target="_blank">{{ player.user_id }}</a>
+                                {% else %}
+                                Not registered yet!
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="muted">Gender</td>
+                            <td>{{ player.get_gender_display|title }}</td>
+                        </tr>
+                         <tr>
+                            <td class="muted">Stat</td>
+                            <td>
+                                <table class="table table-condensed">
+                                    <thead class="muted">
+                                        <th></th>
+                                        <th><small>MPR</small></th>
+                                        <th><small>PPD</small></th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="label label-important">EN</span></td>
+                                            <td>{% if event_stat.MPR == None %}<small>N/A</small>{% else %}{{ event_stat.MPR }}{% endif %}</td>
+                                            <td>{% if event_stat.PPD == None %}<small>N/A</small>{% else %}{{ event_stat.PPD }}{% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="label">CA</span></td>
+                                            <td>{% if casual_stat.MPR == None %}<small>N/A</small>{% else %}{{ casual_stat.MPR }}{% endif %}</td>
+                                            <td>{% if casual_stat.PPD == None %}<small>N/A</small>{% else %}{{ casual_stat.PPD }}{% endif %}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <legend>History</legend>
+                {% if entry_history %}
+                <div class="well">
+                    <ol>
+                    {% for e in entry_history %}
+                        <li><a href="{% url 22k:entry e.tournament.id%}">{{ e }}</a></li>
+                    {% endfor %}
+                    </ol>
+                </div>
+                {% endif %}
+
+            </div>
+</div>
+
+{% endblock %}

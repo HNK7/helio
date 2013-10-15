@@ -16,7 +16,7 @@ from string import Template
 from decimal import Decimal
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-
+from tourney.phoenixcard import PhoenixCard
 
 def convert_to_e164(raw_phone):
     if not raw_phone:
@@ -148,6 +148,38 @@ def player(request):
     context['player_total'] = len(players)
     return render(request, 'tourney/player.html', context)
 
+def card_copy(request, e_id):
+    context = dict()
+    entry = get_object_or_404(Entry, id=e_id)
+    if request.method == 'POST':
+        form = CardCopyForm(request.POST)
+        if form.is_valid():
+            new_rfid = form.cleaned_data['new_card']
+            current_card_cardno = form.cleaned_data['current_card']
+            old_card = PhoenixCard(cardno=current_card_cardno)
+            new_card = PhoenixCard(rfid=new_rfid)
+            
+            # make sure new card number is valid
+            try:
+                new_card.get_cardno()
+            except Exception:
+                messages.error(request, 'Invalid card number!')
+                return HttpResponseRedirect(reverse('22k:card_copy', args=(entry.id,)))
+            # check if it's new one
+            if not new_card.is_new():
+                messages.error(request, 'Card is already in use! Try with new one')
+                return HttpResponseRedirect(reverse('22k:card_copy', args=(entry.id,)))
+                
+            return HttpResponseRedirect(reverse('22k:entry_detail', args=(entry.tournament.id, entry.id)))
+    else:
+        current_card = {'current_card': entry.player.card.cardno}
+        form = CardCopyForm(initial=current_card)
+    
+    context['form'] = form
+    context['entry'] = entry
+    return render(request, 'tourney/card_copy.html', context)
+
+
 
 def entry(request, t_id):
     context = dict()
@@ -160,6 +192,59 @@ def entry(request, t_id):
 
     context['entry'] = entry
     return render(request, 'tourney/entry.html', context)
+
+def entry_detail(request, t_id, e_id):
+    context = dict()
+    entry = get_object_or_404(Entry, pk=e_id)
+    context['entry'] = entry
+    context['player'] = entry.player
+    context['entry_history'] = entry.player.entry_set.all().order_by('-created_at')
+
+    return render(request, 'tourney/entry_detail.html', context)
+
+
+def entry_edit(request, t_id, e_id):
+    context = dict()
+    context['tournament'] = Tournament.objects.get(pk=t_id)
+    entry = get_object_or_404(Entry, id=e_id)
+
+    if request.method == 'POST':
+        form = EntryForm(request.POST) # bound form with POST data
+        if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            gender = form.cleaned_data['gender']
+            mobile = form.cleaned_data['mobile']
+            
+            player = entry.player 
+            if first_name != player.first_name or last_name != player.last_name:
+                player.first_name = first_name
+                player.last_name = last_name
+                # update nick name on player's card
+                update_temp_card(player.full_name, player.card.rfid)
+
+            player.gender = gender
+            player.phone = mobile
+            player.save()
+            entry.qualified = form.cleaned_data['qualified']
+            entry.save()
+
+            # update team and player stat
+            # update_stat(form.cleaned_data['mpr_event'], form.cleaned_data['ppd_event'], entry.player.rfid)
+            return HttpResponseRedirect(reverse('22k:entry', args=(t_id,)))
+
+    else:
+        player = entry.player
+        entry_data = {'first_name': player.first_name.title(),
+                      'last_name': player.last_name.title(),
+                      'gender': player.gender,
+                      'mobile': player.phone,
+                      'qualified': entry.qualified}
+        form = EntryForm(initial=entry_data)
+
+    context['form'] = form
+    context['entry'] = entry
+    return render(request, 'tourney/entry_edit.html', context)
 
 
 def entry_big(request, t_id):
@@ -867,28 +952,6 @@ def event_signup2(request, e_id):
     context['event'] = event
     context['total_signup'] = event.team_set.count()
     return render(request, 'tourney/event_signup2.html', context)
-
-
-def entry_edit(request, t_id, e_id):
-    context = dict()
-    context['tournament'] = Tournament.objects.get(pk=t_id)
-    entry = get_object_or_404(Entry, id=e_id)
-
-    if request.method == 'POST':
-        form = EntryForm(request.POST, instance=entry) # bound form with POST data
-        if form.is_valid():
-            form.save()
-
-            # update team and player stat
-            update_stat(form.cleaned_data['mpr_event'], form.cleaned_data['ppd_event'], entry.player.rfid)
-            return HttpResponseRedirect(reverse('22k:entry', args=(t_id,)))
-
-    else:
-        form = EntryForm(instance=entry)
-
-    context['form'] = form
-    context['entry'] = entry
-    return render(request, 'tourney/entry_edit.html', context)
 
 
 def is_player_signup_any_event(t_id, entry_id):

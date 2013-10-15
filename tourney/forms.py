@@ -50,16 +50,22 @@ class PreRegisterForm(ModelForm):
     #               'zipcode')
 
 
-class EntryForm(ModelForm):
+class EntryFormOld(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ModelForm, self).__init__(*args, **kwargs)
         self.fields['mpr_event'].label = 'LIVE MPR'
         self.fields['ppd_event'].label = 'LIVE PPD'
 
-
     class Meta:
         model = Entry
         fields = ('mpr_event', 'ppd_event')
+
+class EntryForm(forms.Form):
+    first_name = forms.CharField(max_length=255)
+    last_name = forms.CharField(max_length=255)
+    gender = forms.ChoiceField(choices = (('M', 'Man'), ('F', 'Lady')))
+    mobile = forms.CharField(max_length=40)
+    qualified = forms.BooleanField(required=False)
 
 
 class MatchForm(ModelForm):
@@ -71,6 +77,19 @@ class CardForm(ModelForm):
     class Meta:
         model = Card
 
+class PxCardNumberField(forms.CharField):
+    def clean(self, value):
+        num_str = str(value)
+        if len(num_str) != 16 or not num_str.isdigit:
+            raise forms.ValidationError('Invalid Card Number')
+        return value
+
+class PxRFIDField(forms.CharField):
+    def clean(self, value):
+        num_str = str(value)
+        if len(num_str) != 20 or not num_str.isdigit():
+            raise forms.ValidationError('Invalid Card Number')
+        return value
 
 class CardScanForm(forms.Form):
     rfid = forms.CharField(max_length=20)
@@ -81,6 +100,9 @@ class CardScanForm(forms.Form):
             raise forms.ValidationError('Invalid RFID number format')
         return _rfid
 
+class CardCopyForm(forms.Form):
+    new_card = PxRFIDField(max_length=32)
+    current_card = PxCardNumberField(max_length=32, widget=forms.HiddenInput)
 
 class QualifyForm(forms.Form):
     league_card = forms.CharField(max_length=16)

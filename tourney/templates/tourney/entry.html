@@ -26,7 +26,7 @@
 <!--                             <th>Stat: <span class="label">CA</span> / <span class="label label-important">TN</span></th>
 -->                         <th colspan="2" style="text-align: center"><span class="label">CA</span></th>
                             <!-- <th>PPD <span class="label">CA</span></th> -->
-                            <th colspan="2" style="text-align: center"><span class="label label-important">TN</span></th>
+                            <th colspan="2" style="text-align: center"><span class="label label-important">EN</span></th>
 <!--                             <th>PPD <span class="label label-important">TN</span></th>
 -->                         <th rowspan="2" style="vertical-align:middle; text-align: right">Balance</th>
                             <th rowspan="2"></th>
@@ -61,10 +61,10 @@
                         {% endif %}
 
                         </td>
-                        <td><a href="{% url 22k:profile e.player.id %}">{{ e.player.full_name|title }}</a></td>
+                        <td><a href="{% url 22k:entry_detail tournament.id e.id %}">{{ e.player.full_name|title }}</a></td>
                         <td>{{ e.player.gender }}</td>
                         <!--td>{{ e.player.card_number|format_card_number }}</td-->
-                        <td><span class="muted">{{e.player.rfid}}</span></td>
+                        <td><span class="muted">{{e.player.card_number|format_card_number}}</span></td>
                         <td style="text-align: right">{{ e.mpr_rank }}</td>
                         <td style="text-align: right">{{ e.ppd_rank }}</td>
                         <td style="text-align: right">{{ e.mpr_event }}</td>
@@ -76,7 +76,7 @@
                                 <a href="{% url 22k:payment tournament.id e.player.rfid %}" class="btn btn-mini"><i class="icon-shopping-cart"></i> $$</a>
                                 {% endif %}
                                 <a href="{% url 22k:del_entry tournament.id e.id %}" class="btn btn-mini"><i class="icon-remove"></i> Withdraw</a>
-                                <a href="{% url 22k:entry_edit tournament.id e.id %}" class="btn btn-mini"><i class="icon-remove"></i> Edit</a>
+                                <a href="{% url 22k:entry_edit tournament.id e.id %}" class="btn btn-mini"><i class="icon-edit"></i> Edit</a>
                             </div>
                         </td>
                         <!-- <td>
