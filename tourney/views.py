@@ -229,6 +229,7 @@ def entry_edit(request, t_id, e_id):
 
     if request.method == 'POST':
         form = EntryForm(request.POST) # bound form with POST data
+        
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
