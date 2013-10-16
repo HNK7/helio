@@ -855,6 +855,7 @@ def event_signup(request, e_id):
                     team.save()
                 messages.success(request, 'Team - %s signed up successfully.' % (team.name))
                 # print signup recepits
+            if settings.PRINTER['LIVE']:
                 team = Team(name=player) if event.is_lotd() else team
                 print_signup_receipt(team, event)
                 print_bracket_label(team, event)
