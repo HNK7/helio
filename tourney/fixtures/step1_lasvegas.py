@@ -6,9 +6,9 @@ sys.path.append('/Applications/djangostack-1.4.6-0/apps/django/django_projects/h
 sys.path.append('/Applications/djangostack-1.4.5-0/apps/django/django_projects/helio')
 
 from csv import reader
-from helio.settings import local 
+from helio.settings import production 
 from django.core.management import setup_environ
-setup_environ(local)
+setup_environ(production)
 from tourney.models import PreRegVegas
 
 
