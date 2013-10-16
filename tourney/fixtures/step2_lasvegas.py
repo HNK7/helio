@@ -16,22 +16,21 @@ from tourney.pheonixcard import PhoenixCard
 counter = {'22k': 0, 'casual_invalid': 0, 'league_invalid': 0}
 
 for no, reg in enumerate(PreRegVegas.objects.all(), start=1):
-    
-    # First check ther user already registered for 100K
 
+    line = no + ':' + ' '.join([reg.first_name, reg.last_name])
     if reg.casual_card:
+        pxcard = PhoenixCard(cardno=reg.casual_card)
         try:
-            card = PhoenixCard(cardno=reg.casual_card)
-            card.rfid = card.get_rfid()
-            # stat = card.get_stat()
-            # print no, reg.first_name, reg.last_name, card.cardno, stat['PPD'], stat['MPR']
+            pxcard.get_rfid()
         except Exception, e:
-            # print no, reg.first_name, reg.last_name, card.cardno, e
-            print card.cardno
-            pass
-    else:
-        # print no, reg.first_name, reg.last_name, "no casual card"
-        pass
+            print line, e
+            continue
+        try:
+            Card.objects.get(cardno=pxcard.cardno)
+            print line, 'already registered'
+        except Card.DoesNotExist:
+            print line, 'new player'
+
 
 print 'Total: %s' % no
 print '22k Member: %s' % counter['22k']

@@ -44,13 +44,13 @@
                                     <tbody>
                                         <tr>
                                             <td><span class="label label-important">EN</span></td>
-                                            <td>{% if event_stat.MPR == None %}<small>N/A</small>{% else %}{{ event_stat.MPR }}{% endif %}</td>
-                                            <td>{% if event_stat.PPD == None %}<small>N/A</small>{% else %}{{ event_stat.PPD }}{% endif %}</td>
+                                            <td>{% if entry.mpr_rank == None %}<small>N/A</small>{% else %}{{ entry.mpr_rank }}{% endif %}</td>
+                                            <td>{% if entry.ppd_rank == None %}<small>N/A</small>{% else %}{{ entry.ppd_rank }}{% endif %}</td>
                                         </tr>
                                         <tr>
                                             <td><span class="label">CA</span></td>
-                                            <td>{% if casual_stat.MPR == None %}<small>N/A</small>{% else %}{{ casual_stat.MPR }}{% endif %}</td>
-                                            <td>{% if casual_stat.PPD == None %}<small>N/A</small>{% else %}{{ casual_stat.PPD }}{% endif %}</td>
+                                            <td>{% if entry.mpr_event == None %}<small>N/A</small>{% else %}{{ entry.mpr_event }}{% endif %}</td>
+                                            <td>{% if entry.ppd_event == None %}<small>N/A</small>{% else %}{{ entry.ppd_event }}{% endif %}</td>
                                         </tr>
                                     </tbody>
                                 </table>
