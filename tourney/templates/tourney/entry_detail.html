@@ -59,6 +59,17 @@
                     </tbody>
                 </table>
 
+                <legend>Events</legend>
+                {% if signup_events %}
+                <div class="well">
+                    <ul>
+                    {% for e in signup_events %}
+                        <li><a href="{% url 22k:event_signup e.id%}">{{ e }}</a></li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
                 <legend>History</legend>
                 {% if entry_history %}
                 <div class="well">

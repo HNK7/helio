@@ -173,7 +173,7 @@ def card_copy(request, e_id):
 
             current_card = PhoenixCard(cardno=current_cardno)
             new_card = PhoenixCard(rfid=new_rfid)
-            
+
             # make sure new card number is valid
             try:
                 new_card_number = new_card.get_cardno()
@@ -193,7 +193,7 @@ def card_copy(request, e_id):
         current_card = {'current_card': entry.player.card.cardno,
                         'current_rfid': entry.player.card.rfid}
         form = CardCopyForm(initial=current_card)
-    
+
     context['form'] = form
     context['entry'] = entry
     return render(request, 'tourney/card_copy.html', context)
@@ -215,10 +215,15 @@ def entry(request, t_id):
 def entry_detail(request, t_id, e_id):
     context = dict()
     entry = get_object_or_404(Entry, pk=e_id)
+    event_list = []
+    event_list += [ de.event for de in entry.player.drawentry_set.all() ]
+    event_list += [ t.event for t in entry.player.team_set.all() ]
     context['entry'] = entry
     context['player'] = entry.player
+    context['signup_events'] = event_list
     context['entry_history'] = entry.player.entry_set.all().order_by('-created_at')
 
+    # raise Exception('debug')
     return render(request, 'tourney/entry_detail.html', context)
 
 
@@ -229,7 +234,7 @@ def entry_edit(request, t_id, e_id):
 
     if request.method == 'POST':
         form = EntryForm(request.POST) # bound form with POST data
-        
+
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
@@ -239,8 +244,8 @@ def entry_edit(request, t_id, e_id):
             balance_signup = form.cleaned_data['balance_signup']
             balance_card = form.cleaned_data['balance_card']
             qualified = form.cleaned_data['qualified']
-            
-            player = entry.player 
+
+            player = entry.player
             if first_name != player.first_name or last_name != player.last_name:
                 player.first_name = first_name
                 player.last_name = last_name
@@ -815,34 +820,35 @@ def event_signup(request, e_id):
     if request.method == 'POST':
         rfids = filter(None, [request.POST.get('card1'), request.POST.get('card2'), request.POST.get('card3')])
         entry_ids = request.POST.getlist('entry_id')
-        
+
         # Validation step is done. finish signup
         if len(entry_ids) > 0:
-            players = [Entry.objects.get(pk=entry_id).player for entry_id in entry_ids]        
+            players = [Entry.objects.get(pk=entry_id).player for entry_id in entry_ids]
 
             # Okay to procced to sign up
             if event.is_lotd():
                 # blind draw event. add player to drawentry
                 for player in players:
-                    DrawEntry.objects.get_or_create(event=event, player=player)             
+                    DrawEntry.objects.get_or_create(event=event, player=player)
                     messages.success(request, '%s signed up successfully.' % (player.full_name))
             else:
                 # singles or bring event. create a team
                 team_name = ', '.join(player.full_name for player in players)
-                team = Team.objects.get_or_create(event=event, name=team_name)
-                for player in players:
-                    team.players.add(player)
-                    
-                    rank_mpr = player.stat_rank(event.tournament)['MPR']
-                    rank_ppd = player.stat_rank(event.tournament)['PPD']
-                    
-                    team.mpr_rank += rank_mpr
-                    team.ppd_rank += rank_ppd
-                
-                # cacluate average
-                team.mpr_rank = team.mpr_rank / len(players)
-                team.ppd_rank = team.ppd_rank / len(players)
-                team.save()
+                team, created = Team.objects.get_or_create(event=event, name=team_name)
+                if created:
+                    for player in players:
+                        team.players.add(player)
+
+                        rank_mpr = player.stat_rank(event.tournament)['MPR']
+                        rank_ppd = player.stat_rank(event.tournament)['PPD']
+
+                        team.mpr_rank += rank_mpr
+                        team.ppd_rank += rank_ppd
+
+                    # cacluate average
+                    team.mpr_rank = team.mpr_rank / len(players)
+                    team.ppd_rank = team.ppd_rank / len(players)
+                    team.save()
                 messages.success(request, 'Team - %s signed up successfully.' % (team.name))
 
             # book signup fee payment record
@@ -873,8 +879,8 @@ def event_signup(request, e_id):
                     if not player.is_registered(event.tournament):
                         messages.error(request, '%s is not registered yet. <a href="%s">Click here to register</a>' % (player, reg_url))
                         return HttpResponseRedirect(reverse('22k:event_signup', args=[e_id]))
-            
-            
+
+
             # Check players are qualifeid for the event
             for player in players:
                 if event.is_official() and not player.is_qualified(event.tournament):
