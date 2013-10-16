@@ -44,7 +44,11 @@ def register(item, line_no):
     sat_triples = True if Sat_Triples == 'yes' else False
     sun_doubles = True if Sun_Doubles == 'yes' else False
     credit = Paid_Amount.replace('$', '') if Paid_Amount else 0
-    balance = Balance.replace('$', '') if Balance else 0
+    if Balance == 'PAID':
+        balance = 0
+    else:
+        balance = Balance.replace('$', '') if Balance else 0
+    
     # print line_number, first_name, last_name, c_number, cn, l_number, ln
     
     pre_player = PreRegVegas.objects.create(first_name=first_name,
