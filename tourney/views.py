@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import connections, transaction
-from django.db.models import F, Count
+from django.db.models import F, Count, Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
@@ -572,8 +572,12 @@ def card(request, t_id):
         form = CardScanForm(request.POST)
         if form.is_valid():
             try:
-                p_rfid = form.cleaned_data['rfid']
-                card = Card.objects.get(rfid=p_rfid)
+                p_num = form.cleaned_data['rfid']
+                if len(p_num) == 20:
+                    p_rfid = p_num
+                elif len(p_num) == 16:
+                    p_rfid = PhoenixCard(cardno=p_num).get_rfid()
+                card = Card.objects.get(Q(rfid=p_rfid) | Q(cardno=p_rfid))
             except Card.DoesNotExist:
                 return HttpResponseRedirect(reverse('22k:register', args=[t_id, p_rfid]))
             if card.player.is_registered(t_id):

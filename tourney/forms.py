@@ -99,8 +99,8 @@ class CardScanForm(forms.Form):
     rfid = forms.CharField(max_length=20)
     
     def clean_rfid(self):
-        _rfid = self.cleaned_data['rfid']
-        if not _rfid.isdigit() or len(_rfid) != 20:
+        _rfid = self.cleaned_data['rfid'].replace(' ', '')
+        if not _rfid.isdigit() or not (len(_rfid) == 20 or len(_rfid) == 16):
             raise forms.ValidationError('Invalid RFID number format')
         return _rfid
 
