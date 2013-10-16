@@ -312,7 +312,7 @@ class Event(models.Model):
 
     def is_team_event(self):
         return True if self.format == 'D' or self.format == 'T' else False
-    
+
     def is_ladies_event(self):
         return True if self.division == 'F' else False
 
