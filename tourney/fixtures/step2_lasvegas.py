@@ -17,7 +17,7 @@ counter = {'22k': 0, 'casual_invalid': 0, 'league_invalid': 0}
 
 for no, reg in enumerate(PreRegVegas.objects.all(), start=1):
 
-    line = ' '.join([no, ':']) + ' '.join([reg.first_name, reg.last_name])
+    line = ' '.join([str(no), ':']) + ' '.join([reg.first_name, reg.last_name])
     if reg.casual_card:
         pxcard = PhoenixCard(cardno=reg.casual_card)
         try:
