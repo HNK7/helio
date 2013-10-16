@@ -25,7 +25,7 @@ class PhoenixCard(object):
 
 def register(item, line_no):
     cleaned_item = map(str.strip, item)
-    (Payment, Operator, First_Name, Last_Name, Mobile, Email, Address, Casual_Card, League_Card,
+    (Payment, Operator, First_Name, Last_Name, Gender, Mobile, Email, Address, Casual_Card, League_Card,
       Fri_Singles, Sat_Doubles, Sat_Triples, Sun_Doubles, Package_Purchased,
       Paid_Amount, Balance, CR_Partner, Zero_Parter, Note ) = cleaned_item
 
@@ -49,8 +49,9 @@ def register(item, line_no):
     
     pre_player = PreRegVegas.objects.create(first_name=first_name,
         last_name=last_name,
+        gender=Gender,
         mobile=Mobile,
-        email=Email,
+        email=Email.lower(),
         casual_card=cn,
         league_card=ln,
         fri_singles=fri_singles,

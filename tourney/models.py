@@ -465,6 +465,7 @@ class PreRegPlayer(Player):
 class PreRegVegas(Address):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+    gender = models.CharField(max_length=1, blank=True, null=True)
     mobile = models.CharField(max_length=40, blank=True, null=True)
     email = models.EmailField(max_length=255, blank=True, null=True)
     casual_card = models.CharField(max_length=16, blank=True, null=True)

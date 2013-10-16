@@ -16,6 +16,9 @@ from tourney.pheonixcard import PhoenixCard
 counter = {'22k': 0, 'casual_invalid': 0, 'league_invalid': 0}
 
 for no, reg in enumerate(PreRegVegas.objects.all(), start=1):
+    
+    # First check ther user already registered for 100K
+
     if reg.casual_card:
         try:
             card = PhoenixCard(cardno=reg.casual_card)
