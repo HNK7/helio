@@ -854,6 +854,10 @@ def event_signup(request, e_id):
                     team.ppd_rank = team.ppd_rank / len(players)
                     team.save()
                 messages.success(request, 'Team - %s signed up successfully.' % (team.name))
+                # print signup recepits
+                team = Team(name=player) if event.is_lotd() else team
+                print_signup_receipt(team, event)
+                print_bracket_label(team, event)
 
             # book signup fee payment record
             SignupPayment.objects.filter(player__in=players, event=event).update(paid=True)
