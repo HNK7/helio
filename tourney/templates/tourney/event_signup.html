@@ -44,7 +44,7 @@
                     <!-- <div class="page-header">
                         <h1>Payment</h1>
                     </div> -->
-                <form method="post">   
+                <form method="post">
                     {% csrf_token %}
                     {% for entry in entries %}
                         <div class="well"><h3>{{ entry.player }}</h3>

@@ -216,8 +216,8 @@ def entry_detail(request, t_id, e_id):
     context = dict()
     entry = get_object_or_404(Entry, pk=e_id)
     event_list = []
-    event_list += [ de.event for de in entry.player.drawentry_set.all() ]
-    event_list += [ t.event for t in entry.player.team_set.all() ]
+    event_list += [ de.event for de in entry.player.drawentry_set.filter(event__tournament=entry.tournament) ]
+    event_list += [ t.event for t in entry.player.team_set.filter(event__tournament=entry.tournament) ]
     context['entry'] = entry
     context['player'] = entry.player
     context['signup_events'] = event_list

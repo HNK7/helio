@@ -48,6 +48,22 @@ class PhoenixCard:
         else:
             raise Exception('cardno or rfid needs to be set')
 
+    def get_org_rfid(self):
+        if self.rfid:
+            return self.rfid
+        elif self.cardno:
+            try:
+                self.cursor.execute('SELECT getorigrfid2(rfid) from checkrfid where cardno=%s', [self.cardno])
+                r = self.cursor.fetchone()
+            except Exception:
+                raise Exception('invalid card number')
+            if r:
+                return str(r[0])
+            else:
+                raise Exception('invalid card number')
+        else:
+            raise Exception('cardno or rfid needs to be set')
+
     def get_stat(self):
         try:
             self.cursor.execute('SELECT ppd_ta2, mpr_ta2 from useravg a, checkrfid b where a.rfid=getorigrfid2(b.rfid) and (b.cardno=%s or b.rfid=getorigrfid2(%s))', [self.cardno, self.rfid])
@@ -68,7 +84,7 @@ class PhoenixCard:
         return True if r == None else False
 
 class PhoenixLeagueCard(PhoenixCard):
-   
+
     def get_cardno(self):
         if self.cardno:
             return self.cardno

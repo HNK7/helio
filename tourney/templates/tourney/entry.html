@@ -7,7 +7,7 @@
 <span class="label label-info pull-right">TOTAL : {{ entry.count }}</span></P>
 </div>
     <div class="row">
-        
+
         <div>
             <!--div class="page-header">
             <span class="label label-info">TOTAL: {{ entry_total|intcomma }}</span>
@@ -56,8 +56,8 @@
                         {% if not e.player.card_number %}
                             <span class="label label-important">card</span>
                         {% endif %}
-                        {% if e.qualified %}
-                            <span class="label label-info">Q</span>
+                        {% if not e.qualified %}
+                            <span class="label label-impoartant">W</span>
                         {% endif %}
 
                         </td>

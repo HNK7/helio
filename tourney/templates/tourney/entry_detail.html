@@ -32,6 +32,10 @@
                             <td class="muted">Gender</td>
                             <td>{{ player.get_gender_display|title }}</td>
                         </tr>
+                        <tr>
+                            <td class="muted">Mobile</td>
+                            <td>{{ player.phone|format_phone_number }}</td>
+                        </tr>
                          <tr>
                             <td class="muted">Stat</td>
                             <td>
