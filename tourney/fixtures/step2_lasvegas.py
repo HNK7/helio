@@ -26,7 +26,7 @@ for no, reg in enumerate(PreRegVegas.objects.all(), start=1):
             stat = card.get_stat()
             print no, reg.first_name, reg.last_name, card.cardno, stat['PPD'], stat['MPR']
         except Exception, e:
-            print no, reg.first_name, reg.last_name, "invalid casual number:%s" % e
+            print no, reg.first_name, reg.last_name, card.cardno, e
             pass
     else:
         print no, reg.first_name, reg.last_name, "no casual card"
