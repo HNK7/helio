@@ -218,6 +218,9 @@ def entry_detail(request, t_id, e_id):
     event_list = []
     event_list += [ de.event for de in entry.player.drawentry_set.filter(event__tournament=entry.tournament) ]
     event_list += [ t.event for t in entry.player.team_set.filter(event__tournament=entry.tournament) ]
+
+    paid_events = SignupPayment.objects.filter(player=entry.player, event__tournament=entry.tournament, paid=True)
+    context['signup_payment'] = paid_events
     context['entry'] = entry
     context['player'] = entry.player
     context['signup_events'] = event_list

@@ -63,6 +63,16 @@
                     </tbody>
                 </table>
 
+                {% if entry.qualified %}
+                <legend>Paid Events</legend>
+                <ul>
+                {% for p in signup_payment %}
+                    <li>
+                    {{ p.event }} - {{ p.event.get_division_display }}
+                    </li>
+                {% endfor %}
+                </ul>
+                {% endif %}
                 {% if signup_events %}
                 <legend>Events</legend>
                 <div class="well">
