@@ -786,9 +786,7 @@ def register(request, t_id, rfid_id):
 def print_signup_receipt(team, event):
     # print signup recepits
     try:
-        # receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_RECEIPT'])
-        receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_LABEL'], port=9200)
-        # receipt.print_singles(event.title, team.name, 'MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+        receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_RECEIPT'])
         receipt.print_line(event.tournament.title, size=50)
         receipt.print_line('', size=50)
         receipt.print_line('Event: %s' % (event.title))
@@ -866,7 +864,7 @@ def event_signup(request, e_id):
             if settings.PRINTER['LIVE']:
                 team = Team(name=player) if event.is_lotd() else team
                 print_signup_receipt(team, event)
-                # print_bracket_label(team, event)
+                print_bracket_label(team, event)
 
             # book signup fee payment record
             SignupPayment.objects.filter(player__in=players, event=event).update(paid=True)
