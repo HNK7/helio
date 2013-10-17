@@ -6,7 +6,7 @@ sys.path.append('/Applications/djangostack-1.4.6-0/apps/django/django_projects/h
 sys.path.append('/Applications/djangostack-1.4.5-0/apps/django/django_projects/helio')
 
 from csv import reader
-from helio.settings import production 
+from helio.settings import production
 from django.core.management import setup_environ
 setup_environ(production)
 from tourney.models import PreRegVegas
@@ -25,7 +25,7 @@ class PhoenixCard(object):
 
 def register(item, line_no):
     cleaned_item = map(str.strip, item)
-    (Payment, Operator, First_Name, Last_Name, Gender, Mobile, Email, Address, Casual_Card, League_Card,
+    (Operator, First_Name, Last_Name, Gender, Mobile, Email, Address, Casual_Card, League_Card,
       Fri_Singles, Sat_Doubles, Sat_Triples, Sun_Doubles, Package_Purchased,
       Paid_Amount, Balance, CR_Partner, Zero_Parter, Note ) = cleaned_item
 
@@ -48,9 +48,9 @@ def register(item, line_no):
         balance = 0
     else:
         balance = Balance.replace('$', '') if Balance else 0
-    
+
     # print line_number, first_name, last_name, c_number, cn, l_number, ln
-    
+
     pre_player = PreRegVegas.objects.create(first_name=first_name,
         last_name=last_name,
         gender=Gender,
