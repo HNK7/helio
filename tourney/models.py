@@ -131,7 +131,7 @@ class Player(Address):
         return self.card.rfid
 
     def is_profile_valid(self):
-        return True if self.card_number and self.phone and self.email and self.gender else False
+        return True if self.card_number and len(self.phone) != 10 and self.gender else False
 
     def is_web_member(self):
         return True if self.user_id else False
