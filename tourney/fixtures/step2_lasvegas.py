@@ -44,18 +44,22 @@ for no, reg in enumerate(PreRegVegas.objects.all(), start=1):
             player.save()
             print 'Updated already registered player'
         except Exception, e:
-            # player = Player.objects.create(first_name=reg.first_name, last_name=reg.last_name)
-            # player.gender = reg.gender
-            # player.email = reg.email if reg.email else ''
-            # player.phone = reg.phone if reg.phone else ''
-            # player.save()
-            # card = Card.objects.create(cardno=pxcard.cardno, rfid=pxcard.rfid, player=player)
-            # print 'Registered as a new player'
-            # print 'player id: %s' % player.id
-            # print 'card id: %s' % card.id
-            pass
-            print line, 'skipped: New player'
-            continue
+            player = Player.objects.create(first_name=reg.first_name, last_name=reg.last_name)
+            player.gender = reg.gender
+            player.email = reg.email if reg.email else ''
+            player.phone = reg.phone if reg.phone else ''
+            player.save()
+            card = Card.objects.create(cardno=pxcard.cardno, rfid=pxcard.rfid, player=player)
+            print 'Registered as a new player'
+            print 'player id: %s' % player.id
+            print 'card id: %s' % card.id
+            # pass
+            # print line, 'skipped: New player'
+            # continue
+
+        # Mark Prereg player
+        reg.player_id = player.id
+        reg.save()
         # Register for 100K
         entry, created = Entry.objects.get_or_create(tournament=vegas_tourney, player=player)
         if reg.balance > 0:
