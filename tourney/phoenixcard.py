@@ -1,11 +1,12 @@
 from django.db import connections
 from decimal import Decimal
 
-cursor = connections['hi'].cursor()
+# cursor = connections['hi'].cursor()
 
 class PhoenixCard:
     def __init__(self, cardno=None, rfid=None):
 
+        self.cursor = connections['hi'].cursor()
         self._validate_number(cardno, rfid)
         # verify cardno and rfid combination
         r = self._verify(cardno, rfid)
@@ -48,6 +49,7 @@ class PhoenixCard:
                 raise Exception('rfid format is invalid: %s' % [rfid])
 
     def _verify(self, cardno, rfid):
+        cursor = self.cursor
         try:
             cursor.execute('SELECT cardno, rfid, getorigrfid2(%s) from checkrfid where cardno=%s or rfid=%s', [rfid, cardno, rfid])
             r = cursor.fetchone()
@@ -72,6 +74,7 @@ class PhoenixCard:
         5. copied card
 
         """
+        cursor = self.cursor
         rfid = self.rfid
         try:
             cursor.execute("""SELECT %s, (select cardno from checkrfid where rfid=%s),
@@ -132,6 +135,7 @@ class PhoenixCard:
 
 
     def get_stat(self):
+        cursor = self.cursor
         cursor.execute('SELECT ppd_ta2, mpr_ta2 from useravg where rfid=getorigrfid2(%s))', [self.rfid])
         (ppd, mpr) = cursor.fetchone()
         return {'PPD': ppd, 'MPR': mpr}
@@ -139,6 +143,8 @@ class PhoenixCard:
 
 class PhoenixLeagueCard(PhoenixCard):
     def __init__(self, cardno=None, rfid=None):
+        self.cursor = connections['hi'].cursor()
+
         self._validate_number(cardno, rfid)
         r = self._verify(cardno, rfid)
 
@@ -152,6 +158,7 @@ class PhoenixLeagueCard(PhoenixCard):
         self.name = name
 
     def _verify(self, cardno, rfid):
+            cursor = self.cursor
             try:
                 cursor.execute('SELECT cardno, rfid from lg_checkrfid where cardno=%s or rfid=%s', [cardno, rfid])
                 r = cursor.fetchone()
@@ -163,6 +170,7 @@ class PhoenixLeagueCard(PhoenixCard):
             return {'cardno': cardno, 'rfid': rfid}
 
     def _card_info(self):
+        cursor = self.cursor
         cursor.execute('SELECT name, nickname, ppd_ta, mpr_ta from ml.luser a, ml.luserinfo b where a.rfid=b.rfid and a.rfid=%s', [self.rfid,])
         (name, nickname, ppd_ta, mpr_ta) = cursor.fetchone()
         return (name, nickname, ppd_ta, mpr_ta)

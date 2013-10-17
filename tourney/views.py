@@ -580,11 +580,13 @@ def card(request, t_id):
                     p_rfid = p_num
                 elif len(p_num) == 16:
                     try:
+                        cursor = connections['hi'].cursor()
                         pxcard = PhoenixCard(cardno=p_num)
                         p_rfid = pxcard.rfid
-                    except Exception:
+                    except Exception, e:
                         # bypass exception with vougs rfid
                         p_rfid = '11111111111111111111'
+                        raise('%s' % e)
                 card = Card.objects.get(Q(rfid=p_rfid) | Q(cardno=p_rfid))
             except Card.DoesNotExist:
                 return HttpResponseRedirect(reverse('22k:register', args=[t_id, p_rfid]))
