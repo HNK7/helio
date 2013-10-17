@@ -54,7 +54,7 @@ for no, reg in enumerate(PreRegVegas.objects.all(), start=1):
             # print 'player id: %s' % player.id
             # print 'card id: %s' % card.id
             pass
-            print 'New player'
+            print line, 'skipped: New player'
             continue
         # Register for 100K
         entry, created = Entry.objects.get_or_create(tournament=vegas_tourney, player=player)
