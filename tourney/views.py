@@ -920,6 +920,13 @@ def event_signup(request, e_id):
             # Check signup fee payment
             entries = Entry.objects.filter(player__in=players, tournament=event.tournament)
             for entry in entries:
+                if entry.qualified:
+                    try:
+                        pre_reg = PreRegVegas.objects.get(player_id=entry.player.id)
+                        context['pre_reg'] = pre_reg
+                    except:
+                        pass
+
                 signup_payment, created = SignupPayment.objects.get_or_create(player=player, event=event)
                 if created:
                     if not signup_payment.paid:

@@ -48,13 +48,19 @@
                     {% csrf_token %}
                     {% for entry in entries %}
                         <div class="well"><h3>{{ entry.player }}</h3>
+                        {% if pre_reg %}
+                        <div class="lead"> Package: {{ pre_reg.package }}<br>
+                        Paid: ${{ pre_reg.credit }}<br>
+                        Balance: ${{ pre_reg.balance }}</div>
+                        {% endif %}
                         <span class="lead">Amount Due: <b>{{ entry.balance|currency }}</b></span>
+
                         {% if entry.balance > 0 %}
                         <div class="lead">
                             <ul>
                                 {% if entry.balance_card %}<li>Card Fee: {{ entry.balance_card }}</li>{% endif %}
                                 {% if entry.balance_membership %}<li>Membership Fee: {{ entry.balance_membership }}</li>{% endif %}
-                                {% if entry.balance_signup %}<li>Sign Up Fee: {{ entry.balance_signup}}</li>{% endif %}
+                                {% if entry.balance_signup %}<li>Sign Up Fee: {{ event.signup_fee}}</li>{% endif %}
                             </ul>
                         </div>
                         {% endif %}
