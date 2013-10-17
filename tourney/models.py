@@ -481,6 +481,7 @@ class PreRegVegas(Address):
     operator = models.CharField(max_length=255, blank=True, null=True)
     package = models.CharField(max_length=255, blank=True, null=True)
     credit = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+    player_id = models.IntegerField(blank=True, null=True)
 
     def __unicode__(self):
         return '%s %s' % (self.first_name.title(), self.last_name.title())
