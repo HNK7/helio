@@ -580,7 +580,6 @@ def card(request, t_id):
                     p_rfid = p_num
                 elif len(p_num) == 16:
                     try:
-                        cursor = connections['hi'].cursor()
                         pxcard = PhoenixCard(cardno=p_num)
                         p_rfid = pxcard.rfid
                     except Exception, e:
@@ -806,7 +805,9 @@ def print_bracket_label(team, event):
     # print signup recepits
     try:
         receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_LABEL'], port=9200)
-        receipt.print_singles(team.name, event.title, 'MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+        # receipt.print_singles(team.name, event.title, 'MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
+        receipt.print_line(team.name)
+        receipt.print_line('MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
     except:
         pass
     # receipt.cut()
