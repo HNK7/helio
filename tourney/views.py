@@ -580,7 +580,8 @@ def card(request, t_id):
                     p_rfid = p_num
                 elif len(p_num) == 16:
                     try:
-                        p_rfid = PhoenixCard(cardno=p_num)
+                        pxcard = PhoenixCard(cardno=p_num)
+                        p_rfid = pxcard.rfid
                     except Exception:
                         # bypass exception with vougs rfid
                         p_rfid = '11111111111111111111'
