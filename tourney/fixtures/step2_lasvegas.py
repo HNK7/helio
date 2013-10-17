@@ -47,7 +47,7 @@ for no, reg in enumerate(PreRegVegas.objects.all(), start=1):
             player = Player.objects.create(first_name=reg.first_name, last_name=reg.last_name)
             player.gender = reg.gender
             player.email = reg.email if reg.email else ''
-            player.phone = reg.phone if reg.phone else ''
+            player.phone = reg.mobile if reg.mobile else ''
             player.save()
             card = Card.objects.create(cardno=pxcard.cardno, rfid=pxcard.rfid, player=player)
             print 'Registered as a new player'
