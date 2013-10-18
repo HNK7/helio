@@ -303,6 +303,11 @@ def entry_big(request, t_id):
     context['entry'] = entry
     return render(request, 'tourney/entry_big.html', context)
 
+def signup_list(request, e_id):
+    context = dict()
+    context['teams'] = Team.objects.filter(event_id=e_id)
+
+    return render(request, 'tourney/signup_list.html', context)
 
 def profile(request, p_id):
     context = dict()

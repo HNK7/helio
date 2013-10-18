@@ -245,6 +245,8 @@ class Vegas:
 		"""
 
 		for e in entries:
+			update_stat(e.mpr_event, e.ppd_event, e.player.card.rfid)
+			print 'e.player stat updted: %s %s' % e.mpr_event, e.ppd_event
 
 # for p in pre_imported:
 # 	fname = '%s %s' % (p.first_name, p.last_name)
