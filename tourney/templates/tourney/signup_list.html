@@ -8,9 +8,15 @@
 <style>
 .table th, .table td { border-top: none; }
 </style>
+<script>
+function autoRefresh(refreshPeriod) {
+    setTimeout("window.location.reload();",refreshPeriod);
+}
+</script>
 </head>
 
-<body style="background-color:black; color: white">
+
+<body style="background-color:black; color: white" onload="autoRefresh(6000);">
 <div class="container">
 
         <h3>Signup Directory</h3>
