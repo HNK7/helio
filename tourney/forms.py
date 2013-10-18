@@ -65,6 +65,8 @@ class EntryForm(forms.Form):
     last_name = forms.CharField(max_length=255)
     gender = forms.ChoiceField(choices = (('M', 'Man'), ('F', 'Lady')))
     mobile = forms.CharField(max_length=40)
+    entry_mpr = forms.DecimalField(label='Entry MPR', decimal_places=2, min_value=0.1)
+    entry_ppd = forms.DecimalField(label='Entry PPD', decimal_places=2, min_value=0.1)
     balance_membership = forms.DecimalField(max_digits=8, decimal_places=2, required=False)
     balance_signup = forms.DecimalField(max_digits=8, decimal_places=2, required=False)
     balance_card = forms.DecimalField(max_digits=8, decimal_places=2, required=False)
@@ -97,7 +99,7 @@ class PxRFIDField(forms.CharField):
 
 class CardScanForm(forms.Form):
     rfid = forms.CharField(max_length=20)
-    
+
     def clean_rfid(self):
         _rfid = self.cleaned_data['rfid'].replace(' ', '')
         if not _rfid.isdigit() or not (len(_rfid) == 20 or len(_rfid) == 16):

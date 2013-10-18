@@ -244,6 +244,8 @@ def entry_edit(request, t_id, e_id):
             last_name = form.cleaned_data['last_name']
             gender = form.cleaned_data['gender']
             mobile = form.cleaned_data['mobile']
+            entry_mpr = form.cleaned_data['entry_mpr']
+            entry_ppd = form.cleaned_data['entry_ppd']
             balance_membership = form.cleaned_data['balance_membership']
             balance_signup = form.cleaned_data['balance_signup']
             balance_card = form.cleaned_data['balance_card']
@@ -260,6 +262,8 @@ def entry_edit(request, t_id, e_id):
             player.phone = mobile
             player.save()
 
+            entry.mpr_event = entry_mpr
+            entry.ppd_event = entry_ppd
             entry.balance_membership = balance_membership
             entry.balance_signup = balance_signup
             entry.balance_card = balance_card
@@ -275,6 +279,8 @@ def entry_edit(request, t_id, e_id):
         entry_data = {'first_name': player.first_name.title(),
                       'last_name': player.last_name.title(),
                       'gender': player.gender,
+                      'entry_mpr': entry.mpr_event,
+                      'entry_ppd': entry.ppd_event,
                       'mobile': player.phone,
                       'balance_membership': entry.balance_membership,
                       'balance_signup': entry.balance_signup,
