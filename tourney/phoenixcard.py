@@ -33,7 +33,7 @@ class PhoenixCard:
 
         self.card_type = card_type
         self.is_copied = False if self.rfid == self.org_rfid else True
-        self.is_new = True if self.card_type == 'New' else False
+        self.is_new = True if self.card_type == 'new' else False
 
     def __str__(self):
         return self.cardno if self.cardno else self.rfid

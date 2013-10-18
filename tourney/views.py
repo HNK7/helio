@@ -176,12 +176,13 @@ def card_copy(request, e_id):
 
             # make sure new card number is valid
             try:
-                new_card_number = new_card.get_cardno()
+                # new_card_number = new_card.get_cardno()
+                new_card_number = new_card.cardno
             except Exception:
                 messages.error(request, 'Invalid card number!')
                 return HttpResponseRedirect(reverse('22k:card_copy', args=(entry.id,)))
             # check if it's new one
-            if not new_card.is_new():
+            if not new_card.is_new:
                 messages.error(request, 'Card is already in use! Try with new one')
                 return HttpResponseRedirect(reverse('22k:card_copy', args=(entry.id,)))
             # make card coopy
