@@ -806,7 +806,7 @@ def print_bracket_label(team, event):
     # print signup recepits
     try:
         receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_LABEL'], port=9200)
-        receipt.print_singles('team.name')
+        receipt.print_singles(team.name)
         # receipt.print_line(team.name)
         # receipt.print_line('MPR: %s / PPD: %s' % (team.mpr_rank, team.ppd_rank))
         # receipt.print_line(event.tournament.title, size=50)
