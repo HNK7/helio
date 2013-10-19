@@ -1458,10 +1458,10 @@ def stat_monitor(request):
     , b.gc
 
 from userinfo a join (select rfid, gametype, count(*) as gc, trunc(avg(ppdmpr)::numeric, 2) as tourney
-from v_gamedata where shopid=209 and gameid not in (222295) group by rfid, gametype)as b on a.rfid=b.rfid
+from v_gamedata where shopid=425 and gameid not in (222295) group by rfid, gametype)as b on a.rfid=b.rfid
 join useravg c on a.rfid=c.rfid
 
-where gc > 1 and b.rfid > 1 and b.rfid not in (16142028065945800250, 16142028065945803797) order by gametype, diff desc"""
+where gc > 1 and b.rfid > 1  order by gametype, diff desc"""
     cursor.execute(sql)
     r = cursor.fetchall()
     context['games'] = r
