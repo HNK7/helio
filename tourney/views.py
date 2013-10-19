@@ -305,7 +305,7 @@ def entry_big(request, t_id):
 
 def signup_list(request, e_id):
     context = dict()
-    context['teams'] = Team.objects.filter(Q(event_id=33) | Q(event_id=34))
+    context['teams'] = Team.objects.filter(Q(event_id=35) | Q(event_id=36))
 
     return render(request, 'tourney/signup_list.html', context)
 
