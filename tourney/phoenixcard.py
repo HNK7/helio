@@ -136,7 +136,7 @@ class PhoenixCard:
 
     def get_stat(self):
         cursor = self.cursor
-        cursor.execute('SELECT ppd_ta2, mpr_ta2 from useravg where rfid=getorigrfid2(%s))', [self.rfid])
+        cursor.execute('SELECT ppd_ta2, mpr_ta2 from useravg where rfid=getorigrfid2(%s)', [self.rfid,])
         (ppd, mpr) = cursor.fetchone()
         return {'PPD': ppd, 'MPR': mpr}
 
