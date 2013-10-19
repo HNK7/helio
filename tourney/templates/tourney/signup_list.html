@@ -35,7 +35,7 @@ function autoRefresh(refreshPeriod) {
         {% for t in teams %}
             <tr>
                 <td class="muted">{{ forloop.counter }}</td>
-                <td>{{ t.name }}</td>
+                <td>{{ t.player.full_name }}</td>
                 <!-- <td class="muted">{{ e.player.gender }}</td> -->
             </tr>
         {% endfor %}
