@@ -1438,7 +1438,7 @@ def game_result(request, rfid=None):
     else:
         sql = """select to_char(a.ctime, 'mm-dd hh:mi:ss AM' ) as ended_at, gameid, b.name, ppdmpr, teamtype, sameteam,
                       iswin, a.rfid
-                      from v_gamedata3 a join userinfo b on a.rfid=b.rfid where shopid=209 order by gameid, sameteam"""
+                      from v_gamedata3 a join userinfo b on a.rfid=b.rfid where shopid=425 order by gameid, sameteam"""
 
     cursor.execute(sql)
     r = cursor.fetchall()
