@@ -306,7 +306,7 @@ def entry_big(request, t_id):
 def signup_list(request, e_id):
     context = dict()
     # context['teams'] = Team.objects.filter(event_id=e_id )
-    context['teams'] = DrawEntry.objects.filter(event_id=e_id )
+    context['teams'] = DrawEntry.objects.filter(event_id=e_id ).order_by('-id')
 
     context['event'] = get_object_or_404(Event, id=e_id)
     return render(request, 'tourney/signup_list.html', context)
