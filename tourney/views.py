@@ -1465,17 +1465,14 @@ where gc > 1 and b.rfid > 1  order by gametype, diff desc"""
     cursor.execute(sql)
     rows = cursor.fetchall()
 
-    p_list = []
     for row in rows:
         try:
-            p_list.append(Card.objects.get(rfid=row[0]).player)
+            row[1] =  Card.objects.get(rfid=row[0]).player
         except ObjectDoesNotExist:
-            p_list.append(row[1])
+            # player_name = row[1]
             pass
-
     # raise('debug')
     context['games'] = rows
-    context['players'] = set(p_list)
     return render(request, 'tourney/stat_monitor.html', context)
 
 
