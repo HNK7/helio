@@ -815,6 +815,7 @@ def print_signup_receipt(team, event):
 
 def print_bracket_label(team, event):
     # print signup recepits
+
     try:
         receipt = brother.Label(ip_address=settings.PRINTER['BROTHER_LABEL'], port=9200)
         receipt.print_singles(team.name)
@@ -889,7 +890,7 @@ def event_signup(request, e_id):
             if settings.PRINTER['LIVE']:
                 team = Team(name=player.full_name) if event.is_lotd() else team
                 print_signup_receipt(team, event)
-                print_bracket_label(team, event)
+                # print_bracket_label(team, event)
 
             # book signup fee payment record
             SignupPayment.objects.filter(player__in=players, event=event).update(paid=True)
