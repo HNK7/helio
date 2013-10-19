@@ -1463,8 +1463,12 @@ join useravg c on a.rfid=c.rfid
 
 where gc > 1 and b.rfid > 1  order by gametype, diff desc"""
     cursor.execute(sql)
-    r = cursor.fetchall()
-    context['games'] = r
+    rows = cursor.fetchall()
+    p_list = set([Card.objects.get(rfid=row[0]).player for row in rows ])
+
+    # raise('debug')
+    context['games'] = rows
+    context['players'] = p_list
     return render(request, 'tourney/stat_monitor.html', context)
 
 

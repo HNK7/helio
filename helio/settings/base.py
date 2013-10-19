@@ -228,3 +228,7 @@ PRINTER = {
     'BROTHER_LABEL': '24.120.176.168',
 }
 
+DATABASE_OPTIONS = {
+    # "connect_timeout": 10,
+}
+
