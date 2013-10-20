@@ -23,24 +23,46 @@ function autoRefresh(refreshPeriod) {
         <h3> SIGN UP LIST: {{ event.title }}</h3>
 
         <span class="pull-right">Total: {{ teams.count }}</span>
-        <table class="table table-condensed">
-            <thead>
+        <div class="grid_8 alpha">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <!-- <th></th> -->
+                    </tr>
+                </thead>
+                <tbody>
+            {% for t in teams_1 %}
                 <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <!-- <th></th> -->
+                    <td class="muted">{{ forloop.counter }}</td>
+                    <td>{{ t.player.full_name }}</td>
+                    <!-- <td class="muted">{{ e.player.gender }}</td> -->
                 </tr>
-            </thead>
-            <tbody>
-        {% for t in teams %}
-            <tr>
-                <td class="muted">{{ forloop.counter }}</td>
-                <td>{{ t.player.full_name }}</td>
-                <!-- <td class="muted">{{ e.player.gender }}</td> -->
-            </tr>
-        {% endfor %}
-            </tbody>
-        </table>
+            {% endfor %}
+                </tbody>
+            </table>
+        </div>
+         <div class="grid_8 omega">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <!-- <th></th> -->
+                    </tr>
+                </thead>
+                <tbody>
+            {% for t in teams_2 %}
+                <tr>
+                    <td class="muted">{{ forloop.counter }}</td>
+                    <td>{{ t.player.full_name }}</td>
+                    <!-- <td class="muted">{{ e.player.gender }}</td> -->
+                </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+        </div>
 </div>
 </body>
 </htML>
