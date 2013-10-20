@@ -23,11 +23,12 @@ function autoRefresh(refreshPeriod) {
         <h3> SIGN UP LIST: {{ event.title }}</h3>
 
         <span class="pull-right">Total: {{ teams.count }}</span>
-        <div class="grid_8 alpha">
+        <div class="row">
+        <div class="span6">
             <table class="table table-condensed">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <!--th>#</th-->
                         <th>Name</th>
                         <!-- <th></th> -->
                     </tr>
@@ -35,7 +36,7 @@ function autoRefresh(refreshPeriod) {
                 <tbody>
             {% for t in teams_1 %}
                 <tr>
-                    <td class="muted">{{ forloop.counter }}</td>
+                    <td class="muted"></td>
                     <td>{{ t.player.full_name }}</td>
                     <!-- <td class="muted">{{ e.player.gender }}</td> -->
                 </tr>
@@ -43,7 +44,7 @@ function autoRefresh(refreshPeriod) {
                 </tbody>
             </table>
         </div>
-         <div class="grid_8 omega">
+         <div class="span6">
             <table class="table table-condensed">
                 <thead>
                     <tr>
@@ -55,7 +56,7 @@ function autoRefresh(refreshPeriod) {
                 <tbody>
             {% for t in teams_2 %}
                 <tr>
-                    <td class="muted">{{ forloop.counter }}</td>
+                    <td class="muted"></td>
                     <td>{{ t.player.full_name }}</td>
                     <!-- <td class="muted">{{ e.player.gender }}</td> -->
                 </tr>
@@ -63,6 +64,7 @@ function autoRefresh(refreshPeriod) {
                 </tbody>
             </table>
         </div>
+    </div>
 </div>
 </body>
 </htML>
