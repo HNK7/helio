@@ -305,7 +305,7 @@ def entry_big(request, t_id):
 
 def signup_list(request, e_id):
     context = dict()
-    teams = Team.objects.filter(event_id=e_id )
+    teams = Team.objects.filter(event_id__in=[39, 40] )
     # teams = DrawEntry.objects.filter(event_id=e_id ).order_by('-id')
     half = teams.count() / 2
     context['teams'] = teams
